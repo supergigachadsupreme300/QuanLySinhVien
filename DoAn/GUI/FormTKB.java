@@ -16,10 +16,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import net.miginfocom.swing.MigLayout;
 
-/**
- *
- *
- */
+
 public class FormTKB extends JFrame {
 
     // ================= TABLE =================
@@ -31,7 +28,7 @@ public class FormTKB extends JFrame {
     private JComboBox<String> cboLop, cboTKB;
 
     // ================= BUTTON ================
-    private JButton btnThem, btnSua, btnXoa, btnClear;
+    private JButton btnThem, btnSua, btnXoa, btnClear,btnQuayLai;
 
     // ================= CONSTRUCTOR =================
     public FormTKB() {
@@ -107,11 +104,13 @@ public class FormTKB extends JFrame {
         btnSua = createButton("Sửa", new Color(255, 140, 0));
         btnXoa = createButton("Xóa", new Color(220, 20, 60));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
-
+        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
+        
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
         pnlBtn.add(btnXoa);
         pnlBtn.add(btnClear);
+        pnlBtn.add(btnQuayLai); 
         add(pnlBtn, "growx, wrap");
 
         // ===== TABLE DANH SÁCH TKB =====
@@ -128,7 +127,8 @@ public class FormTKB extends JFrame {
         tblTKBList.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
         tblTKBList.getTableHeader().setBackground(new Color(0, 102, 204));
         tblTKBList.getTableHeader().setForeground(Color.WHITE);
-
+        styleTable(tblTKBList);
+        
         JScrollPane scrollList = new JScrollPane(tblTKBList);
         scrollList.setBorder(BorderFactory.createTitledBorder("Danh sách TKB"));
         add(scrollList, "grow, wrap");
@@ -147,7 +147,9 @@ public class FormTKB extends JFrame {
         tblTKBLuoi.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
         tblTKBLuoi.getTableHeader().setBackground(new Color(0, 102, 204));
         tblTKBLuoi.getTableHeader().setForeground(Color.WHITE);
-
+        //add(new JScrollPane(tblTKBLuoi), "grow");
+        styleTable(tblTKBLuoi);
+        
         // Set màu cho cột "Tiết"
         tblTKBLuoi.getColumnModel().getColumn(0).setCellRenderer(
             new javax.swing.table.DefaultTableCellRenderer() {
@@ -169,7 +171,7 @@ public class FormTKB extends JFrame {
 
         JScrollPane scrollLuoi = new JScrollPane(tblTKBLuoi);
         scrollLuoi.setBorder(BorderFactory.createTitledBorder("Lưới thời khóa biểu"));
-        add(scrollLuoi, "grow");
+        add(scrollLuoi, "grow, wrap");
 
         // ===== EVENTS =====
         tblTKBList.getSelectionModel().addListSelectionListener(e -> {
@@ -190,6 +192,7 @@ public class FormTKB extends JFrame {
         btnSua.addActionListener(e -> suaTKB());
         btnXoa.addActionListener(e -> xoaTKB());
         btnClear.addActionListener(e -> clearForm());
+        btnQuayLai.addActionListener(e -> quaylai());
 
         // ===== THÊM EFFECT =====
         addFocusEffect(txtMaTKB);
@@ -241,6 +244,13 @@ public class FormTKB extends JFrame {
         });
     }
 
+     // ================= TABLE STYLE =================
+    private void styleTable(JTable tbl) {
+        tbl.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tbl.getTableHeader().setBackground(new Color(0, 102, 204));
+        tbl.getTableHeader().setForeground(Color.WHITE);
+    }
+    
     // ================= CRUD ( SAU NÀY NỐI BLL) =================
     private void themTKB() {
         // TODO: Gọi BLL để thêm vào database
@@ -307,6 +317,12 @@ public class FormTKB extends JFrame {
         modelTKBList.removeRow(row);
         clearForm();
         JOptionPane.showMessageDialog(this, "Xóa TKB thành công!");
+    }
+    
+    // ===== QUAY LẠI MAIN MENU =====
+    private void quaylai() {
+        new MainMenu().setVisible(true);
+        this.dispose();
     }
 
     // ================= UI FLOW ================

@@ -28,6 +28,7 @@ public class FormLop extends JFrame {
     // ================= BUTTON ================
     private JButton btnThem, btnSua, btnXoa, btnClear, btnQuayLai;
 
+    // ================= CONSTRUCTOR =================
     public FormLop() {
         setTitle("Quản lý lớp");
         setSize(1100, 650);
@@ -95,7 +96,7 @@ public class FormLop extends JFrame {
         btnSua = createButton("Sửa", new Color(255, 140, 0));
         btnXoa = createButton("Xóa", new Color(220, 20, 60));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
-        btnQuayLai = createButton("◀ Quay lại", new Color(100, 100, 100));
+        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
         
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
@@ -118,7 +119,8 @@ public class FormLop extends JFrame {
         tblLop.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
         tblLop.getTableHeader().setBackground(new Color(0, 102, 204));
         tblLop.getTableHeader().setForeground(Color.WHITE);
-
+        styleTable(tblLop);
+        
         JPanel pnlLop = new JPanel(new BorderLayout());
         pnlLop.setBorder(BorderFactory.createTitledBorder("Danh sách lớp"));
         pnlLop.add(new JScrollPane(tblLop));
@@ -137,7 +139,8 @@ public class FormLop extends JFrame {
         tblHS.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
         tblHS.getTableHeader().setBackground(new Color(0, 102, 204));
         tblHS.getTableHeader().setForeground(Color.WHITE);
-
+        styleTable(tblHS);
+        
         JPanel pnlHS = new JPanel(new BorderLayout());
         pnlHS.setBorder(BorderFactory.createTitledBorder("Danh sách học sinh trong lớp"));
         pnlHS.add(new JScrollPane(tblHS));
@@ -197,7 +200,13 @@ public class FormLop extends JFrame {
 
         return btn;
     }
-
+    
+    // ================= TABLE STYLE =================
+    private void styleTable(JTable tbl) {
+        tbl.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tbl.getTableHeader().setBackground(new Color(0, 102, 204));
+        tbl.getTableHeader().setForeground(Color.WHITE);
+    }
     // ===== FOCUS EFFECT =====
     private void addFocusEffect(JComponent c) {
         c.setOpaque(true);

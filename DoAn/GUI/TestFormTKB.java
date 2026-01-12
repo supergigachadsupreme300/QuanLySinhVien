@@ -15,6 +15,8 @@ import DataObject.Lop;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import net.miginfocom.swing.MigLayout;
@@ -35,7 +37,7 @@ public class TestFormTKB extends JFrame {
     private JTable tblTKBList, tblTKBLuoi;
     private DefaultTableModel modelTKBList, modelTKBLuoi;
 
-    private JButton btnThem, btnSua, btnXoa, btnClear;
+    private JButton btnThem, btnSua, btnXoa, btnClear,btnQuayLai;
 
     // ================= CONSTRUCTOR =================
     public TestFormTKB() {
@@ -273,7 +275,7 @@ public class TestFormTKB extends JFrame {
 
     // ================= UI =================
     private void initUI() {
-        setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[grow]15[grow]"));
+        setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[]15[grow]15[grow]"));
 
         JLabel lblTitle = new JLabel("QUẢN LÝ THỜI KHÓA BIỂU", JLabel.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
@@ -313,16 +315,19 @@ public class TestFormTKB extends JFrame {
 
         // ===== BUTTON =====
         JPanel pnlBtn = new JPanel();
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnClear = new JButton("Làm mới");
+        btnThem = createButton("Thêm", new Color(34, 139, 34));
+        btnSua = createButton("Sửa", new Color(255, 140, 0));
+        btnXoa = createButton("Xóa", new Color(220, 20, 60));
+        btnClear = createButton("Làm mới", new Color(70, 130, 180));
+        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
+        
 
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
         pnlBtn.add(btnXoa);
         pnlBtn.add(btnClear);
-        add(pnlBtn, "wrap");
+        pnlBtn.add(btnQuayLai); 
+        add(pnlBtn, "growx, wrap");
 
         // ===== TABLE DANH SÁCH TKB =====
         modelTKBList = new DefaultTableModel(
@@ -332,7 +337,14 @@ public class TestFormTKB extends JFrame {
         };
         tblTKBList = new JTable(modelTKBList);
         tblTKBList.setRowHeight(25);
-        add(new JScrollPane(tblTKBList), "grow, wrap");
+        tblTKBList.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tblTKBList.getTableHeader().setBackground(new Color(0, 102, 204));
+        tblTKBList.getTableHeader().setForeground(Color.WHITE);
+        styleTable(tblTKBList);
+        
+        JScrollPane scrollList = new JScrollPane(tblTKBList);
+        scrollList.setBorder(BorderFactory.createTitledBorder("Danh sách TKB"));
+        add(scrollList, "grow, wrap");
 
         // ===== TABLE LƯỚI TKB (THỜI KHÓA BIỂU) =====
         modelTKBLuoi = new DefaultTableModel(
@@ -342,14 +354,41 @@ public class TestFormTKB extends JFrame {
         };
         tblTKBLuoi = new JTable(modelTKBLuoi);
         tblTKBLuoi.setRowHeight(30);
-        add(new JScrollPane(tblTKBLuoi), "grow");
-
+        tblTKBLuoi.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tblTKBLuoi.getTableHeader().setBackground(new Color(0, 102, 204));
+        tblTKBLuoi.getTableHeader().setForeground(Color.WHITE);
+        styleTable(tblTKBLuoi);
+        
+        JScrollPane scrollLuoi = new JScrollPane(tblTKBLuoi);
+        scrollLuoi.setBorder(BorderFactory.createTitledBorder("Thời khóa biểu chi tiết"));
+        add(scrollLuoi, "grow, wrap");
+        
+        // Set màu cho cột "Tiết"
+        tblTKBLuoi.getColumnModel().getColumn(0).setCellRenderer(
+            new javax.swing.table.DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value,
+                        boolean isSelected, boolean hasFocus, int row, int column) {
+                    Component c = super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+                    if (column == 0) {
+                        c.setBackground(new Color(230, 240, 255));
+                        c.setFont(c.getFont().deriveFont(Font.BOLD));
+                    } else {
+                        c.setBackground(Color.WHITE);
+                    }
+                    return c;
+                }
+            }
+        );
+        
         // ================= EVENTS =================
         btnThem.addActionListener(e -> themTKB());
         btnSua.addActionListener(e -> suaTKB());
         btnXoa.addActionListener(e -> xoaTKB());
         btnClear.addActionListener(e -> clearForm());
-
+        btnQuayLai.addActionListener(e -> quaylai());
+        
         cboTKB.addActionListener(e -> {
             tkbDangChon = (ThoiKhoaBieu) cboTKB.getSelectedItem();
             fillForm();
@@ -368,7 +407,7 @@ public class TestFormTKB extends JFrame {
             }
             fillForm();
         });
-        addFocus(txtMaTKB);
+        /*addFocus(txtMaTKB);
         addFocus(txtNgayBD);
         addFocus(txtNgayKT);
         addFocus(cboLop);
@@ -377,41 +416,70 @@ public class TestFormTKB extends JFrame {
         addHover(btnThem);
         addHover(btnSua);
         addHover(btnXoa);
-        addHover(btnClear);
+        addHover(btnClear);*/
+        
+        addFocusEffect(txtMaTKB);
+        addFocusEffect(txtNgayBD);
+        addFocusEffect(txtNgayKT);
+        addFocusEffect(cboLop);
+        addFocusEffect(cboTKB);
 
     }
 
-    // ================= BUS / LOGIC =================
-    private void fillForm() {
-        if (tkbDangChon == null) return;
+// ===== TẠO BUTTON VỚI MÀU + HOVER =====
+    private JButton createButton(String text, Color bgColor) {
+        JButton btn = new JButton(text);
+        btn.setBackground(bgColor);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setFont(new Font("Arial", Font.BOLD, 12));
+        btn.setPreferredSize(new Dimension(100, 35));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        txtMaTKB.setText(tkbDangChon.getMaTKB());
-        txtNgayBD.setText(tkbDangChon.getNgayBatDau().toString());
-        txtNgayKT.setText(tkbDangChon.getNgayKetThuc().toString());
+        Color originalColor = bgColor;
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setBackground(originalColor.brighter());
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setBackground(originalColor);
+            }
+        });
 
-        txtMaTKB.setEnabled(false); // CHUẨN FORMLOP
-        loadGridTKB(tkbDangChon.getMaTKB());
-        updateButtonState();
+        return btn;
     }
 
-
-    private void clearForm() {
-        txtMaTKB.setText("");
-        txtNgayBD.setText("");
-        txtNgayKT.setText("");
-        txtMaTKB.setEnabled(true);
-
-        cboLop.setSelectedIndex(0);
-        cboTKB.setSelectedIndex(-1);
-        tblTKBList.clearSelection();
-
-        tkbDangChon = null;
-        initGrid();
-        updateButtonState();
-        txtMaTKB.requestFocus();
+    // ===== FOCUS EFFECT =====
+    private void addFocusEffect(JComponent c) {
+        c.setOpaque(true);
+        c.setBackground(Color.WHITE);
+        c.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                c.setBackground(new Color(230, 240, 255));
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                c.setBackground(Color.WHITE);
+            }
+        });
     }
 
+    
+   
 
+
+    // ================= TABLE STYLE =================
+    private void styleTable(JTable tbl) {
+        tbl.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tbl.getTableHeader().setBackground(new Color(0, 102, 204));
+        tbl.getTableHeader().setForeground(Color.WHITE);
+    }
+    
+    // CRUD
     private void themTKB() {
         if (txtMaTKB.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Chưa nhập mã TKB");
@@ -481,7 +549,42 @@ public class TestFormTKB extends JFrame {
         JOptionPane.showMessageDialog(this, "Xóa TKB thành công!");
     }
 
+    // ===== QUAY LẠI MAIN MENU =====
+    private void quaylai() {
+        new MainMenu().setVisible(true);
+        this.dispose();
+    }
 
+    // ================= BUS / LOGIC =================
+    private void fillForm() {
+        if (tkbDangChon == null) return;
+
+        txtMaTKB.setText(tkbDangChon.getMaTKB());
+        txtNgayBD.setText(tkbDangChon.getNgayBatDau().toString());
+        txtNgayKT.setText(tkbDangChon.getNgayKetThuc().toString());
+
+        txtMaTKB.setEnabled(false); // CHUẨN FORMLOP
+        loadGridTKB(tkbDangChon.getMaTKB());
+        updateButtonState();
+    }
+
+
+    private void clearForm() {
+        txtMaTKB.setText("");
+        txtNgayBD.setText("");
+        txtNgayKT.setText("");
+        txtMaTKB.setEnabled(true);
+
+        cboLop.setSelectedIndex(0);
+        cboTKB.setSelectedIndex(-1);
+        tblTKBList.clearSelection();
+
+        tkbDangChon = null;
+        initGrid();
+        updateButtonState();
+        txtMaTKB.requestFocus();
+    }
+ 
     // ================= LOAD =================
     private void loadTableTKB() {
         modelTKBList.setRowCount(0);
@@ -532,7 +635,7 @@ public class TestFormTKB extends JFrame {
         btnXoa.setEnabled(dangChon);
     }
 
-    private void addFocus(JComponent c) {
+    /*private void addFocus(JComponent c) {
         c.setOpaque(true);
         c.setBackground(Color.WHITE);
         c.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -556,10 +659,10 @@ public class TestFormTKB extends JFrame {
                 btn.setBackground(normal);
             }
         });
-    }
+    }*/
 
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FormTKB().setVisible(true));
+        SwingUtilities.invokeLater(() -> new TestFormTKB().setVisible(true));
     }
 }

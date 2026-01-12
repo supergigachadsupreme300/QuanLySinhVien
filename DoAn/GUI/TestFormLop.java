@@ -43,8 +43,9 @@ public class TestFormLop extends JFrame {
     private JComboBox<GiaoVien> cboGVCN;
 
     // ================= BUTTON ================
-    private JButton btnThem, btnSua, btnXoa, btnClear;
+    private JButton btnThem, btnSua, btnXoa, btnClear, btnQuayLai;
 
+    // ================= CONSTRUCTOR =================
     public TestFormLop() {
         setTitle("Quản lý lớp");
         setSize(1100, 650);
@@ -64,9 +65,9 @@ public class TestFormLop extends JFrame {
             }
         });
 
-        initData();
-        initUI();
-        loadTableLop();
+        initData();     // DATA GIẢ (SAU NÀY THAY = BLL)
+        initUI();      // VẼ GIAO DIỆN
+        loadTableLop(); // ĐỔ DATA LÊN BẢNG
         updateButtonState();
     }
 
@@ -128,15 +129,17 @@ public class TestFormLop extends JFrame {
 
         // ===== BUTTON =====
         JPanel pnlBtn = new JPanel();
-        btnThem  = new JButton("Thêm");
-        btnSua   = new JButton("Sửa");
-        btnXoa   = new JButton("Xóa");
-        btnClear = new JButton("Làm mới");
-
+        btnThem  = createButton("Thêm", new Color(34, 139, 34));
+        btnSua   = createButton("Sửa", new Color(255, 140, 0));
+        btnXoa   = createButton("Xóa", new Color(220, 20, 60));
+        btnClear = createButton("Làm mới", new Color(70, 130, 180));
+        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
+        
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
         pnlBtn.add(btnXoa);
         pnlBtn.add(btnClear);
+        pnlBtn.add(btnQuayLai); 
         add(pnlBtn, "growx, wrap");
             
 
@@ -149,6 +152,10 @@ public class TestFormLop extends JFrame {
 
         tblLop = new JTable(modelLop);
         tblLop.setRowHeight(25);
+        tblLop.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tblLop.getTableHeader().setBackground(new Color(0, 102, 204));
+        tblLop.getTableHeader().setForeground(Color.WHITE);
+        styleTable(tblLop);
 
         JPanel pnlLop = new JPanel(new BorderLayout());
         pnlLop.setBorder(BorderFactory.createTitledBorder("Danh sách lớp"));
@@ -163,11 +170,16 @@ public class TestFormLop extends JFrame {
 
         tblHS = new JTable(modelHS);
         tblHS.setRowHeight(25);
+        tblHS.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tblHS.getTableHeader().setBackground(new Color(0, 102, 204));
+        tblHS.getTableHeader().setForeground(Color.WHITE);
+        styleTable(tblHS);
 
         JPanel pnlHS = new JPanel(new BorderLayout());
         pnlHS.setBorder(BorderFactory.createTitledBorder("Danh sách học sinh"));
         pnlHS.add(new JScrollPane(tblHS));
 
+        //Split panel (Chia 2 bảng bằng nhau)
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pnlLop, pnlHS);
         split.setDividerLocation(520);
         add(split, "grow");
@@ -188,9 +200,10 @@ public class TestFormLop extends JFrame {
         btnSua.addActionListener(e -> suaLop());
         btnXoa.addActionListener(e -> xoaLop());
         btnClear.addActionListener(e -> clearForm());
+        btnQuayLai.addActionListener(e -> quaylai());
         
         // ===== EFFECT (GIỐNG FormTKB) =====
-        addFocus(txtMaLop);
+        /*addFocus(txtMaLop);
         addFocus(txtTenLop);
         addFocus(txtSiSo);
         addFocus(cboNamHoc);
@@ -199,11 +212,60 @@ public class TestFormLop extends JFrame {
         addHover(btnThem);
         addHover(btnSua);
         addHover(btnXoa);
-        addHover(btnClear);
-
+        addHover(btnClear);*/
         
+        // ===== FOCUS EFFECT (GIỐNG FormLop) =====
+        addFocusEffect(txtMaLop);
+        addFocusEffect(txtTenLop);
+        addFocusEffect(txtSiSo);
+        addFocusEffect(cboNamHoc);
+        addFocusEffect(cboGVCN);        
     }
 
+    // ================= BUTTON STYLE (COPY TỪ FormLop) =================
+    private JButton createButton(String text, Color bgColor) {
+        JButton btn = new JButton(text);
+        btn.setBackground(bgColor);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setFont(new Font("Arial", Font.BOLD, 12));
+        btn.setPreferredSize(new Dimension(100, 35));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        Color original = bgColor;
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setBackground(original.brighter());
+            }
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setBackground(original);
+            }
+        });
+        return btn;
+    }
+    
+    // ================= FOCUS EFFECT =================
+    private void addFocusEffect(JComponent c) {
+        c.setOpaque(true);
+        c.setBackground(Color.WHITE);
+        c.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                c.setBackground(new Color(230, 240, 255));
+            }
+            public void focusLost(FocusEvent e) {
+                c.setBackground(Color.WHITE);
+            }
+        });
+    }
+    
+    // ================= TABLE STYLE =================
+    private void styleTable(JTable tbl) {
+        tbl.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tbl.getTableHeader().setBackground(new Color(0, 102, 204));
+        tbl.getTableHeader().setForeground(Color.WHITE);
+    }
+    
     // ================= CRUD ===================
     private void themLop() {
         Lop l = new Lop(
@@ -284,6 +346,12 @@ public class TestFormLop extends JFrame {
             }
         }
     }
+    
+    // ===== QUAY LẠI MAIN MENU =====
+    private void quaylai() {
+        new MainMenu().setVisible(true);
+        this.dispose();
+    }
 
     // ================= UI FLOW ================
     private void fillForm() {
@@ -313,7 +381,7 @@ public class TestFormLop extends JFrame {
         btnXoa.setEnabled(dangChon);
     }
 
-    private void addFocus(JComponent c) {
+    /*private void addFocus(JComponent c) {
         c.setOpaque(true);
         c.setBackground(Color.WHITE);
         c.addFocusListener(new FocusAdapter() {
@@ -337,9 +405,9 @@ public class TestFormLop extends JFrame {
                 btn.setBackground(normal);
             }
         });
-    }
+    }*/
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FormLop().setVisible(true));
+        SwingUtilities.invokeLater(() -> new TestFormLop().setVisible(true));
     }
 }
