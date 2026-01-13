@@ -2,38 +2,31 @@ import javax.swing.*;
 import java.awt.*;
 import net.miginfocom.swing.MigLayout;
 
-public class parent_GUI extends JFrame {
+public class parent_GUI extends JPanel {
     public parent_GUI() {
-        setTitle("Parent Information");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]"));
+        setBackground(Color.CYAN);
 
-        // Panel với MigLayout, nền Cyan giống student_GUI
-        JPanel panel = new JPanel(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]"));
-        panel.setBackground(Color.CYAN);
-        add(panel);
+        add(new JLabel("Tên phụ huynh:"));
+        add(new JTextField("Trần Văn Bố"), "growx");
 
-        // Các trường thông tin
-        panel.add(new JLabel("Tên phụ huynh:"));
-        panel.add(new JTextField("Trần Văn Bố"), "growx");
+        add(new JLabel("Số điện thoại:"));
+        add(new JTextField("0987654321"), "growx");
 
-        panel.add(new JLabel("Số điện thoại:"));
-        panel.add(new JTextField("0987654321"), "growx");
+        add(new JLabel("Nghề nghiệp:"));
+        add(new JTextField("Kỹ sư"), "growx");
 
-        panel.add(new JLabel("Nghề nghiệp:"));
-        panel.add(new JTextField("Kỹ sư"), "growx");
+        add(new JLabel("Quan hệ với học sinh:"));
+        add(new JTextField("Bố"), "growx");
 
-        panel.add(new JLabel("Quan hệ với học sinh:"));
-        panel.add(new JTextField("Bố"), "growx");
-
-        // Nút "Học sinh" ở dưới cùng, chiếm cả 2 cột và căn giữa
-        panel.add(new JButton("Học sinh"), "span, center");
+        add(new JButton("Học sinh"), "span, center");
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            parent_GUI frame = new parent_GUI();
-            frame.setVisible(true);
-        });
+        JFrame frame = new JFrame("Parent Information");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new parent_GUI());
+        frame.setVisible(true);
     }
 }
