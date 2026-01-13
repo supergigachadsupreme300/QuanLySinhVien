@@ -1,14 +1,11 @@
 import javax.swing.*; //javac -cp "lib\miglayout-core-11.4.2.jar;lib\miglayout-swing-11.4.2.jar" student_GUI.java
 import java.awt.*; //java -cp ".;lib\miglayout-core-11.4.2.jar;lib\miglayout-swing-11.4.2.jar" student_GUI
-import net.miginfocom.swing.MigLayout;  // import MigLayout
+import net.miginfocom.swing.MigLayout;
 
-public class student_GUI extends JFrame {
+public class student_GUI extends JPanel {
     public student_GUI() {
-        setTitle("Student Information");
-        setSize(400, 550);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-        // Dùng MigLayout thay cho null layout
         JPanel panel = new JPanel(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]"));
         panel.setBackground(Color.CYAN);
         add(panel, BorderLayout.CENTER);
@@ -59,10 +56,12 @@ public class student_GUI extends JFrame {
     }
 
     public static void main(String[] args) {
-    SwingUtilities.invokeLater(() -> {
-        student_GUI frame = new student_GUI();
-        frame.setLocationRelativeTo(null); // Đặt cửa sổ ở giữa màn hình
-        frame.setVisible(true);
-    });
-}
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Student Information");
+            frame.setSize(400, 550);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(new student_GUI());
+            frame.setVisible(true);
+        });
+    }
 }
