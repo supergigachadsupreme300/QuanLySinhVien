@@ -8,6 +8,8 @@ package GUI;
  *
  * @author admin
  */
+import BusinessLogicLayer.LopBLL;
+import DataObject.Lop;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -15,22 +17,26 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import net.miginfocom.swing.MigLayout;
 
-public class FormLop extends JFrame {
+public class FormLop extends JPanel {
 
+    private MainMenu mainFrame;
+    
     // ================= TABLE =================
     private JTable tblLop, tblHS;
     private DefaultTableModel modelLop, modelHS;
+    private LopBLL lopBLL = new LopBLL();
 
     // ================= FORM ==================
     private JTextField txtMaLop, txtTenLop, txtSiSo;
     private JComboBox<String> cboNamHoc, cboGVCN;
 
     // ================= BUTTON ================
-    private JButton btnThem, btnSua, btnXoa, btnClear, btnQuayLai;
+    private JButton btnThem, btnSua, btnXoa, btnClear;
+            //btnQuayLai;
 
     // ================= CONSTRUCTOR =================
-    public FormLop() {
-        setTitle("Quản lý lớp");
+    public FormLop(MainMenu frame) {
+        /*setTitle("Quản lý lớp");
         setSize(1100, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -46,7 +52,8 @@ public class FormLop extends JFrame {
                 );
                 if (c == JOptionPane.YES_OPTION) dispose();
             }
-        });
+        });*/
+        this.mainFrame = frame;
 
         initUI();
     }
@@ -96,13 +103,13 @@ public class FormLop extends JFrame {
         btnSua = createButton("Sửa", new Color(255, 140, 0));
         btnXoa = createButton("Xóa", new Color(220, 20, 60));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
-        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
+//        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
         
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
         pnlBtn.add(btnXoa);
         pnlBtn.add(btnClear);
-        pnlBtn.add(btnQuayLai); 
+//        pnlBtn.add(btnQuayLai); 
         add(pnlBtn, "growx, wrap");
 
         // ===== TABLE LỚP =====
@@ -164,7 +171,7 @@ public class FormLop extends JFrame {
         btnSua.addActionListener(e -> suaLop());
         btnXoa.addActionListener(e -> xoaLop());
         btnClear.addActionListener(e -> clearForm());
-        btnQuayLai.addActionListener(e -> quaylai());
+//        btnQuayLai.addActionListener(e -> quaylai());
 
         // ===== THÊM EFFECT =====
         addFocusEffect(txtMaLop);
@@ -289,10 +296,10 @@ public class FormLop extends JFrame {
     }
 
     // ===== QUAY LẠI MAIN MENU =====
-    private void quaylai() {
+    /*private void quaylai() {
         new MainMenu().setVisible(true);
         this.dispose();
-    }
+    }*/
     
     // ================= UI FLOW ================
     private void fillFormFromTable(int row) {
@@ -334,6 +341,6 @@ public class FormLop extends JFrame {
 
     // ===== MAIN =====
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FormLop().setVisible(true));
+        //SwingUtilities.invokeLater(() -> new FormLop().setVisible(true));
     }
 }

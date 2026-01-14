@@ -17,8 +17,10 @@ import java.awt.event.FocusEvent;
 import net.miginfocom.swing.MigLayout;
 
 
-public class FormTKB extends JFrame {
+public class FormTKB extends JPanel {
 
+    private MainMenu mainFrame;
+    
     // ================= TABLE =================
     private JTable tblTKBList, tblTKBLuoi;
     private DefaultTableModel modelTKBList, modelTKBLuoi;
@@ -28,11 +30,12 @@ public class FormTKB extends JFrame {
     private JComboBox<String> cboLop, cboTKB;
 
     // ================= BUTTON ================
-    private JButton btnThem, btnSua, btnXoa, btnClear,btnQuayLai;
+    private JButton btnThem, btnSua, btnXoa, btnClear;
+            //btnQuayLai;
 
     // ================= CONSTRUCTOR =================
-    public FormTKB() {
-        setTitle("Quản lý thời khóa biểu");
+    public FormTKB(MainMenu frame) {
+        /*setTitle("Quản lý thời khóa biểu");
         setSize(1100, 720);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -48,8 +51,8 @@ public class FormTKB extends JFrame {
                 );
                 if (c == JOptionPane.YES_OPTION) dispose();
             }
-        });
-
+        });*/
+        this.mainFrame = frame;
         initUI();
         initGrid(); // Khởi tạo lưới TKB trống
         updateButtonState();
@@ -104,13 +107,13 @@ public class FormTKB extends JFrame {
         btnSua = createButton("Sửa", new Color(255, 140, 0));
         btnXoa = createButton("Xóa", new Color(220, 20, 60));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
-        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
+//        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
         
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
         pnlBtn.add(btnXoa);
         pnlBtn.add(btnClear);
-        pnlBtn.add(btnQuayLai); 
+//        pnlBtn.add(btnQuayLai); 
         add(pnlBtn, "growx, wrap");
 
         // ===== TABLE DANH SÁCH TKB =====
@@ -192,7 +195,7 @@ public class FormTKB extends JFrame {
         btnSua.addActionListener(e -> suaTKB());
         btnXoa.addActionListener(e -> xoaTKB());
         btnClear.addActionListener(e -> clearForm());
-        btnQuayLai.addActionListener(e -> quaylai());
+//        btnQuayLai.addActionListener(e -> quaylai());
 
         // ===== THÊM EFFECT =====
         addFocusEffect(txtMaTKB);
@@ -320,10 +323,10 @@ public class FormTKB extends JFrame {
     }
     
     // ===== QUAY LẠI MAIN MENU =====
-    private void quaylai() {
-        new MainMenu().setVisible(true);
-        this.dispose();
-    }
+    /*private void quaylai() {
+        //new MainMenu().setVisible(true);
+        //this.dispose();
+    }*/
 
     // ================= UI FLOW ================
     private void fillFormFromTable(int row) {
@@ -379,6 +382,6 @@ public class FormTKB extends JFrame {
 
     // ===== MAIN =====
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FormTKB().setVisible(true));
+        //SwingUtilities.invokeLater(() -> new FormTKB().setVisible(true));
     }
 }

@@ -21,8 +21,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import net.miginfocom.swing.MigLayout;
 
-public class TestFormTKB extends JFrame {
+public class TestFormTKB extends JPanel {
 
+    private MainMenu mainFrame;
     // ================= DATA GIẢ =================
     private ArrayList<ThoiKhoaBieu> dsTKB = new ArrayList<>();    // ~ DAO
     private ArrayList<ChiTietTiet> dsChiTiet = new ArrayList<>(); // ~ DAO
@@ -40,8 +41,8 @@ public class TestFormTKB extends JFrame {
     private JButton btnThem, btnSua, btnXoa, btnClear,btnQuayLai;
 
     // ================= CONSTRUCTOR =================
-    public TestFormTKB() {
-        setTitle("Quản lý thời khóa biểu");
+    public TestFormTKB(MainMenu frame) {
+        /*setTitle("Quản lý thời khóa biểu");
         setSize(1100, 720);
         setLocationRelativeTo(null);
 
@@ -58,7 +59,8 @@ public class TestFormTKB extends JFrame {
                 );
                 if (c == JOptionPane.YES_OPTION) System.exit(0);
             }
-        });
+        });*/
+        this.mainFrame = frame;
 
         initData();  // Load dữ liệu mẫu
         initUI();    // Build giao diện
@@ -387,7 +389,7 @@ public class TestFormTKB extends JFrame {
         btnSua.addActionListener(e -> suaTKB());
         btnXoa.addActionListener(e -> xoaTKB());
         btnClear.addActionListener(e -> clearForm());
-        btnQuayLai.addActionListener(e -> quaylai());
+//        btnQuayLai.addActionListener(e -> quaylai());
         
         cboTKB.addActionListener(e -> {
             tkbDangChon = (ThoiKhoaBieu) cboTKB.getSelectedItem();
@@ -550,10 +552,10 @@ public class TestFormTKB extends JFrame {
     }
 
     // ===== QUAY LẠI MAIN MENU =====
-    private void quaylai() {
-        new MainMenu().setVisible(true);
-        this.dispose();
-    }
+    /*private void quaylai() {
+        //new MainMenu().setVisible(true);
+        //this.dispose();
+    }*/
 
     // ================= BUS / LOGIC =================
     private void fillForm() {
@@ -663,6 +665,6 @@ public class TestFormTKB extends JFrame {
 
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new TestFormTKB().setVisible(true));
+//        SwingUtilities.invokeLater(() -> new TestFormTKB().setVisible(true));
     }
 }

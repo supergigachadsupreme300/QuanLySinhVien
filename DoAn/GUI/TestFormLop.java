@@ -22,8 +22,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import net.miginfocom.swing.MigLayout;
 
-public class TestFormLop extends JFrame {
+public class TestFormLop extends JPanel {
 
+    private MainMenu mainFrame;
     // ================= DATA =================
     private ArrayList<Lop> dsLop = new ArrayList<>();
     private ArrayList<NamHoc> dsNamHoc = new ArrayList<>();
@@ -46,8 +47,8 @@ public class TestFormLop extends JFrame {
     private JButton btnThem, btnSua, btnXoa, btnClear, btnQuayLai;
 
     // ================= CONSTRUCTOR =================
-    public TestFormLop() {
-        setTitle("Quản lý lớp");
+    public TestFormLop(MainMenu frame) {
+        /*setTitle("Quản lý lớp");
         setSize(1100, 650);
         setLocationRelativeTo(null);
 
@@ -63,7 +64,8 @@ public class TestFormLop extends JFrame {
                 );
                 if (c == JOptionPane.YES_OPTION) dispose();
             }
-        });
+        });*/
+        this.mainFrame = frame;
 
         initData();     // DATA GIẢ (SAU NÀY THAY = BLL)
         initUI();      // VẼ GIAO DIỆN
@@ -200,7 +202,7 @@ public class TestFormLop extends JFrame {
         btnSua.addActionListener(e -> suaLop());
         btnXoa.addActionListener(e -> xoaLop());
         btnClear.addActionListener(e -> clearForm());
-        btnQuayLai.addActionListener(e -> quaylai());
+//        btnQuayLai.addActionListener(e -> quaylai());
         
         // ===== EFFECT (GIỐNG FormTKB) =====
         /*addFocus(txtMaLop);
@@ -222,6 +224,7 @@ public class TestFormLop extends JFrame {
         addFocusEffect(cboGVCN);        
     }
 
+    
     // ================= BUTTON STYLE (COPY TỪ FormLop) =================
     private JButton createButton(String text, Color bgColor) {
         JButton btn = new JButton(text);
@@ -348,10 +351,10 @@ public class TestFormLop extends JFrame {
     }
     
     // ===== QUAY LẠI MAIN MENU =====
-    private void quaylai() {
+    /*private void quaylai() {
         new MainMenu().setVisible(true);
         this.dispose();
-    }
+    }*/
 
     // ================= UI FLOW ================
     private void fillForm() {
@@ -408,6 +411,6 @@ public class TestFormLop extends JFrame {
     }*/
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new TestFormLop().setVisible(true));
+//        SwingUtilities.invokeLater(() -> new TestFormLop().setVisible(true));
     }
 }
