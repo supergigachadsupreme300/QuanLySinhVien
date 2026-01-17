@@ -18,35 +18,35 @@ public class ThoiKhoaBieu {
 private String maTKB;
     private String maLop;
     private String maHK;
-    private LocalDate ngayBatDau;
-    private LocalDate ngayKetThuc;
+    //private LocalDate ngayBatDau;
+    //private LocalDate ngayKetThuc;
 
     // Constructor rỗng
     public ThoiKhoaBieu() {
         maTKB = "";
         maLop = "";
         maHK = "";
-        ngayBatDau = null;
-        ngayKetThuc = null;   
+    //    ngayBatDau = null;
+    //    ngayKetThuc = null;   
     }
 
     // Constructor không có mã
-    public ThoiKhoaBieu(String maLop, String maHK,
-                        LocalDate ngayBatDau, LocalDate ngayKetThuc) {
+    public ThoiKhoaBieu(String maLop, String maHK
+                        /*LocalDate ngayBatDau, LocalDate ngayKetThuc*/) {
         this.maLop = maLop;
         this.maHK = maHK;
-        this.ngayBatDau = ngayBatDau;
-        this.ngayKetThuc = ngayKetThuc;
+    //    this.ngayBatDau = ngayBatDau;
+    //    this.ngayKetThuc = ngayKetThuc;
     }
 
     // Constructor đầy đủ
-    public ThoiKhoaBieu(String maTKB, String maLop, String maHK,
-                        LocalDate ngayBatDau, LocalDate ngayKetThuc) {
+    public ThoiKhoaBieu(String maTKB, String maLop, String maHK
+                        /*LocalDate ngayBatDau, LocalDate ngayKetThuc*/) {
         this.maTKB = maTKB;
         this.maLop = maLop;
         this.maHK = maHK;
-        this.ngayBatDau = ngayBatDau;
-        this.ngayKetThuc = ngayKetThuc;
+    //    this.ngayBatDau = ngayBatDau;
+    //    this.ngayKetThuc = ngayKetThuc;
     }
 
     // Getter / Setter
@@ -59,11 +59,11 @@ private String maTKB;
     public String getMaHK() { return maHK; }
     public void setMaHK(String maHK) { this.maHK = maHK; }
 
-    public LocalDate getNgayBatDau() { return ngayBatDau; }
-    public void setNgayBatDau(LocalDate ngayBatDau) { this.ngayBatDau = ngayBatDau; }
+    //public LocalDate getNgayBatDau() { return ngayBatDau; }
+    //public void setNgayBatDau(LocalDate ngayBatDau) { this.ngayBatDau = ngayBatDau; }
 
-    public LocalDate getNgayKetThuc() { return ngayKetThuc; }
-    public void setNgayKetThuc(LocalDate ngayKetThuc) { this.ngayKetThuc = ngayKetThuc; }
+    //public LocalDate getNgayKetThuc() { return ngayKetThuc; }
+    //public void setNgayKetThuc(LocalDate ngayKetThuc) { this.ngayKetThuc = ngayKetThuc; }
     
     @Override
     public String toString() {
