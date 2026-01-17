@@ -44,7 +44,8 @@ public class TestFormLop extends JPanel {
     private JComboBox<GiaoVien> cboGVCN;
 
     // ================= BUTTON ================
-    private JButton btnThem, btnSua, btnXoa, btnClear, btnQuayLai;
+    private JButton btnThem, btnSua, btnXoa, btnClear;
+            //btnQuayLai;
 
     // ================= CONSTRUCTOR =================
     public TestFormLop(MainMenu frame) {
@@ -135,13 +136,13 @@ public class TestFormLop extends JPanel {
         btnSua   = createButton("Sửa", new Color(255, 140, 0));
         btnXoa   = createButton("Xóa", new Color(220, 20, 60));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
-        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
+        //btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
         
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
         pnlBtn.add(btnXoa);
         pnlBtn.add(btnClear);
-        pnlBtn.add(btnQuayLai); 
+        //pnlBtn.add(btnQuayLai); 
         add(pnlBtn, "growx, wrap");
             
 
@@ -271,12 +272,18 @@ public class TestFormLop extends JPanel {
     
     // ================= CRUD ===================
     private void themLop() {
+        
+        NamHoc nh = (NamHoc) cboNamHoc.getSelectedItem();
+        GiaoVien gv = (GiaoVien) cboGVCN.getSelectedItem();
+        
         Lop l = new Lop(
                 txtMaLop.getText(),
                 txtTenLop.getText(),
                 Integer.parseInt(txtSiSo.getText()),
-                cboNamHoc.getSelectedItem().toString(),
-                cboGVCN.getSelectedItem().toString()
+                /*cboNamHoc.getSelectedItem().toString(),
+                cboGVCN.getSelectedItem().toString()*/
+                nh.getMaNH(),
+                gv.getMaGV()
         );
         dsLop.add(l);
         loadTableLop();
@@ -295,8 +302,13 @@ public class TestFormLop extends JPanel {
         );
         if (c != JOptionPane.YES_OPTION) return;
 
+        NamHoc nh = (NamHoc) cboNamHoc.getSelectedItem();
+        GiaoVien gv = (GiaoVien) cboGVCN.getSelectedItem();
+        
         lopDangChon.setTenLop(txtTenLop.getText());
         lopDangChon.setSiSo(Integer.parseInt(txtSiSo.getText()));
+        lopDangChon.setMaNH(nh.getMaNH());
+        lopDangChon.setMaGVCN(gv.getMaGV());
 
         loadTableLop();
         JOptionPane.showMessageDialog(this, "Sửa lớp thành công!");
@@ -327,8 +339,10 @@ public class TestFormLop extends JPanel {
                     l.getMaLop(),
                     l.getTenLop(),
                     l.getSiSo(),
-                    l.getMaNH(),
-                    l.getMaGVCN()
+                    /*l.getMaNH(),
+                    l.getMaGVCN()*/
+                    getTenNamHoc(l.getMaNH()),
+                    getTenGVCN(l.getMaGVCN())
             });
         }
     }
@@ -362,6 +376,24 @@ public class TestFormLop extends JPanel {
         txtTenLop.setText(lopDangChon.getTenLop());
         txtSiSo.setText(String.valueOf(lopDangChon.getSiSo()));
         txtMaLop.setEnabled(false);
+        
+            // set combo Năm học
+        for (int i = 0; i < cboNamHoc.getItemCount(); i++) {
+            if (cboNamHoc.getItemAt(i).getMaNH()
+                    .equals(lopDangChon.getMaNH())) {
+                cboNamHoc.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        // set combo GVCN
+        for (int i = 0; i < cboGVCN.getItemCount(); i++) {
+            if (cboGVCN.getItemAt(i).getMaGV()
+                    .equals(lopDangChon.getMaGVCN())) {
+                cboGVCN.setSelectedIndex(i);
+                break;
+            }
+        }
     }
 
     private void clearForm() {
@@ -384,6 +416,26 @@ public class TestFormLop extends JPanel {
         btnXoa.setEnabled(dangChon);
     }
 
+    private String getTenNamHoc(String maNH) {
+        for (NamHoc nh : dsNamHoc) {
+            if (nh.getMaNH().equals(maNH)) {
+                return nh.getTenNH();
+            }
+        }
+        return "";
+    }
+
+    private String getTenGVCN(String maGV) {
+        for (GiaoVien gv : dsGV) {
+            if (gv.getMaGV().equals(maGV)) {
+                return gv.getHoTen();
+            }
+        }
+        return "";
+}
+
+    
+    
     /*private void addFocus(JComponent c) {
         c.setOpaque(true);
         c.setBackground(Color.WHITE);

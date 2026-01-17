@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.time.LocalDate;
+//import java.time.LocalDate;
 import java.util.ArrayList;
 import net.miginfocom.swing.MigLayout;
 
@@ -31,14 +31,14 @@ public class TestFormTKB extends JPanel {
     private ThoiKhoaBieu tkbDangChon = null;                     // ~ BUS/Logic đang chọn
 
     // ================= UI =================
-    private JTextField txtMaTKB, txtNgayBD, txtNgayKT;
+    private JTextField txtMaTKB; //, txtNgayBD, txtNgayKT;
     private JComboBox<Lop> cboLop;
     private JComboBox<ThoiKhoaBieu> cboTKB;
 
     private JTable tblTKBList, tblTKBLuoi;
     private DefaultTableModel modelTKBList, modelTKBLuoi;
 
-    private JButton btnThem, btnSua, btnXoa, btnClear,btnQuayLai;
+    private JButton btnThem, btnSua, btnXoa, btnClear; //,btnQuayLai;
 
     // ================= CONSTRUCTOR =================
     public TestFormTKB(MainMenu frame) {
@@ -64,6 +64,7 @@ public class TestFormTKB extends JPanel {
 
         initData();  // Load dữ liệu mẫu
         initUI();    // Build giao diện
+        loadComboLop(); //load dữ liệu lớp
         loadTableTKB();  // Load dữ liệu lên table
         loadComboTKB();  // Load combo box
         initGrid();      // Load lưới TKB trống
@@ -84,19 +85,19 @@ public class TestFormTKB extends JPanel {
 
         // ---- Dữ liệu TKB
         ThoiKhoaBieu tkb1 = new ThoiKhoaBieu(
-                "TKB01", "10A1", "HK1",
-                LocalDate.of(2025, 9, 1),
-                LocalDate.of(2025, 12, 31)
+                "TKB01", "10A1", "HK1"//,
+//                LocalDate.of(2025, 9, 1),
+//                LocalDate.of(2025, 12, 31)
         );
         ThoiKhoaBieu tkb2 = new ThoiKhoaBieu(
-                "TKB02", "10A2", "HK1",
-                LocalDate.of(2025, 9, 1),
-                LocalDate.of(2025, 12, 31)
+                "TKB02", "10A2", "HK1"//,
+//                LocalDate.of(2025, 9, 1),
+//                LocalDate.of(2025, 12, 31)
         );
         ThoiKhoaBieu tkb3 = new ThoiKhoaBieu(
-                "TKB03", "10A3", "HK1",
-                LocalDate.of(2025, 9, 1),
-                LocalDate.of(2025, 12, 31)
+                "TKB03", "10A3", "HK1"//,
+//                LocalDate.of(2025, 9, 1),
+//                LocalDate.of(2025, 12, 31)
         );
         dsTKB.add(tkb1);
         dsTKB.add(tkb2);
@@ -291,18 +292,18 @@ public class TestFormTKB extends JPanel {
         // --- Panel Input (Bên trái) ---
         JPanel pnlInput = new JPanel(new MigLayout("", "[]10[grow]", "[]10[]10[]10[]"));
         txtMaTKB = new JTextField();
-        txtNgayBD = new JTextField();
-        txtNgayKT = new JTextField();
-        cboLop = new JComboBox<>(dsLop.toArray(new Lop[0]));
+//        txtNgayBD = new JTextField();
+//        txtNgayKT = new JTextField();
+        cboLop = new JComboBox<>();
 
         pnlInput.add(new JLabel("Mã TKB:"));
         pnlInput.add(txtMaTKB, "growx, wrap");
         pnlInput.add(new JLabel("Lớp:"));
         pnlInput.add(cboLop, "growx, wrap");
-        pnlInput.add(new JLabel("Ngày BD:"));
-        pnlInput.add(txtNgayBD, "growx, wrap");
-        pnlInput.add(new JLabel("Ngày KT:"));
-        pnlInput.add(txtNgayKT, "growx");
+//        pnlInput.add(new JLabel("Ngày BD:"));
+//        pnlInput.add(txtNgayBD, "growx, wrap");
+//        pnlInput.add(new JLabel("Ngày KT:"));
+//        pnlInput.add(txtNgayKT, "growx");
 
         // --- Panel Select (Bên phải) ---
         JPanel pnlSelect = new JPanel(new MigLayout("", "[]10[grow]", "[]"));
@@ -321,19 +322,20 @@ public class TestFormTKB extends JPanel {
         btnSua = createButton("Sửa", new Color(255, 140, 0));
         btnXoa = createButton("Xóa", new Color(220, 20, 60));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
-        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
+//        btnQuayLai = createButton("Quay lại", new Color(100, 100, 100));
         
 
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
         pnlBtn.add(btnXoa);
         pnlBtn.add(btnClear);
-        pnlBtn.add(btnQuayLai); 
+//        pnlBtn.add(btnQuayLai); 
         add(pnlBtn, "growx, wrap");
 
         // ===== TABLE DANH SÁCH TKB =====
         modelTKBList = new DefaultTableModel(
-                new String[]{"Mã TKB", "Lớp", "Ngày BD", "Ngày KT"}, 0
+                //new String[]{"Mã TKB", "Lớp", "Ngày BD", "Ngày KT"}, 0
+                new String[]{"Mã TKB", "Lớp", "Học kỳ"}, 0
         ) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -421,8 +423,8 @@ public class TestFormTKB extends JPanel {
         addHover(btnClear);*/
         
         addFocusEffect(txtMaTKB);
-        addFocusEffect(txtNgayBD);
-        addFocusEffect(txtNgayKT);
+//        addFocusEffect(txtNgayBD);
+//        addFocusEffect(txtNgayKT);
         addFocusEffect(cboLop);
         addFocusEffect(cboTKB);
 
@@ -502,9 +504,9 @@ public class TestFormTKB extends JPanel {
         ThoiKhoaBieu t = new ThoiKhoaBieu(
                 txtMaTKB.getText(),
                 lop.getMaLop(),
-                "HK1",
-                LocalDate.parse(txtNgayBD.getText()),
-                LocalDate.parse(txtNgayKT.getText())
+                "HK1"//,
+                //LocalDate.parse(txtNgayBD.getText()),
+                //LocalDate.parse(txtNgayKT.getText())
         );
 
         dsTKB.add(t);
@@ -524,8 +526,8 @@ public class TestFormTKB extends JPanel {
         );
         if (c != JOptionPane.YES_OPTION) return;
 
-        tkbDangChon.setNgayBatDau(LocalDate.parse(txtNgayBD.getText()));
-        tkbDangChon.setNgayKetThuc(LocalDate.parse(txtNgayKT.getText()));
+//        tkbDangChon.setNgayBatDau(LocalDate.parse(txtNgayBD.getText()));
+//        tkbDangChon.setNgayKetThuc(LocalDate.parse(txtNgayKT.getText()));
 
         loadTableTKB();
         JOptionPane.showMessageDialog(this, "Sửa TKB thành công!");
@@ -562,8 +564,8 @@ public class TestFormTKB extends JPanel {
         if (tkbDangChon == null) return;
 
         txtMaTKB.setText(tkbDangChon.getMaTKB());
-        txtNgayBD.setText(tkbDangChon.getNgayBatDau().toString());
-        txtNgayKT.setText(tkbDangChon.getNgayKetThuc().toString());
+//        txtNgayBD.setText(tkbDangChon.getNgayBatDau().toString());
+//        txtNgayKT.setText(tkbDangChon.getNgayKetThuc().toString());
 
         txtMaTKB.setEnabled(false); // CHUẨN FORMLOP
         loadGridTKB(tkbDangChon.getMaTKB());
@@ -573,8 +575,8 @@ public class TestFormTKB extends JPanel {
 
     private void clearForm() {
         txtMaTKB.setText("");
-        txtNgayBD.setText("");
-        txtNgayKT.setText("");
+//        txtNgayBD.setText("");
+//        txtNgayKT.setText("");
         txtMaTKB.setEnabled(true);
 
         cboLop.setSelectedIndex(0);
@@ -593,7 +595,8 @@ public class TestFormTKB extends JPanel {
         for (ThoiKhoaBieu t : dsTKB) {
             modelTKBList.addRow(new Object[]{
                     t.getMaTKB(), t.getMaLop(),
-                    t.getNgayBatDau(), t.getNgayKetThuc()
+                    t.getMaHK()
+//                    t.getNgayBatDau(), t.getNgayKetThuc()
             });
         }
     }
@@ -603,6 +606,59 @@ public class TestFormTKB extends JPanel {
         for (ThoiKhoaBieu t : dsTKB) cboTKB.addItem(t);
     }
 
+    private void loadComboLop() {
+        cboLop.removeAllItems();
+        for (Lop l : dsLop) {
+            cboLop.addItem(l);
+        }
+    }
+    
+    private void fillFormFromTable(int row) {
+        ThoiKhoaBieu tkb = (ThoiKhoaBieu) modelTKBList.getValueAt(row, 0);
+        tkbDangChon = tkb;
+
+        txtMaTKB.setText(tkb.getMaTKB());
+
+        // set combo lớp
+        for (int i = 0; i < cboLop.getItemCount(); i++) {
+            if (cboLop.getItemAt(i).getMaLop().equals(tkb.getMaLop())) {
+                cboLop.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        loadGridByTKB(tkb);
+        txtMaTKB.setEnabled(false);
+    }
+
+    private void loadGridByTKB(ThoiKhoaBieu tkb) {
+        initGrid();
+
+        for (ChiTietTiet ct : dsChiTiet) {
+            if (!ct.getMaTKB().equals(tkb.getMaTKB())) continue;
+
+            int row = ct.getTiet() - 1;
+            int col = thuToColumn(ct.getThu());
+
+            if (row >= 0 && col >= 1) {
+                modelTKBLuoi.setValueAt(ct.getMaMon(), row, col);
+            }
+        }
+    }
+
+    private int thuToColumn(String thu) {
+        switch (thu) {
+            case "Thứ 2": return 1;
+            case "Thứ 3": return 2;
+            case "Thứ 4": return 3;
+            case "Thứ 5": return 4;
+            case "Thứ 6": return 5;
+            default: return -1;
+        }
+    }
+
+
+    
     private void initGrid() {
         modelTKBLuoi.setRowCount(0);
         for (int i = 1; i <= 10; i++) {

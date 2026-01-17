@@ -9,25 +9,34 @@ package GUI;
  * @author admin
  */
 
+import BusinessLogicLayer.ThoiKhoaBieuBLL;
+import DataObject.HocKy;
+import DataObject.Lop;
+import DataObject.ThoiKhoaBieu;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+//import java.time.LocalDate;
 import net.miginfocom.swing.MigLayout;
 
 
 public class FormTKB extends JPanel {
 
     private MainMenu mainFrame;
+    private ThoiKhoaBieuBLL tkbBLL = new ThoiKhoaBieuBLL();
+
     
     // ================= TABLE =================
     private JTable tblTKBList, tblTKBLuoi;
     private DefaultTableModel modelTKBList, modelTKBLuoi;
 
     // ================= FORM ==================
-    private JTextField txtMaTKB, txtNgayBD, txtNgayKT;
-    private JComboBox<String> cboLop, cboTKB;
+    private JTextField txtMaTKB; //txtNgayBD, txtNgayKT;
+    private JComboBox<Lop> cboLop;
+    private JComboBox<HocKy> cboHocKy;
+    private JComboBox<ThoiKhoaBieu> cboTKB;
 
     // ================= BUTTON ================
     private JButton btnThem, btnSua, btnXoa, btnClear;
@@ -54,6 +63,8 @@ public class FormTKB extends JPanel {
         });*/
         this.mainFrame = frame;
         initUI();
+        loadTableFromList();
+        loadComboTKB();
         initGrid(); // Khởi tạo lưới TKB trống
         updateButtonState();
     }
@@ -76,24 +87,34 @@ public class FormTKB extends JPanel {
         JPanel pnlInput = new JPanel(new MigLayout("", "[]10[grow]", "[]10[]10[]10[]"));
         
         txtMaTKB = new JTextField();
-        txtNgayBD = new JTextField();
-        txtNgayKT = new JTextField();
-        cboLop = new JComboBox<>(new String[]{"10A1", "10A2", "10A3", "11A1", "11A2"});
+        cboLop = new JComboBox<>();
+        cboHocKy = new JComboBox<>();
+
+//        txtNgayBD = new JTextField();
+//        txtNgayKT = new JTextField();
+        //cboLop = new JComboBox<>(new String[]{"10A1", "10A2", "10A3", "11A1", "11A2"});
+        /*cboHocKy = new JComboBox<>(new String[]{
+            "HK1-2024", "HK2-2024" // tạm hard-code để test
+        });*/
+
+
 
         pnlInput.add(new JLabel("Mã TKB:"));
         pnlInput.add(txtMaTKB, "growx, wrap");
         pnlInput.add(new JLabel("Lớp:"));
         pnlInput.add(cboLop, "growx, wrap");
-        pnlInput.add(new JLabel("Ngày bắt đầu:"));
-        pnlInput.add(txtNgayBD, "growx, wrap");
-        pnlInput.add(new JLabel("Ngày kết thúc:"));
-        pnlInput.add(txtNgayKT, "growx");
+        pnlInput.add(new JLabel("Học kỳ:"));
+        pnlInput.add(cboHocKy, "growx, wrap");
+//        pnlInput.add(new JLabel("Ngày bắt đầu:"));
+//        pnlInput.add(txtNgayBD, "growx, wrap");
+//        pnlInput.add(new JLabel("Ngày kết thúc:"));
+//        pnlInput.add(txtNgayKT, "growx");
 
         // --- Panel Select (Bên phải) ---
         JPanel pnlSelect = new JPanel(new MigLayout("", "[]10[grow]", "[]"));
         pnlSelect.setBorder(BorderFactory.createTitledBorder("Chọn TKB"));
         
-        cboTKB = new JComboBox<>(new String[]{"TKB01 - 10A1", "TKB02 - 10A2"});
+        cboTKB = new JComboBox<>();
         pnlSelect.add(new JLabel("TKB đã có:"));
         pnlSelect.add(cboTKB, "growx");
 
@@ -118,7 +139,8 @@ public class FormTKB extends JPanel {
 
         // ===== TABLE DANH SÁCH TKB =====
         modelTKBList = new DefaultTableModel(
-            new String[]{"Mã TKB", "Lớp", "Ngày bắt đầu", "Ngày kết thúc"}, 0
+            //new String[]{"Mã TKB", "Lớp", "Ngày bắt đầu", "Ngày kết thúc"}, 0
+            new String[]{"Mã TKB", "Lớp", "Học kỳ"}, 0
         ) {
             public boolean isCellEditable(int r, int c) { 
                 return false; 
@@ -188,7 +210,11 @@ public class FormTKB extends JPanel {
 
         cboTKB.addActionListener(e -> {
             // TODO: Load TKB tương ứng vào lưới
-            JOptionPane.showMessageDialog(this, "Đã chọn: " + cboTKB.getSelectedItem());
+        //    JOptionPane.showMessageDialog(this, "Đã chọn: " + cboTKB.getSelectedItem());
+            ThoiKhoaBieu tkb = (ThoiKhoaBieu) cboTKB.getSelectedItem();
+            if (tkb != null) {
+                loadGridByTKB(tkb);
+            }
         });
 
         btnThem.addActionListener(e -> themTKB());
@@ -199,8 +225,8 @@ public class FormTKB extends JPanel {
 
         // ===== THÊM EFFECT =====
         addFocusEffect(txtMaTKB);
-        addFocusEffect(txtNgayBD);
-        addFocusEffect(txtNgayKT);
+//        addFocusEffect(txtNgayBD);
+//        addFocusEffect(txtNgayKT);
         addFocusEffect(cboLop);
         addFocusEffect(cboTKB);
     }
@@ -257,7 +283,7 @@ public class FormTKB extends JPanel {
     // ================= CRUD ( SAU NÀY NỐI BLL) =================
     private void themTKB() {
         // TODO: Gọi BLL để thêm vào database
-        String maTKB = txtMaTKB.getText();
+        /*String maTKB = txtMaTKB.getText();
         String lop = cboLop.getSelectedItem().toString();
         String ngayBD = txtNgayBD.getText();
         String ngayKT = txtNgayKT.getText();
@@ -269,7 +295,44 @@ public class FormTKB extends JPanel {
 
         // Tạm thời thêm vào table để test
         modelTKBList.addRow(new Object[]{maTKB, lop, ngayBD, ngayKT});
+        */
+        if (txtMaTKB.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập mã TKB");
+            return;
+        }
+
         
+        //ThoiKhoaBieu tkb = new ThoiKhoaBieu(
+        //    txtMaTKB.getText(),
+       //     cboLop.getSelectedItem().toString(),
+        //    ""//,  maHK – để trống, chưa làm
+//            LocalDate.parse(txtNgayBD.getText()),
+//            LocalDate.parse(txtNgayKT.getText())
+       // );
+        
+        /*String maTKB = txtMaTKB.getText();
+        String maLop = cboLop.getSelectedItem().toString();
+        String maHK  = cboHocKy.getSelectedItem().toString(); // tạm dùng string
+
+        ThoiKhoaBieu tkb = new ThoiKhoaBieu(maTKB, maLop, maHK);*/
+        
+        Lop lop = (Lop) cboLop.getSelectedItem();
+        HocKy hk = (HocKy) cboHocKy.getSelectedItem();
+
+        ThoiKhoaBieu tkb = new ThoiKhoaBieu(
+            txtMaTKB.getText(),
+            lop.getMaLop(),
+            hk.getMaHK()
+        );
+
+       
+        if (!tkbBLL.them(tkb)) {
+            JOptionPane.showMessageDialog(this, "Mã TKB bị trùng");
+            return;
+        }
+        
+        loadTableFromList();
+        loadComboTKB();
         clearForm();
         JOptionPane.showMessageDialog(this, "Thêm TKB thành công!");
     }
@@ -293,8 +356,8 @@ public class FormTKB extends JPanel {
         
         // Tạm thời cập nhật table
         modelTKBList.setValueAt(cboLop.getSelectedItem(), row, 1);
-        modelTKBList.setValueAt(txtNgayBD.getText(), row, 2);
-        modelTKBList.setValueAt(txtNgayKT.getText(), row, 3);
+//        modelTKBList.setValueAt(txtNgayBD.getText(), row, 2);
+ //       modelTKBList.setValueAt(txtNgayKT.getText(), row, 3);
 
         JOptionPane.showMessageDialog(this, "Sửa TKB thành công!");
     }
@@ -317,7 +380,15 @@ public class FormTKB extends JPanel {
         // TODO: Gọi BLL để xóa khỏi database
 
         // Tạm thời xóa khỏi table
-        modelTKBList.removeRow(row);
+        //modelTKBList.removeRow(row);
+        ThoiKhoaBieu tkb = (ThoiKhoaBieu) cboTKB.getSelectedItem();
+        if (tkb != null) {
+            tkbBLL.xoa(tkb.getMaTKB());
+        }
+
+        
+        loadTableFromList();
+        loadComboTKB();
         clearForm();
         JOptionPane.showMessageDialog(this, "Xóa TKB thành công!");
     }
@@ -332,18 +403,19 @@ public class FormTKB extends JPanel {
     private void fillFormFromTable(int row) {
         txtMaTKB.setText(modelTKBList.getValueAt(row, 0).toString());
         cboLop.setSelectedItem(modelTKBList.getValueAt(row, 1));
-        txtNgayBD.setText(modelTKBList.getValueAt(row, 2).toString());
-        txtNgayKT.setText(modelTKBList.getValueAt(row, 3).toString());
+        cboHocKy.setSelectedItem(modelTKBList.getValueAt(row, 2));
+//        txtNgayBD.setText(modelTKBList.getValueAt(row, 2).toString());
+//        txtNgayKT.setText(modelTKBList.getValueAt(row, 3).toString());
         txtMaTKB.setEnabled(false);
 
-        // TODO: Load lưới TKB tương ứng
-        loadSampleGrid(); // Tạm thời load mẫu
+        
+        initGrid(); // Tạm thời load mẫu
     }
 
     private void clearForm() {
         txtMaTKB.setText("");
-        txtNgayBD.setText("");
-        txtNgayKT.setText("");
+//        txtNgayBD.setText("");
+//        txtNgayKT.setText("");
         txtMaTKB.setEnabled(true);
         
         cboLop.setSelectedIndex(0);
@@ -360,7 +432,35 @@ public class FormTKB extends JPanel {
         btnSua.setEnabled(dangChon);
         btnXoa.setEnabled(dangChon);
     }
+    
+    private void loadTableFromList() {
+        modelTKBList.setRowCount(0);
+        for (ThoiKhoaBieu tkb : tkbBLL.getAll()) {
+            modelTKBList.addRow(new Object[]{
+                tkb.getMaTKB(),
+                tkb.getMaLop(),
+                tkb.getMaHK()
+//                tkb.getNgayBatDau(),
+//                tkb.getNgayKetThuc()
+            });
+        }
+    }
 
+    private void loadComboTKB() {
+        cboTKB.removeAllItems();
+        for (ThoiKhoaBieu t : tkbBLL.getAll()) {
+            cboTKB.addItem(t);
+        }
+    }
+
+    private void loadGridByTKB(ThoiKhoaBieu tkb) {
+        initGrid();
+        modelTKBLuoi.setValueAt("Toán", 0, 1);
+        modelTKBLuoi.setValueAt("Văn", 1, 2);
+        modelTKBLuoi.setValueAt("Anh", 2, 3);
+    }
+
+    
     // ================= LƯỚI TKB =================
     private void initGrid() {
         modelTKBLuoi.setRowCount(0);
@@ -368,8 +468,10 @@ public class FormTKB extends JPanel {
             modelTKBLuoi.addRow(new Object[]{"Tiết " + i, "", "", "", "", ""});
         }
     }
+    
+    
 
-    private void loadSampleGrid() {
+    /*private void loadSampleGrid() {
         initGrid();
         // Load mẫu để test UI
         modelTKBLuoi.setValueAt("Toán", 0, 1); // Tiết 1, Thứ 2
@@ -378,7 +480,7 @@ public class FormTKB extends JPanel {
         modelTKBLuoi.setValueAt("Lý", 1, 2);   // Tiết 2, Thứ 3
         modelTKBLuoi.setValueAt("Hóa", 0, 3);  // Tiết 1, Thứ 4
         modelTKBLuoi.setValueAt("Sinh", 1, 3); // Tiết 2, Thứ 4
-    }
+    }*/
 
     // ===== MAIN =====
     public static void main(String[] args) {
