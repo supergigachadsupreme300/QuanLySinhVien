@@ -250,9 +250,7 @@ public class FormLop extends JPanel {
     
     
 
-    /* =================================================
-       ================= CRUD ==========================
-       ================================================= */
+    /*================= CRUD ==========================*/
     private void themLop() {
         if (!validateForm()) return;
 
@@ -444,3 +442,4 @@ public class FormLop extends JPanel {
         });
     }
 }
+
