@@ -8,4 +8,5 @@ và sử dụng csdl vừa tạo, lúc này chạy các câu query khác như in
 de nhap du lieu truc tiep
 5. click chuot phai phan database diagram, create de xem erd logic hoặc dùng dbdiagram.io , click export, sql file
  copy code sql, erd diargram của csdl sẽ được vẽ ra, có thể xem các luồng chạy, lk hóa vv
+link dbdiagram.io : https://dbdiagram.io/d/dbdiagramQLHS-697f28d7bd82f5fce23fc363
 
