@@ -1,11 +1,11 @@
-1.su dung link sau de truy cap file sqlquery tr�n ggdrive 
+1.sử dụng link sau để truy cập file sqlquery trên ggdrive 
 https://drive.google.com/file/d/1lVBtdmNymB8NCU_7hVj42h2xK-sN9DKY/view?usp=drive_link
 
-2.tai ve roi copy noi dung vao file query, dung mouse to den phan create va use de tao
-va sdung csdl vua create
-3. to den toan bo phan du lieu trong codecreate table & insert table de load du lieu co san
+2.tai ve roi copy noi dung vao file query, sử dụng mouse tô đen phan code create và use để tạo
+và sử dụng csdl vừa tạo, lúc này chạy các câu query khác như insert sẽ tương tác với csdl đó
+3. tô đen toan bo phan du lieu trong code create table & insert table de load du lieu co san
 4. vao muc database ben tay trai cua giao dien thu muc, click dbtable voi edit 200 rows
 de nhap du lieu truc tiep
-5. click chuot phai phan database diagram, create de xem erd logic hoac 
-dung dbdiagram.io , click export, sql file
- copy code sql,  diagrm se duoc ve ra
+5. click chuot phai phan database diagram, create de xem erd logic hoặc dùng dbdiagram.io , click export, sql file
+ copy code sql, erd diargram của csdl sẽ được vẽ ra, có thể xem các luồng chạy, lk hóa vv
+
