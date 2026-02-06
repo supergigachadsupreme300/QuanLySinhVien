@@ -1,5 +1,5 @@
 1.sử dụng link sau để truy cập file sqlquery trên ggdrive 
-https://drive.google.com/file/d/1lVBtdmNymB8NCU_7hVj42h2xK-sN9DKY/view?usp=drive_link
+https://drive.google.com/file/d/1lVBtdmNymB8NCU_7hVj42h2xK-sN9DKY/view?usp=sharing
 
 2.tai ve roi copy noi dung vao file query, sử dụng mouse tô đen phan code create và use để tạo
 và sử dụng csdl vừa tạo, lúc này chạy các câu query khác như insert sẽ tương tác với csdl đó
@@ -9,4 +9,5 @@ de nhap du lieu truc tiep
 5. click chuot phai phan database diagram, create de xem erd logic hoặc dùng dbdiagram.io , click export, sql file
  copy code sql, erd diargram của csdl sẽ được vẽ ra, có thể xem các luồng chạy, lk hóa vv
 link dbdiagram.io : https://dbdiagram.io/d/dbdiagramQLHS-697f28d7bd82f5fce23fc363
+
 
