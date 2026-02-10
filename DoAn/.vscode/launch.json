@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Java",
+      "type": "java",
+      "name": "Launch current file",
+      "request": "launch",
+      "mainClass": "",
+      "preLaunchTask": "build",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
