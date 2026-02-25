@@ -24,7 +24,24 @@ public class GiaoVienBLL {
         return dsGV;
     }
 
-    public void themGiaoVien(GiaoVien gv) {
+    public boolean themGiaoVien(GiaoVien gv) {
+        if (gv == null) return false;
         dsGV.add(gv);
+        return true;
+    }
+
+    public boolean suaGiaoVien(GiaoVien gv) {
+        if (gv == null) return false;
+        for (int i = 0; i < dsGV.size(); i++) {
+            if (dsGV.get(i).getMaGV().equals(gv.getMaGV())) {
+                dsGV.set(i, gv);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean xoaGiaoVien(String maGV) {
+        return dsGV.removeIf(g -> g.getMaGV().equals(maGV));
     }
 }

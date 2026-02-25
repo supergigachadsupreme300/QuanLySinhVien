@@ -54,6 +54,10 @@ public class GiaoVien {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
+    // alias methods matching GUI naming
+    public String getSdt() { return dienThoai; }
+    public void setSdt(String sdt) { this.dienThoai = sdt; }
+
     // ===== Hiển thị JComboBox =====
     @Override
     public String toString() {

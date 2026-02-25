@@ -29,5 +29,5 @@ public class HocKy extends JPanel {
         add(new JButton("Sửa"));
         add(new JButton("Xóa"));
     }
-
+}
     

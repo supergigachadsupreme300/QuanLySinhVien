@@ -4,6 +4,8 @@ import java.awt.*; //java -cp ".;lib\miglayout-core-11.4.2.jar;lib\miglayout-swi
 import java.time.format.DateTimeFormatter;
 import net.miginfocom.swing.MigLayout;
 import DataObject.HocSinh;
+import GUI.Diem;
+import QLHS.HanhKiem;
 
 public class student_GUI extends JPanel {
     private HocSinh hocSinh;
@@ -24,15 +26,22 @@ public class student_GUI extends JPanel {
         this.hocSinh = hs != null ? hs : new HocSinh();
         setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]10[]10[]"));
         panel.setBackground(Color.CYAN);
+        panel.setBorder(BorderFactory.createTitledBorder("THÔNG TIN HỌC SINH"));
         add(panel, BorderLayout.CENTER);
 
-        // Ảnh
-        ImageIcon icon = new ImageIcon(getClass().getResource("OIP.jpg"));
-        Image img = icon.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
-        JLabel label = new JLabel(new ImageIcon(img));
-        panel.add(label, "span, center");
+        // Ảnh (tải nếu tồn tại, tránh NullPointerException)
+        java.net.URL imgUrl = getClass().getResource("OIP.jpg");
+        if (imgUrl != null) {
+            ImageIcon icon = new ImageIcon(imgUrl);
+            Image img = icon.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
+            JLabel label = new JLabel(new ImageIcon(img));
+            panel.add(label, "span, center");
+        } else {
+            // nếu không có ảnh, dùng khoảng trống hoặc nhãn thông báo
+            panel.add(new JLabel("[No Image]"), "span, center");
+        }
 
         // Các trường thông tin
         panel.add(new JLabel("Mã học sinh:"));
@@ -63,11 +72,56 @@ public class student_GUI extends JPanel {
         panel.add(new JLabel("Địa chỉ:"));
         txtDiaChi = new JTextField(20);
         txtDiaChi.setEditable(false);
-        panel.add(txtDiaChi, "growx");
+        panel.add(txtDiaChi, "growx, wrap");
 
-        // Các nút chức năng
-        panel.add(new JButton("Xem điểm"), "split 2, center");
-        panel.add(new JButton("Xem vi phạm"), "center");
+        // bố mẹ buttons row (above others)
+        JButton btnBo = new JButton("Bố");
+        JButton btnMe = new JButton("Mẹ");
+        panel.add(btnBo, "span, split 2, center");
+        panel.add(btnMe, "wrap");
+
+        // Các nút chức năng chính
+        JButton btnXemDiem = new JButton("Xem điểm");
+        JButton btnHanhKiem = new JButton("Hạnh kiểm");
+        panel.add(btnXemDiem, "span, split 2, center");
+        panel.add(btnHanhKiem, "wrap");
+
+        // action listeners to open corresponding panels
+        btnXemDiem.addActionListener(e -> {
+            JFrame f = new JFrame("Điểm");
+            f.setSize(500, 400);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setLocationRelativeTo(null);
+            f.add(new Diem());
+            f.setVisible(true);
+        });
+
+        btnHanhKiem.addActionListener(e -> {
+            JFrame f = new JFrame("Hạnh kiểm");
+            f.setSize(400, 300);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setLocationRelativeTo(null);
+            f.add(new HanhKiem());
+            f.setVisible(true);
+        });
+
+        // parent buttons behavior
+        btnBo.addActionListener(e -> {
+            JFrame f = new JFrame("Thông tin phụ huynh - Bố");
+            f.setSize(400, 400);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setLocationRelativeTo(null);
+            f.add(new parent_GUI());
+            f.setVisible(true);
+        });
+        btnMe.addActionListener(e -> {
+            JFrame f = new JFrame("Thông tin phụ huynh - Mẹ");
+            f.setSize(400, 400);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setLocationRelativeTo(null);
+            f.add(new parent_GUI());
+            f.setVisible(true);
+        });
 
         // Cập nhật dữ liệu từ đối tượng
         updateDisplay();

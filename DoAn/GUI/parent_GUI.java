@@ -48,7 +48,18 @@ public class parent_GUI extends JPanel {
         txtQuanHe.setEditable(false);
         add(txtQuanHe, "growx");
 
-        add(new JButton("Học sinh"), "span, center");
+        JButton btnHocSinh = new JButton("Học sinh");
+        add(btnHocSinh, "span, center");
+
+        // Gắn sự kiện mở panel student_GUI
+        btnHocSinh.addActionListener(e -> {
+            JFrame f = new JFrame("Thông tin học sinh");
+            f.setSize(400, 550);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setLocationRelativeTo(null);
+            f.add(new student_GUI()); // mở panel student_GUI
+            f.setVisible(true);
+        });
 
         // Cập nhật dữ liệu từ đối tượng
         updateDisplay();
@@ -72,7 +83,7 @@ public class parent_GUI extends JPanel {
     }
 
     // Phương thức lấy đối tượng Parent hiện tại
-    public Parent getParent() {
+    public Parent getParentEntity() {
         return parent;
     }
 
