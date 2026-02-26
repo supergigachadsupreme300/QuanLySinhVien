@@ -35,38 +35,37 @@ public class HocSinhBLL {
     }
 }*/
 
+import DAO.HocSinhDAO;
 import DataObject.HocSinh;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HocSinhBLL {
 
-    private List<HocSinh> dsHocSinh;
+    private HocSinhDAO hocSinhDAO;
 
     public HocSinhBLL() {
-        dsHocSinh = new ArrayList<>();
+        hocSinhDAO = new HocSinhDAO();
     }
 
     // Thêm học sinh
     public boolean themHocSinh(HocSinh hs) {
         if (hs == null) return false;
-        dsHocSinh.add(hs);
-        return true;
+        return hocSinhDAO.add(hs);
     }
 
     // Lấy HS theo mã lớp
     public List<HocSinh> getByMaLop(String maLop) {
-        List<HocSinh> result = new ArrayList<>();
-        for (HocSinh hs : dsHocSinh) {
-            if (hs.getMaLop().equals(maLop)) {
-                result.add(hs);
-            }
-        }
-        return result;
+        if (maLop == null) return java.util.Collections.emptyList();
+        return hocSinhDAO.getByClass(maLop);
     }
 
     // Lấy toàn bộ
     public List<HocSinh> getAll() {
-        return dsHocSinh;
+        return hocSinhDAO.getAll();
+    }
+
+    // Lấy theo mã học sinh
+    public HocSinh getById(String maHS) {
+        return hocSinhDAO.getById(maHS);
     }
 }

@@ -88,39 +88,59 @@ public class student_GUI extends JPanel {
 
         // action listeners to open corresponding panels
         btnXemDiem.addActionListener(e -> {
-            JFrame f = new JFrame("Điểm");
-            f.setSize(500, 400);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new Diem());
-            f.setVisible(true);
+            java.awt.Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                ((MainMenu) w).showForm(MainMenu.DIEM);
+            } else {
+                JFrame f = new JFrame("Điểm");
+                f.setSize(500, 400);
+                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                f.setLocationRelativeTo(null);
+                f.add(new Diem());
+                f.setVisible(true);
+            }
         });
 
         btnHanhKiem.addActionListener(e -> {
-            JFrame f = new JFrame("Hạnh kiểm");
-            f.setSize(400, 300);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new HanhKiem());
-            f.setVisible(true);
+            java.awt.Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                ((MainMenu) w).showForm(MainMenu.HANHKIEM);
+            } else {
+                JFrame f = new JFrame("Hạnh kiểm");
+                f.setSize(400, 300);
+                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                f.setLocationRelativeTo(null);
+                f.add(new HanhKiem());
+                f.setVisible(true);
+            }
         });
 
         // parent buttons behavior
         btnBo.addActionListener(e -> {
-            JFrame f = new JFrame("Thông tin phụ huynh - Bố");
-            f.setSize(400, 400);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new parent_GUI());
-            f.setVisible(true);
+            java.awt.Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                ((MainMenu) w).showForm(MainMenu.PARENT);
+            } else {
+                JFrame f = new JFrame("Thông tin phụ huynh - Bố");
+                f.setSize(400, 400);
+                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                f.setLocationRelativeTo(null);
+                f.add(new parent_GUI());
+                f.setVisible(true);
+            }
         });
         btnMe.addActionListener(e -> {
-            JFrame f = new JFrame("Thông tin phụ huynh - Mẹ");
-            f.setSize(400, 400);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new parent_GUI());
-            f.setVisible(true);
+            java.awt.Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                ((MainMenu) w).showForm(MainMenu.PARENT);
+            } else {
+                JFrame f = new JFrame("Thông tin phụ huynh - Mẹ");
+                f.setSize(400, 400);
+                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                f.setLocationRelativeTo(null);
+                f.add(new parent_GUI());
+                f.setVisible(true);
+            }
         });
 
         // Cập nhật dữ liệu từ đối tượng

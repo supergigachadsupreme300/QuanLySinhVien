@@ -53,12 +53,17 @@ public class parent_GUI extends JPanel {
 
         // Gắn sự kiện mở panel student_GUI
         btnHocSinh.addActionListener(e -> {
-            JFrame f = new JFrame("Thông tin học sinh");
-            f.setSize(400, 550);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new student_GUI()); // mở panel student_GUI
-            f.setVisible(true);
+            java.awt.Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                ((MainMenu) w).showForm(MainMenu.STUDENT);
+            } else {
+                JFrame f = new JFrame("Thông tin học sinh");
+                f.setSize(400, 550);
+                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                f.setLocationRelativeTo(null);
+                f.add(new student_GUI()); // mở panel student_GUI
+                f.setVisible(true);
+            }
         });
 
         // Cập nhật dữ liệu từ đối tượng
