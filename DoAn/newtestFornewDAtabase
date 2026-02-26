@@ -14,3 +14,5 @@ https://drive.google.com/file/d/10Ws-wsGGJU9t6Vk5MTPGsKtksX_UwXsh/view?usp=shari
 Lưu ý trước khi chạy, chạy từng dòng tuwfcreate đến use, nếu có lỗi trong lúc test
 hãy dùng update,alter vv hoặc dùng drop và tạo lại từ đầu
 các procedure hiện tại chủ yếu phục vụ formtkb, formlop, formphancong, formchitiettiet
+Những file có tên new, hãy xóa "new" đi là chạy được, nếu không được là do dataobject chưa có hoặc tên đặt chưa giống với dal,bll,gui
+(chủ yếu là các thuộc tính và get/set)
