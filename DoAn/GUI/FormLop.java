@@ -358,20 +358,20 @@ public class FormLop extends JPanel {
     }   
 
     private void loadHocSinhByLop(String maLop) {
-        modelHS.setRowCount(0);
+    modelHS.setRowCount(0);
 
-        List<HocSinh> ds = hocSinhBLL.getByMaLop(maLop);
+    List<HocSinh> ds = hocSinhBLL.getByMaLop(maLop);
 
-        for (HocSinh hs : ds) {
-            modelHS.addRow(new Object[]{
-                hs.getMaHS(),
-                hs.getHoTen(),
-                hs.getNgaySinh(),
-                hs.getGioiTinh(),
-                hs.getDiaChi()
-            });
-        }
+    for (HocSinh hs : ds) {
+        modelHS.addRow(new Object[]{
+            hs.getMaHS(),
+            hs.getHoTen(),
+            hs.getNgaySinh(),
+            hs.getGioiTinh(),
+            hs.getDiaChi()
+        });
     }
+}
 
 
     private void clearForm() {
