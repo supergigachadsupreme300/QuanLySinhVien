@@ -69,4 +69,29 @@ public class HocSinhBLL {
     public List<HocSinh> getAll() {
         return dsHocSinh;
     }
+
+    // Cập nhật học sinh (dựa vào maHS)
+    public boolean suaHocSinh(HocSinh hs) {
+        if (hs == null) return false;
+        for (int i = 0; i < dsHocSinh.size(); i++) {
+            if (dsHocSinh.get(i).getMaHS().equals(hs.getMaHS())) {
+                dsHocSinh.set(i, hs);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Xóa học sinh theo mã
+    public boolean xoaHocSinh(String maHS) {
+        return dsHocSinh.removeIf(h -> h.getMaHS().equals(maHS));
+    }
+
+    // Lấy 1 học sinh theo mã
+    public HocSinh getByMa(String maHS) {
+        for (HocSinh h : dsHocSinh) {
+            if (h.getMaHS().equals(maHS)) return h;
+        }
+        return null;
+    }
 }
