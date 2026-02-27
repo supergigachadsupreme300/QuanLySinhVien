@@ -18,35 +18,37 @@ public class ThoiKhoaBieu {
 private String maTKB;
     private String maLop;
     private String maHK;
-    //private LocalDate ngayBatDau;
-    //private LocalDate ngayKetThuc;
+    private int trangThai;
+    private LocalDate ngayBatDau;
+    private LocalDate ngayKetThuc;
 
     // Constructor rỗng
     public ThoiKhoaBieu() {
         maTKB = "";
         maLop = "";
         maHK = "";
-    //    ngayBatDau = null;
-    //    ngayKetThuc = null;   
-    }
-
-    // Constructor không có mã
-    public ThoiKhoaBieu(String maLop, String maHK
-                        /*LocalDate ngayBatDau, LocalDate ngayKetThuc*/) {
-        this.maLop = maLop;
-        this.maHK = maHK;
-    //    this.ngayBatDau = ngayBatDau;
-    //    this.ngayKetThuc = ngayKetThuc;
+        trangThai = 0;
+        ngayBatDau = null;
+        ngayKetThuc = null;
     }
 
     // Constructor đầy đủ
-    public ThoiKhoaBieu(String maTKB, String maLop, String maHK
-                        /*LocalDate ngayBatDau, LocalDate ngayKetThuc*/) {
+    public ThoiKhoaBieu(String maTKB, String maLop, String maHK, int trangThai, LocalDate ngayBatDau, LocalDate ngayKetThuc) {
         this.maTKB = maTKB;
         this.maLop = maLop;
         this.maHK = maHK;
-    //    this.ngayBatDau = ngayBatDau;
-    //    this.ngayKetThuc = ngayKetThuc;
+        this.trangThai = trangThai; 
+        this.ngayBatDau = ngayBatDau;
+        this.ngayKetThuc = ngayKetThuc;
+    }
+    
+    public ThoiKhoaBieu(ThoiKhoaBieu tkb){
+        this.maTKB = tkb.maTKB;
+        this.maHK = tkb.maHK;
+        this.maLop = tkb.maLop;
+        this.trangThai = tkb.trangThai;
+        this.ngayBatDau = tkb.ngayBatDau;
+        this.ngayKetThuc = tkb.ngayKetThuc;
     }
 
     // Getter / Setter
@@ -58,12 +60,15 @@ private String maTKB;
 
     public String getMaHK() { return maHK; }
     public void setMaHK(String maHK) { this.maHK = maHK; }
+    
+    public int getTrangThai(){return trangThai;}
+    public void setTrangThai(int trangThai){this.trangThai = trangThai;}
 
-    //public LocalDate getNgayBatDau() { return ngayBatDau; }
-    //public void setNgayBatDau(LocalDate ngayBatDau) { this.ngayBatDau = ngayBatDau; }
-
-    //public LocalDate getNgayKetThuc() { return ngayKetThuc; }
-    //public void setNgayKetThuc(LocalDate ngayKetThuc) { this.ngayKetThuc = ngayKetThuc; }
+    public LocalDate getNgayBatDau() { return ngayBatDau; }
+    public void setNgayBatDau(LocalDate ngayBatDau) { this.ngayBatDau = ngayBatDau; }
+    
+    public LocalDate getNgayKetThuc() { return ngayKetThuc; }
+    public void setNgayKetThuc(LocalDate ngayKetThuc) { this.ngayKetThuc = ngayKetThuc; }
     
     @Override
     public String toString() {
