@@ -1,50 +1,41 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package BusinessLogicLayer;
 
+import DataAcessLayer.ThoiKhoaBieuDAL;
 import DataObject.ThoiKhoaBieu;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author admin
- */
 public class ThoiKhoaBieuBLL {
-
-    private List<ThoiKhoaBieu> dsTKB;
-
-    public ThoiKhoaBieuBLL() {
-        dsTKB = new ArrayList<>();
-    }
+    ThoiKhoaBieuDAL tkbDAL = new ThoiKhoaBieuDAL();
 
     public List<ThoiKhoaBieu> getAll() {
-        return dsTKB;
+        return tkbDAL.getAll();
     }
 
-    public boolean them(ThoiKhoaBieu tkb) {
-        if (tkb == null) return false;
+    public List<ThoiKhoaBieu> getAllActive() {
+        return tkbDAL.getAllActive();
+    }
 
-        // check trùng mã
-        for (ThoiKhoaBieu t : dsTKB) {
-            if (t.getMaTKB().equals(tkb.getMaTKB())) {
-                return false;
-            }
+    public String themThoiKhoaBieu(ThoiKhoaBieu tkb) {
+        if (tkb == null) return "Dữ liệu TKB không hợp lệ!";
+        if (tkbDAL.findByMaTKB(tkb.getMaTKB()) != null) {
+            return "Mã thời khóa biểu đã tồn tại!";
         }
-        dsTKB.add(tkb);
-        return true;
+        return tkbDAL.insert(tkb) ? "Thêm TKB thành công!" 
+                                  : "Thêm TKB thất bại!";
     }
 
-    public boolean xoa(String maTKB) {
-        return dsTKB.removeIf(t -> t.getMaTKB().equals(maTKB));
+    public String suaThoiKhoaBieu(ThoiKhoaBieu tkb) {
+        if (tkb == null) return "Dữ liệu TKB không hợp lệ!";
+        return tkbDAL.update(tkb) ? "Sửa TKB thành công!" 
+                                  : "Sửa TKB thất bại!";
     }
 
-    public ThoiKhoaBieu getByMa(String maTKB) {
-        for (ThoiKhoaBieu t : dsTKB) {
-            if (t.getMaTKB().equals(maTKB)) return t;
-        }
-        return null;
+    public String xoaThoiKhoaBieu(String maTKB) {
+        return tkbDAL.delete(maTKB) ? "Xóa TKB thành công!" 
+                                    : "Xóa TKB thất bại!";
+    }
+
+    public ThoiKhoaBieu getByMaTKB(String maTKB) {
+        return tkbDAL.findByMaTKB(maTKB);
     }
 }
