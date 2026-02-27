@@ -57,7 +57,54 @@ public class GiaoVienDAO {
         }
         return list;
     }
+    
+    public List<GiaoVien> getAllFull() {
+        List<GiaoVien> list = new ArrayList<>();
+        String sql = "SELECT * FROM GIAOVIEN ORDER BY maGV";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                GiaoVien gv = new GiaoVien();
+                gv.setMaGV(rs.getString("maGV"));
+                gv.setHoTen(rs.getNString("hoTen"));
+                gv.setSdt(rs.getString("sdt"));
+                gv.setEmail(rs.getString("email"));
+                gv.setDiaChi(rs.getString("diaChi"));
+                gv.setTrangThai(rs.getInt("trangThai"));
+                list.add(gv);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    
+    public List<GiaoVien> getAllActiveByProc() {
+        List<GiaoVien> list = new ArrayList<>();
+        String sql = "{call sp_getAllActiveGiaoVien()}";
+        try (Connection conn = getConnection();
+             CallableStatement cs = conn.prepareCall(sql);
+             ResultSet rs = cs.executeQuery()) {
+            while (rs.next()) {
+                GiaoVien gv = new GiaoVien();
+                gv.setMaGV(rs.getString("maGV"));
+                gv.setHoTen(rs.getNString("hoTen"));
+                gv.setSdt(rs.getString("sdt"));
+                gv.setEmail(rs.getString("email"));
+                gv.setDiaChi(rs.getString("diaChi"));
+                gv.setTrangThai(rs.getInt("trangThai"));
+                list.add(gv);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
+
+    
     public boolean them(GiaoVien gv) {
         String sql = "INSERT INTO GIAOVIEN (maGV, hoTen, sdt, email, trangThai) "
                 + "VALUES (?, ?, ?, ?, 1)";
