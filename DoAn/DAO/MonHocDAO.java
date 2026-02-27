@@ -57,7 +57,49 @@ public class MonHocDAO {
         }
         return list;
     }
+    
+    public List<MonHoc> getAllFull() {
+        List<MonHoc> list = new ArrayList<>();
+        String sql = "SELECT * FROM MONHOC ORDER BY maMon";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                MonHoc mh = new MonHoc();
+                mh.setMaMon(rs.getString("maMon"));
+                mh.setTenMon(rs.getNString("tenMon"));
+                mh.setSoTinChi(rs.getInt("soTinChi"));
+                mh.setKhoa(rs.getNString("khoa"));
+                list.add(mh);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    
+    public List<MonHoc> getAllActiveByProc() {
+        List<MonHoc> list = new ArrayList<>();
+        String sql = "{call sp_getAllActiveMonHoc()}"; // procedure trong DB
+        try (Connection conn = getConnection();
+             CallableStatement cs = conn.prepareCall(sql);
+             ResultSet rs = cs.executeQuery()) {
+            while (rs.next()) {
+                MonHoc mh = new MonHoc();
+                mh.setMaMon(rs.getString("maMon"));
+                mh.setTenMon(rs.getNString("tenMon"));
+                mh.setSoTinChi(rs.getInt("soTinChi"));
+                mh.setKhoa(rs.getNString("khoa"));
+                list.add(mh);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
+    
     public boolean them(MonHoc mh) {
         String sql = "INSERT INTO MONHOC (maMon, tenMon, soTinChi, khoa, trangThai) "
                    + "VALUES (?, ?, ?, ?, 1)";
