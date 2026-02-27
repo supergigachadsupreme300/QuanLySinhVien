@@ -2,10 +2,14 @@ package GUI;
 import javax.swing.*; //javac -cp "lib\miglayout-core-11.4.2.jar;lib\miglayout-swing-11.4.2.jar" student_GUI.java
 import java.awt.*; //java -cp ".;lib\miglayout-core-11.4.2.jar;lib\miglayout-swing-11.4.2.jar" student_GUI
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import BusinessLogicLayer.HocSinhBLL;
+import GUI.FormHocSinh;
 import net.miginfocom.swing.MigLayout;
 import DataObject.HocSinh;
 import GUI.Diem;
-import QLHS.HanhKiem;
+import GUI.HanhKiem;
 
 public class student_GUI extends JPanel {
     private HocSinh hocSinh;
@@ -123,6 +127,78 @@ public class student_GUI extends JPanel {
             f.setVisible(true);
         });
 
+        // Buttons: center-aligned Edit and Delete
+        JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
+        JButton btnXoa = new JButton("Xóa");
+        JButton btnEdit = new JButton("Sửa");
+        btnRow.add(btnEdit);
+        btnRow.add(btnXoa);
+        // ensure the button row takes full width and centers its contents
+        panel.add(btnRow, "span, growx, align center, wrap");
+
+        // set preferred size smaller when embedded
+        setPreferredSize(new Dimension(360, 300));
+
+        // action listeners using HocSinhBLL reference
+        btnXoa.addActionListener(ev -> {
+            if (hocSinh == null || hocSinh.getMaHS() == null || hocSinh.getMaHS().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có học sinh để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (hocSinhBLLRef == null) {
+                JOptionPane.showMessageDialog(this, "Chưa kết nối xử lý dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int c = JOptionPane.showConfirmDialog(this, "Xóa học sinh mã " + hocSinh.getMaHS() + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (c == JOptionPane.YES_OPTION) {
+                if (hocSinhBLLRef.xoaHocSinh(hocSinh.getMaHS())) {
+                    JOptionPane.showMessageDialog(this, "Xóa thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                    FormHocSinh owner = (FormHocSinh) SwingUtilities.getAncestorOfClass(FormHocSinh.class, this);
+                    if (owner != null) owner.refreshTableAfterChange();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        btnEdit.addActionListener(ev -> {
+            boolean editable = !txtTen.isEditable();
+            if (editable) {
+                txtTen.setEditable(true); txtLop.setEditable(true); txtNgaySinh.setEditable(true); txtGioiTinh.setEditable(true); txtDiaChi.setEditable(true);
+                btnEdit.setText("Lưu");
+            } else {
+                txtTen.setEditable(false); txtLop.setEditable(false); txtNgaySinh.setEditable(false); txtGioiTinh.setEditable(false); txtDiaChi.setEditable(false);
+                btnEdit.setText("Sửa");
+                if (hocSinhBLLRef == null) {
+                    JOptionPane.showMessageDialog(this, "Chưa kết nối xử lý dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                HocSinh newHs = new HocSinh();
+                newHs.setMaHS(txtMaHS.getText());
+                newHs.setHoTen(txtTen.getText());
+                newHs.setGioiTinh(txtGioiTinh.getText());
+                newHs.setDiaChi(txtDiaChi.getText());
+                newHs.setMaLop(txtLop.getText());
+                if (!txtNgaySinh.getText().trim().isEmpty()) {
+                    try {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        LocalDate d = LocalDate.parse(txtNgaySinh.getText().trim(), formatter);
+                        newHs.setNgaySinh(d);
+                    } catch (DateTimeParseException ex) {
+                        JOptionPane.showMessageDialog(this, "Ngày sinh không hợp lệ (dd/MM/yyyy)", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                if (hocSinhBLLRef.suaHocSinh(newHs)) {
+                    JOptionPane.showMessageDialog(this, "Cập nhật thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                    FormHocSinh owner = (FormHocSinh) SwingUtilities.getAncestorOfClass(FormHocSinh.class, this);
+                    if (owner != null) owner.refreshTableAfterChange();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cập nhật thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
         // Cập nhật dữ liệu từ đối tượng
         updateDisplay();
     }
@@ -146,6 +222,8 @@ public class student_GUI extends JPanel {
         }
     }
 
+    // removed external listener - use BLL reference via setHocSinhBLL()
+
     // Phương thức cập nhật đối tượng HocSinh
     public void setHocSinh(HocSinh hs) {
         this.hocSinh = hs;
@@ -155,6 +233,13 @@ public class student_GUI extends JPanel {
     // Phương thức lấy đối tượng HocSinh hiện tại
     public HocSinh getHocSinh() {
         return hocSinh;
+    }
+
+    // BLL reference to operate on data directly
+    private HocSinhBLL hocSinhBLLRef;
+
+    public void setHocSinhBLL(HocSinhBLL bll) {
+        this.hocSinhBLLRef = bll;
     }
 
     public static void main(String[] args) {

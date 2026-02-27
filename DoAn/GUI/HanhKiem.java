@@ -1,4 +1,4 @@
-package QLHS;
+package GUI;
 import javax.swing.*;
 import net.miginfocom.swing.MigLayout;
 

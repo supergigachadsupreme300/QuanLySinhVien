@@ -11,6 +11,8 @@ public class parent_GUI extends JPanel {
     private JTextField txtSdt;
     private JTextField txtNgheNghiep;
     private JTextField txtQuanHe;
+    // reference to BLL for operations
+    private BusinessLogicLayer.ParentBLL parentBLLRef;
 
     // Constructor mặc định (tạo đối tượng rỗng để test)
     public parent_GUI() {
@@ -22,6 +24,7 @@ public class parent_GUI extends JPanel {
         this.parent = p != null ? p : new Parent();
         setLayout(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]"));
         setBackground(Color.CYAN);
+        setPreferredSize(new Dimension(360, 220));
 
         add(new JLabel("Mã phụ huynh:"));
         txtMaPhH = new JTextField(20);
@@ -49,7 +52,13 @@ public class parent_GUI extends JPanel {
         add(txtQuanHe, "growx");
 
         JButton btnHocSinh = new JButton("Học sinh");
-        add(btnHocSinh, "span, center");
+        JButton btnEdit = new JButton("Sửa");
+        JButton btnXoa = new JButton("Xóa");
+        JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
+        btnRow.add(btnEdit);
+        btnRow.add(btnXoa);
+        btnRow.add(btnHocSinh);
+        add(btnRow, "span, center");
 
         // Gắn sự kiện mở panel student_GUI
         btnHocSinh.addActionListener(e -> {
@@ -59,6 +68,47 @@ public class parent_GUI extends JPanel {
             f.setLocationRelativeTo(null);
             f.add(new student_GUI()); // mở panel student_GUI
             f.setVisible(true);
+        });
+        // edit and delete actions
+        btnEdit.addActionListener(e -> {
+            if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh để sửa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (parentBLLRef == null) {
+                JOptionPane.showMessageDialog(this, "Không có BLL.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int confirm = JOptionPane.showConfirmDialog(this, "Sửa thông tin phụ huynh này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (parentBLLRef.suaParent(parent)) {
+                    JOptionPane.showMessageDialog(this, "Cập nhật thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                    FormPhuHuynh owner = (FormPhuHuynh) SwingUtilities.getAncestorOfClass(FormPhuHuynh.class, this);
+                    if (owner != null) owner.loadTable();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cập nhật thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        btnXoa.addActionListener(e -> {
+            if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (parentBLLRef == null) {
+                JOptionPane.showMessageDialog(this, "Không có BLL.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int confirm = JOptionPane.showConfirmDialog(this, "Xóa phụ huynh mã " + parent.getMaPhH() + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (parentBLLRef.xoaParent(parent.getMaPhH())) {
+                    JOptionPane.showMessageDialog(this, "Xóa thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                    FormPhuHuynh owner = (FormPhuHuynh) SwingUtilities.getAncestorOfClass(FormPhuHuynh.class, this);
+                    if (owner != null) owner.loadTable();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         });
 
         // Cập nhật dữ liệu từ đối tượng
@@ -80,6 +130,10 @@ public class parent_GUI extends JPanel {
     public void setParent(Parent p) {
         this.parent = p;
         updateDisplay();
+    }
+    // provide BLL reference for edit/delete operations
+    public void setParentBLL( BusinessLogicLayer.ParentBLL bll ) {
+        this.parentBLLRef = bll;
     }
 
     // Phương thức lấy đối tượng Parent hiện tại

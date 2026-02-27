@@ -26,9 +26,10 @@ public class FormHocSinh extends JPanel {
     private JTextField txtSearchName;
     private JButton btnTim, btnNangCao;
 
-    // panel hiển thị chi tiết học sinh (ẩn khi chưa chọn)
+    // panel hiển thị chi tiết học sinh (sử dụng student_GUI có sẵn)
     private JPanel pnlStudent;
-    private JTextField txtStuMaHS, txtStuHoTen, txtStuNgaySinh, txtStuGioiTinh, txtStuDiaChi, txtStuMaLop;
+    private JButton btnCloseStudent;
+    private student_GUI studentPanel;
 
     // form chỉnh sửa/nhập liệu (có thể tái sử dụng cho thêm/sửa)
     private JTextField txtMaHS, txtHoTen, txtNgaySinh, txtGioiTinh, txtDiaChi, txtMaLop;
@@ -72,8 +73,10 @@ public class FormHocSinh extends JPanel {
         tblHocSinh = new JTable(modelHocSinh);
         styleTable(tblHocSinh);
         tblHocSinh.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tblHocSinh.setPreferredScrollableViewportSize(new Dimension(700, 300));
+        // vertical: make scroll area taller; horizontal: revert widths to previous values
+        tblHocSinh.setPreferredScrollableViewportSize(new Dimension(700, 600));
         tblHocSinh.setFillsViewportHeight(true);
+        tblHocSinh.setRowHeight(24);
         tblHocSinh.getColumnModel().getColumn(0).setPreferredWidth(80);
         tblHocSinh.getColumnModel().getColumn(1).setPreferredWidth(180);
         tblHocSinh.getColumnModel().getColumn(2).setPreferredWidth(120);
@@ -84,26 +87,34 @@ public class FormHocSinh extends JPanel {
         JScrollPane sp = new JScrollPane(tblHocSinh);
         sp.setBorder(BorderFactory.createTitledBorder("Danh sách học sinh"));
         sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        add(sp, "grow, wrap");
-
-        // student detail panel (ẩn)
-        pnlStudent = new JPanel(new MigLayout("insets 10", "[][grow]", "[][][][][][]"));
-        pnlStudent.setBorder(BorderFactory.createTitledBorder("Thông tin chi tiết"));
+        
+        // student detail panel (ẩn) - reuse existing student_GUI
+        studentPanel = new student_GUI();
+        pnlStudent = new JPanel(new BorderLayout());
+        JPanel pnlHeader = new JPanel(new BorderLayout());
+        JLabel lblDetailTitle = new JLabel("Thông tin chi tiết");
+        lblDetailTitle.setBorder(BorderFactory.createEmptyBorder(4,8,4,4));
+        btnCloseStudent = new JButton("X");
+        btnCloseStudent.setForeground(Color.WHITE);
+        btnCloseStudent.setBackground(new Color(200,50,50));
+        btnCloseStudent.setFocusPainted(false);
+        pnlHeader.add(lblDetailTitle, BorderLayout.WEST);
+        pnlHeader.add(btnCloseStudent, BorderLayout.EAST);
+        pnlStudent.add(pnlHeader, BorderLayout.NORTH);
+        pnlStudent.add(studentPanel, BorderLayout.CENTER);
+        studentPanel.setPreferredSize(new Dimension(380, 320));
         pnlStudent.setVisible(false);
-        txtStuMaHS = new JTextField();
-        txtStuHoTen = new JTextField();
-        txtStuNgaySinh = new JTextField();
-        txtStuGioiTinh = new JTextField();
-        txtStuDiaChi = new JTextField();
-        txtStuMaLop = new JTextField();
-        txtStuMaHS.setEditable(false);
-        pnlStudent.add(new JLabel("Mã HS:")); pnlStudent.add(txtStuMaHS, "growx, wrap");
-        pnlStudent.add(new JLabel("Họ tên:")); pnlStudent.add(txtStuHoTen, "growx, wrap");
-        pnlStudent.add(new JLabel("Ngày sinh:")); pnlStudent.add(txtStuNgaySinh, "growx, wrap");
-        pnlStudent.add(new JLabel("Giới tính:")); pnlStudent.add(txtStuGioiTinh, "growx, wrap");
-        pnlStudent.add(new JLabel("Địa chỉ:")); pnlStudent.add(txtStuDiaChi, "growx, wrap");
-        pnlStudent.add(new JLabel("Mã lớp:")); pnlStudent.add(txtStuMaLop, "growx, wrap");
-        add(pnlStudent, "growx, wrap");
+        
+        // layout both components side-by-side with split ratio
+        JPanel split = new JPanel(new MigLayout("fill", "[65%][35%]", "[grow]"));
+        split.add(sp, "grow");
+        split.add(pnlStudent, "grow");
+        add(split, "grow, wrap");
+
+        btnCloseStudent.addActionListener(e -> {
+            pnlStudent.setVisible(false);
+            tblHocSinh.clearSelection();
+        });
 
         // input form for add/edit
         JPanel pnlForm = new JPanel(new MigLayout("insets 15", "[]15[grow]30[]15[grow]", "[]10[]10[]10[]10[]10"));
@@ -125,9 +136,8 @@ public class FormHocSinh extends JPanel {
         JPanel pnlBtn = new JPanel();
         btnThem = createButton("Thêm", new Color(34, 139, 34));
         btnSua = createButton("Sửa", new Color(0, 150, 136));
-        btnXoa = createButton("Xóa", new Color(220, 20, 60));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
-        pnlBtn.add(btnThem); pnlBtn.add(btnSua); pnlBtn.add(btnXoa); pnlBtn.add(btnClear);
+        pnlBtn.add(btnThem); pnlBtn.add(btnSua); pnlBtn.add(btnClear);
         add(pnlBtn, "growx, wrap");
 
         // focus effects
@@ -144,7 +154,6 @@ public class FormHocSinh extends JPanel {
         btnNangCao.addActionListener(e -> showAdvancedSearch());
         btnThem.addActionListener(e -> themHocSinh());
         btnSua.addActionListener(e -> suaHocSinh());
-        btnXoa.addActionListener(e -> xoaHocSinh());
         btnClear.addActionListener(e -> clearForm());
 
         tblHocSinh.getSelectionModel().addListSelectionListener(e -> {
@@ -152,7 +161,15 @@ public class FormHocSinh extends JPanel {
                 int row = tblHocSinh.getSelectedRow();
                 if (row >= 0) {
                     fillStudentPanel(row);
-                    pnlStudent.setVisible(true);
+                    // pass current HocSinh to student panel and set listener
+                    String ma = modelHocSinh.getValueAt(row, 0).toString();
+                    DataObject.HocSinh hs = hocSinhBLL.getByMa(ma);
+                    if (hs != null) {
+                        studentPanel.setHocSinh(hs);
+                        // provide BLL ref to the embedded panel so it can update/delete directly
+                        studentPanel.setHocSinhBLL(hocSinhBLL);
+                        pnlStudent.setVisible(true);
+                    }
                 }
             }
         });
@@ -160,7 +177,7 @@ public class FormHocSinh extends JPanel {
         loadTable();
     }
 
-    private void loadTable() {
+    public void loadTable() {
         modelHocSinh.setRowCount(0);
         for (HocSinh hs : hocSinhBLL.getAll()) {
             modelHocSinh.addRow(new Object[]{
@@ -169,6 +186,12 @@ public class FormHocSinh extends JPanel {
                     hs.getGioiTinh(), hs.getDiaChi(), hs.getMaLop()
             });
         }
+    }
+
+    // Called by child panels after updates
+    public void refreshTableAfterChange() {
+        loadTable();
+        pnlStudent.setVisible(false);
     }
 
     private void searchByName() {
@@ -230,12 +253,9 @@ public class FormHocSinh extends JPanel {
     }
 
     private void fillStudentPanel(int row) {
-        txtStuMaHS.setText(modelHocSinh.getValueAt(row, 0).toString());
-        txtStuHoTen.setText(modelHocSinh.getValueAt(row, 1).toString());
-        txtStuNgaySinh.setText(modelHocSinh.getValueAt(row, 2).toString());
-        txtStuGioiTinh.setText(modelHocSinh.getValueAt(row, 3).toString());
-        txtStuDiaChi.setText(modelHocSinh.getValueAt(row, 4).toString());
-        txtStuMaLop.setText(modelHocSinh.getValueAt(row, 5).toString());
+        String ma = modelHocSinh.getValueAt(row, 0).toString();
+        DataObject.HocSinh hs = hocSinhBLL.getByMa(ma);
+        if (hs != null) studentPanel.setHocSinh(hs);
     }
 
     private void clearForm() {
