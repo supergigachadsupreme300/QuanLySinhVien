@@ -14,6 +14,7 @@ public class Lop {
     private int siSo;
     private String maNH;
     private String maGVCN;
+    private int trangThai;
 
     public Lop(){
         maLop = "";
@@ -21,15 +22,17 @@ public class Lop {
         siSo = 0;
         maNH = "";
         maGVCN = "";
+        trangThai = 0;
     }
     
     public Lop(String maLop, String tenLop, int siSo, 
-            String maNH, String maGVCN){
+            String maNH, String maGVCN, int trangThai){
         this.maLop = maLop;
         this.tenLop = tenLop;
         this.siSo = siSo;
         this.maNH = maNH;
         this.maGVCN = maGVCN;
+        this.trangThai = trangThai;
     }
     
     public Lop(Lop lop){
@@ -53,6 +56,9 @@ public class Lop {
     
     public String getMaGVCN(){return maGVCN;}
     public void setMaGVCN(String maGVCN){this.maGVCN = maGVCN;}
+    
+    public int getTrangThai(){ return trangThai;}
+    public void setTrangThai(int trangThai){ this.trangThai = trangThai;}
     
     @Override
     public String toString() {
