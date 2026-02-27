@@ -19,6 +19,7 @@ public class ChiTietTiet {
     private String phongHoc;
     private String gioBatDau;
     private String gioKetThuc;
+    private int trangThai;
 
     // ===== 1. Constructor rỗng =====
     public ChiTietTiet() {
@@ -30,12 +31,13 @@ public class ChiTietTiet {
         phongHoc = "";
         gioBatDau = "";
         gioKetThuc = "";
+        trangThai=0;
     }
 
     // ===== 2. Constructor đầy đủ =====
     public ChiTietTiet(String maChiTiet, String maTKB, String maMon,
                        String thu, int tiet,
-                       String phongHoc, String gioBatDau, String gioKetThuc) {
+                       String phongHoc, String gioBatDau, String gioKetThuc, int trangThai) {
         this.maChiTiet = maChiTiet;
         this.maTKB = maTKB;
         this.maMon = maMon;
@@ -44,6 +46,7 @@ public class ChiTietTiet {
         this.phongHoc = phongHoc;
         this.gioBatDau = gioBatDau;
         this.gioKetThuc = gioKetThuc;
+        this.trangThai = trangThai;
     }
 
     // ===== 3. Constructor copy =====
@@ -56,6 +59,7 @@ public class ChiTietTiet {
         this.phongHoc = ct.phongHoc;
         this.gioBatDau = ct.gioBatDau;
         this.gioKetThuc = ct.gioKetThuc;
+        this.trangThai = ct.trangThai;
     }
 
     // ===== Getter / Setter =====
@@ -75,4 +79,12 @@ public class ChiTietTiet {
     public void setGioBatDau(String gioBatDau) { this.gioBatDau = gioBatDau; }
     public String getGioKetThuc() { return gioKetThuc; }
     public void setGioKetThuc(String gioKetThuc) { this.gioKetThuc = gioKetThuc; }
+    public int getTrangThai() { return trangThai;}
+    public void setTrangThai (int trangThai) { this.trangThai = trangThai; }
+    
+    @Override
+    public String toString() {
+        return maChiTiet + " - " + maMon + " (" + thu + " tiết " + tiet + ")";
+    }
+
 }
