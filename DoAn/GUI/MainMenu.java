@@ -4,13 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import GUI.FormLop;
 import GUI.Sidebar;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MainMenu extends JFrame {
 
     public static final String LOP  = "LOP";
     public static final String TKB = "TKB";
-    public static final String TestTKB = "TestTKB";
-    public static final String TestLOP = "TestLOP";
+    public static final String PHANCONG = "PHANCONG";
+    public static final String CHITIETTIET = "CHITIETTIET";
+   // public static final String TestTKB = "TestTKB";
+   // public static final String TestLOP = "TestLOP";
     private CardLayout cardLayout;
     private JPanel mainPanel;
     
@@ -19,7 +23,24 @@ public class MainMenu extends JFrame {
         setTitle("Hệ thống Quản lý Học sinh");
         setSize(1200, 700);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int c = JOptionPane.showConfirmDialog(
+                        MainMenu.this,
+                        "Bạn có chắc muốn thoát chương trình?",
+                        "Xác nhận thoát",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (c == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            }
+        });
+
 
         setLayout(new BorderLayout());
         Sidebar sidebar = new Sidebar(this);
@@ -29,8 +50,10 @@ public class MainMenu extends JFrame {
 
         mainPanel.add(new FormLop(this), LOP);
         mainPanel.add(new FormTKB(this), TKB);
-        mainPanel.add(new TestFormTKB(this), TestTKB);
-        mainPanel.add(new TestFormLop(this), TestLOP);
+        mainPanel.add(new FormPhanCong(this), PHANCONG);
+        mainPanel.add(new FormChiTietTiet(this), CHITIETTIET);
+    //    mainPanel.add(new TestFormTKB(this), TestTKB);
+    //    mainPanel.add(new TestFormLop(this), TestLOP);
         add(sidebar, BorderLayout.WEST);
         add(mainPanel, BorderLayout.CENTER);
 

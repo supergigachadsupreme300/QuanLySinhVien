@@ -2,76 +2,81 @@ package GUI;
 
 /**
  * FORM QUẢN LÝ LỚP
- * - 
+ * - Tự động tạo mã lớp khi chọn khối
+ * - Xử lý đúng soft delete (không tái sử dụng mã đã xóa mềm)
  *
  */
 
+import BusinessLogicLayer.GiaoVienBLL;
 import BusinessLogicLayer.LopBLL;
 import BusinessLogicLayer.HocSinhBLL;
+import BusinessLogicLayer.NamHocBLL;
+import DataAcessLayer.DatabaseConnect;
+import DataObject.GiaoVien;
 import DataObject.Lop;
 import DataObject.HocSinh;
-import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
-
+import DataObject.NamHoc;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import javax.swing.table.TableRowSorter;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.miginfocom.swing.MigLayout;
 
 public class FormLop extends JPanel {
 
     private MainMenu mainFrame;
-    private LopBLL lopBLL = new LopBLL();
-    private HocSinhBLL hocSinhBLL = new HocSinhBLL();
-    // sau này dùng
+    private Connection con;
+    private LopBLL lopBLL;
+    private HocSinhBLL hocSinhBLL;
 
     /* ================= TABLE ================= */
     private JTable tblLop, tblHS;
     private DefaultTableModel modelLop, modelHS;
 
     /* ================= FORM ================= */
-    private JTextField txtMaLop, txtTenLop, txtSiSo, txtNamHoc, txtGVCN;
+    private JTextField txtMaLop, txtTenLop, txtSiSo;
+    private JComboBox<NamHoc> cboNamHoc; 
+    private JComboBox<GiaoVien> cboGVCN;
+    private JComboBox<Integer> cboKhoi;
 
     /* ================= BUTTON ================= */
-    private JButton btnThem, btnSua, btnXoa, btnClear;
+    private JButton btnThem, btnSua, btnXoa, btnClear, btnLuu;
+    private boolean dataChanged = false;
+    
+    private List<Change> bufferChanges = new ArrayList<>();
 
     /* ================= CONSTRUCTOR ================= */
     public FormLop(MainMenu frame) {
+        DatabaseConnect db = new DatabaseConnect();
+        this.con = db.openConnection();
+        this.lopBLL = new LopBLL(con); 
+        this.hocSinhBLL = new HocSinhBLL(con);
         this.mainFrame = frame;
         initUI();
-/*        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                int c = JOptionPane.showConfirmDialog(
-                        MainMenu.this,
-                        "Bạn có chắc muốn thoát chương trình?",
-                        "Thoát",
-                        JOptionPane.YES_NO_OPTION
-                );
-                if (c == JOptionPane.YES_OPTION) {
-                    System.exit(0);
-                }
-            }
-        });*/
+        loadTableLop(); 
+        loadComboNamHoc(); 
+        loadComboGiaoVien();
+        setupAutoGenerateMaLop();
+        txtSiSo.setText("0");
+        txtSiSo.setEditable(false);
     }
 
     /* ================= UI ================= */
     private void initUI() {
-
         setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[grow]"));
 
         /* ===== TITLE ===== */
         JLabel lblTitle = new JLabel("QUẢN LÝ LỚP HỌC", JLabel.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
         lblTitle.setForeground(new Color(0, 102, 204));
-
         add(lblTitle, "growx, wrap");
 
         /* ===== FORM ===== */
@@ -83,23 +88,28 @@ public class FormLop extends JPanel {
         pnlForm.setBorder(BorderFactory.createTitledBorder("Thông tin lớp"));
 
         txtMaLop  = new JTextField();
+        txtMaLop.setEditable(false); // Không cho sửa mã tự động
+        
         txtTenLop = new JTextField();
         txtSiSo   = new JTextField();
-        txtNamHoc = new JTextField();
-        txtGVCN   = new JTextField();
+        cboNamHoc = new JComboBox<>();
+        cboGVCN   = new JComboBox<>();
+        cboKhoi = new JComboBox<>(new Integer[]{6, 7, 8, 9});
 
         pnlForm.add(new JLabel("Mã lớp:"));
         pnlForm.add(txtMaLop, "growx");
         pnlForm.add(new JLabel("Tên lớp:"));
         pnlForm.add(txtTenLop, "growx, wrap");
+        pnlForm.add(new JLabel("Khối:")); 
+        pnlForm.add(cboKhoi, "growx, wrap");
 
         pnlForm.add(new JLabel("Sĩ số:"));
         pnlForm.add(txtSiSo, "growx");
         pnlForm.add(new JLabel("Năm học:"));
-        pnlForm.add(txtNamHoc, "growx, wrap");
+        pnlForm.add(cboNamHoc, "growx, wrap");
 
         pnlForm.add(new JLabel("GVCN:"));
-        pnlForm.add(txtGVCN, "growx, span 3");
+        pnlForm.add(cboGVCN, "growx, span 3");
 
         add(pnlForm, "growx, wrap");
 
@@ -110,12 +120,15 @@ public class FormLop extends JPanel {
         btnSua   = createButton("Sửa", new Color(255, 140, 0));
         btnXoa   = createButton("Xóa", new Color(220, 20, 60));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
-
+        btnLuu = createButton("Lưu", new Color(150, 150, 150)); 
+        btnLuu.setEnabled(false);
+        
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
         pnlBtn.add(btnXoa);
         pnlBtn.add(btnClear);
-
+        pnlBtn.add(btnLuu);
+        
         add(pnlBtn, "growx, wrap");
 
         /* ===== TABLE MODEL ===== */
@@ -143,10 +156,6 @@ public class FormLop extends JPanel {
         tblLop.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tblLop.setPreferredScrollableViewportSize(new Dimension(450, 220));
         tblLop.setFillsViewportHeight(true);
-        /*TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelLop);
-        tblLop.setRowSorter(sorter);*/
-        //sắp xêp theo thứ tự cột năm học
-
         
         tblLop.getColumnModel().getColumn(0).setPreferredWidth(80);    // Mã lớp
         tblLop.getColumnModel().getColumn(1).setPreferredWidth(150);   // Tên lớp
@@ -165,9 +174,6 @@ public class FormLop extends JPanel {
         tblHS.setPreferredScrollableViewportSize(new Dimension(550, 220));
         tblHS.setFillsViewportHeight(true);
         
-
-
-        
         tblHS.getColumnModel().getColumn(0).setPreferredWidth(80);    // Mã HS
         tblHS.getColumnModel().getColumn(1).setPreferredWidth(150);   // Họ tên
         tblHS.getColumnModel().getColumn(2).setPreferredWidth(100);   // Ngày sinh
@@ -184,18 +190,16 @@ public class FormLop extends JPanel {
                 spLop,
                 spHS
         );
-        split.setResizeWeight(0.45);      // ưu tiên bảng lớp
+        split.setResizeWeight(0.45);
         split.setDividerSize(8);
-
         add(split, "grow");
-
-
 
         /* ===== EVENTS ===== */
         btnThem.addActionListener(e -> themLop());
         btnSua.addActionListener(e -> suaLop());
         btnXoa.addActionListener(e -> xoaLop());
         btnClear.addActionListener(e -> clearForm());
+        btnLuu.addActionListener(e -> luuLop());
 
         tblLop.getSelectionModel().addListSelectionListener(e -> {
             if (e.getValueIsAdjusting()) return;
@@ -210,19 +214,99 @@ public class FormLop extends JPanel {
         addFocusEffect(txtMaLop);
         addFocusEffect(txtTenLop);
         addFocusEffect(txtSiSo);
-        addFocusEffect(txtNamHoc);
-        addFocusEffect(txtGVCN);
+        addFocusEffect(cboNamHoc);
+        addFocusEffect(cboGVCN);
 
         updateButtonState();
+    }
+
+    /**
+     * HÀM RIÊNG: Thiết lập tự động tạo mã lớp khi chọn khối
+     */
+    private void setupAutoGenerateMaLop() {
+        cboKhoi.addActionListener(e -> {
+            generateAndSetMaLop();
+        });
+        
+        SwingUtilities.invokeLater(() -> {
+            if (cboKhoi.getItemCount() > 0) {
+                cboKhoi.setSelectedIndex(0);
+                generateAndSetMaLop();
+            }
+        });
+    }
+
+    /**
+     * HÀM RIÊNG: Tạo và gán mã lớp dựa trên khối đã chọn
+     */
+    private void generateAndSetMaLop() {
+        Integer khoi = (Integer) cboKhoi.getSelectedItem();
+        if (khoi != null) {
+            String maLopAuto = generateMaLop(khoi);
+            txtMaLop.setText(maLopAuto);
+            txtMaLop.setEnabled(false);
+        }
+    }
+
+    /**
+     * HÀM RIÊNG CẢI TIẾN: Tạo mã lớp dựa trên khối
+     * - Xét TẤT CẢ dữ liệu từ database (kể cả đã xóa mềm)
+     * - KHÔNG tái sử dụng mã đã xóa
+     * @param khoi khối lớp (6,7,8,9)
+     * @return mã lớp dạng "6A1", "7A2", ...
+     */
+    public String generateMaLop(int khoi) {
+        Set<Integer> used = new HashSet<>();
+        
+        // 1. Lấy TẤT CẢ dữ liệu từ database (kể cả trangThai = 0)
+        List<Lop> dsDB = lopBLL.getAll(); // Cần thêm method getAll() ở BLL
+        for (Lop l : dsDB) {
+            if (l.getMaLop() != null && l.getMaLop().matches(khoi + "A\\d+")) {
+                try {
+                    int so = Integer.parseInt(l.getMaLop().substring(2));
+                    used.add(so);
+                } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                    // Bỏ qua nếu định dạng không đúng
+                }
+            }
+        }
+        
+        // 2. Xét dữ liệu từ buffer
+        for (Change change : bufferChanges) {
+            Lop l = change.lop;
+            if (l.getMaLop() != null && l.getMaLop().matches(khoi + "A\\d+")) {
+                try {
+                    int so = Integer.parseInt(l.getMaLop().substring(2));
+                    
+                    if (change.action.equals("ADD") || change.action.equals("UPDATE")) {
+                        used.add(so);
+                    } else if (change.action.equals("DELETE")) {
+                        // KHÔNG xóa khỏi used - giữ nguyên vì soft delete không tái sử dụng mã
+                        // used.remove(so); // Bỏ dòng này
+                    }
+                } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                    // Bỏ qua nếu định dạng không đúng
+                }
+            }
+        }
+        
+        // 3. Tìm số nhỏ nhất còn trống từ 1-15 (có thể mở rộng)
+        for (int i = 1; i <= 15; i++) {
+            if (!used.contains(i)) {
+                return khoi + "A" + i;
+            }
+        }
+        
+        // 4. Nếu đã đủ 15 số, tạo số tiếp theo
+        return khoi + "A" + (used.size() + 1);
     }
 
     //=============== VALIDATE ========================//
     private boolean validateForm() {
         if (txtMaLop.getText().trim().isEmpty()
                 || txtTenLop.getText().trim().isEmpty()
-                || txtSiSo.getText().trim().isEmpty()
-                || txtNamHoc.getText().trim().isEmpty()
-                || txtGVCN.getText().trim().isEmpty()) {
+                || cboNamHoc.getSelectedItem() == null
+                || cboGVCN.getSelectedItem() == null) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -233,74 +317,109 @@ public class FormLop extends JPanel {
             return false;
         }
 
-        try {
-            Integer.parseInt(txtSiSo.getText().trim());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Sĩ số phải là số nguyên!",
-                    "Lỗi dữ liệu",
-                    JOptionPane.ERROR_MESSAGE
-            );
-            txtSiSo.requestFocus();
-            return false;
+        // Kiểm tra mã lớp không trùng trong buffer
+        String maLopMoi = txtMaLop.getText().trim();
+        String currentMaLop = null;
+        if (tblLop.getSelectedRow() >= 0) {
+            currentMaLop = modelLop.getValueAt(tblLop.getSelectedRow(), 0).toString();
         }
+        
+        // Kiểm tra trong buffer (các ADD)
+        for (Change change : bufferChanges) {
+            if (change.action.equals("ADD") && change.lop.getMaLop().equals(maLopMoi)) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Mã lớp đã tồn tại trong danh sách chờ lưu!",
+                        "Lỗi trùng mã",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return false;
+            }
+        }
+        
+        // Kiểm tra trong database (kể cả đã xóa mềm)
+        List<Lop> dsDB = lopBLL.getAll(); // Cần thêm method getAll() ở BLL
+        for (Lop l : dsDB) {
+            if (l.getMaLop().equals(maLopMoi)) {
+                // Nếu đang sửa và là chính nó thì bỏ qua
+                if (currentMaLop != null && l.getMaLop().equals(currentMaLop)) {
+                    continue;
+                }
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Mã lớp đã tồn tại trong hệ thống!",
+                        "Lỗi trùng mã",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return false;
+            }
+        }
+        
         return true;
     }
-    
-    
 
-    /*================= CRUD ==========================*/
+    /* =================================================
+       ================= CRUD ==========================
+       ================================================= */
     private void themLop() {
         if (!validateForm()) return;
-
+        
         Lop lop = getLopFromForm();
-
-        /*modelLop.addRow(new Object[]{
-                lop.getMaLop(),
-                lop.getTenLop(),
-                lop.getSiSo(),
-                lop.getMaNH(),
-                lop.getMaGVCN()
-        });*/
-        if (!lopBLL.themLop(lop)){
+        modelLop.addRow(new Object[]{ 
+            lop.getMaLop(), 
+            lop.getTenLop(), 
+            lop.getSiSo(), 
+            lop.getMaNH(), 
+            lop.getMaGVCN() 
+        }); 
+        bufferChanges.add(new Change(lop, "ADD"));
+        resetInputForm();
+        dataChanged = true;
+        updateSaveButtonState();
         
-        JOptionPane.showMessageDialog(this, "Thêm lớp thành công!");
-        return;
-        }
-        
-        loadTableLop();
-        clearForm();
-        JOptionPane.showMessageDialog(this, "Thêm lớp thành công!");
+        JOptionPane.showMessageDialog(this, 
+            "Đã thêm lớp thành công! Nhấn 'Lưu' để lưu vào CSDL.",
+            "Thông báo",
+            JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void suaLop() {
         int row = tblLop.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn lớp cần sửa!");
-            return;
+        if (row < 0) { 
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn lớp cần sửa!"); 
+            return; 
         }
-
+        
         if (!validateForm()) return;
-
-        int c = JOptionPane.showConfirmDialog(
+        
+        int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Bạn có chắc muốn sửa lớp này?",
                 "Xác nhận sửa",
                 JOptionPane.YES_NO_OPTION
         );
-        if (c != JOptionPane.YES_OPTION) return;
-
-        Lop lop = getLopFromForm();
-        lopBLL.suaLop(lop);
-        loadTableLop();
+        if (confirm != JOptionPane.YES_OPTION) return;
         
-        /*modelLop.setValueAt(lop.getTenLop(), row, 1);
-        modelLop.setValueAt(lop.getSiSo(), row, 2);
-        modelLop.setValueAt(lop.getMaNH(), row, 3);
-        modelLop.setValueAt(lop.getMaGVCN(), row, 4);*/
-
-        JOptionPane.showMessageDialog(this, "Sửa lớp thành công!");
+        String maLopCu = modelLop.getValueAt(row, 0).toString();
+        Lop lop = getLopFromForm();
+        
+        // Cập nhật trên table
+        modelLop.setValueAt(lop.getTenLop(), row, 1); 
+        modelLop.setValueAt(lop.getSiSo(), row, 2); 
+        modelLop.setValueAt(lop.getMaNH(), row, 3); 
+        modelLop.setValueAt(lop.getMaGVCN(), row, 4); 
+        
+        // Xóa change cũ nếu có (đối với lớp này)
+        bufferChanges.removeIf(c -> c.lop.getMaLop().equals(maLopCu) && c.action.equals("UPDATE"));
+        
+        bufferChanges.add(new Change(lop, "UPDATE"));
+        dataChanged = true;
+        updateSaveButtonState();
+        
+        JOptionPane.showMessageDialog(this, 
+            "Đã sửa lớp thành công! Nhấn 'Lưu' để lưu vào CSDL.",
+            "Thông báo",
+            JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void xoaLop() {
@@ -309,87 +428,201 @@ public class FormLop extends JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn lớp cần xóa!");
             return;
         }
-        String maLop = modelLop.getValueAt(row, 0).toString();
         
-        int c = JOptionPane.showConfirmDialog(
+        int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Bạn có chắc muốn xóa lớp này?",
                 "Xác nhận xóa",
                 JOptionPane.YES_NO_OPTION
         );
-        if (c != JOptionPane.YES_OPTION) return;
         
-
-        /*modelLop.removeRow(row);*/
-        if (!lopBLL.xoaLop(maLop)) {
-            JOptionPane.showMessageDialog(this, "Xóa lớp thất bại!");
-            return;
+        if (confirm == JOptionPane.YES_OPTION) {
+            String maLop = modelLop.getValueAt(row, 0).toString();
+            modelLop.removeRow(row);
+            
+            Lop lop = new Lop();
+            lop.setMaLop(maLop);
+            
+            // KHÔNG xóa các change cũ - giữ nguyên vì soft delete không tái sử dụng mã
+            // bufferChanges.removeIf(c -> c.lop.getMaLop().equals(maLop));
+            
+            bufferChanges.add(new Change(lop, "DELETE"));
+            resetInputForm();
+            dataChanged = true;
+            updateSaveButtonState();
+            
+            JOptionPane.showMessageDialog(this, 
+                "Đã xóa lớp thành công! Nhấn 'Lưu' để lưu vào CSDL.",
+                "Thông báo",
+                JOptionPane.INFORMATION_MESSAGE);
         }
-        loadTableLop();
-        clearForm();
-        JOptionPane.showMessageDialog(this, "Xóa lớp thành công!");
     }
 
     /* =================================================
        ================= UI FLOW =======================
        ================================================= */
-    private Lop getLopFromForm() {
-        Lop lop = new Lop();
-        lop.setMaLop(txtMaLop.getText().trim());
-        lop.setTenLop(txtTenLop.getText().trim());
-        lop.setSiSo(Integer.parseInt(txtSiSo.getText().trim()));
-        lop.setMaNH(txtNamHoc.getText().trim());
-        lop.setMaGVCN(txtGVCN.getText().trim());
-        return lop;
-    }
 
     private void fillFormFromTable(int row) {
-    String maLop = modelLop.getValueAt(row, 0).toString();
-
+        String maLop = modelLop.getValueAt(row, 0).toString();
         txtMaLop.setText(maLop);
+        txtMaLop.setEnabled(false);
+        
         txtTenLop.setText(modelLop.getValueAt(row, 1).toString());
         txtSiSo.setText(modelLop.getValueAt(row, 2).toString());
-        txtNamHoc.setText(modelLop.getValueAt(row, 3).toString());
-        txtGVCN.setText(modelLop.getValueAt(row, 4).toString());    
-
-        txtMaLop.setEnabled(false);
-
+        
+        // Xác định khối từ mã lớp
+        if (maLop != null && maLop.length() > 0) {
+            try {
+                int khoi = Integer.parseInt(maLop.substring(0, 1));
+                cboKhoi.setSelectedItem(khoi);
+            } catch (NumberFormatException e) {
+                // Bỏ qua nếu không lấy được khối
+            }
+        }
+        
+        String maNH = modelLop.getValueAt(row, 3).toString();
+        for (int i = 0; i < cboNamHoc.getItemCount(); i++) {
+            if (cboNamHoc.getItemAt(i).getMaNH().equals(maNH)) { 
+                cboNamHoc.setSelectedIndex(i); 
+                break;
+            }
+        }
+        
+        String maGV = modelLop.getValueAt(row, 4).toString(); 
+        for (int i = 0; i < cboGVCN.getItemCount(); i++) { 
+            if (cboGVCN.getItemAt(i).getMaGV().equals(maGV)) { 
+                cboGVCN.setSelectedIndex(i); 
+                break; 
+            } 
+        }
+        
+        txtSiSo.setEditable(false);
         loadHocSinhByLop(maLop);
+        cboKhoi.setEnabled(false);
     }   
 
     private void loadHocSinhByLop(String maLop) {
-    modelHS.setRowCount(0);
+        modelHS.setRowCount(0);
 
-    List<HocSinh> ds = hocSinhBLL.getByMaLop(maLop);
+        List<HocSinh> ds = hocSinhBLL.getByMaLop(maLop);
 
-    for (HocSinh hs : ds) {
-        modelHS.addRow(new Object[]{
-            hs.getMaHS(),
-            hs.getHoTen(),
-            hs.getNgaySinh(),
-            hs.getGioiTinh(),
-            hs.getDiaChi()
-        });
+        for (HocSinh hs : ds) {
+            modelHS.addRow(new Object[]{
+                hs.getMaHS(),
+                hs.getHoTen(),
+                hs.getNgaySinh(),
+                hs.getGioiTinh(),
+                hs.getDiaChi()
+            });
+        }
     }
-}
 
 
     private void clearForm() {
         txtMaLop.setText("");
         txtTenLop.setText("");
-        txtSiSo.setText("");
-        txtNamHoc.setText("");
-        txtGVCN.setText("");
-        txtMaLop.setEnabled(true);
+        txtSiSo.setText("0");
+        cboNamHoc.setSelectedIndex(-1);
+        cboGVCN.setSelectedIndex(-1);
+        cboKhoi.setEnabled(true);
+        
+        // Tạo lại mã tự động dựa trên khối hiện tại
+        generateAndSetMaLop();
+        
         tblLop.clearSelection();
+        modelHS.setRowCount(0);
         updateButtonState();
-        txtMaLop.requestFocus();
+        txtTenLop.requestFocus();
+    }
+    
+    private void clearForm() {
+        resetInputForm();
+        bufferChanges.clear();
+        dataChanged = false;
+        updateSaveButtonState();
+        loadTableLop();
     }
 
     private void updateButtonState() {
         boolean selected = tblLop.getSelectedRow() >= 0;
         btnSua.setEnabled(selected);
         btnXoa.setEnabled(selected);
+    }
+    
+    private void updateSaveButtonState() {
+        if (dataChanged) {
+            btnLuu.setEnabled(true);
+            btnLuu.setBackground(new Color(34, 139, 34));
+        } else {
+            btnLuu.setEnabled(false);
+            btnLuu.setBackground(new Color(150, 150, 150));
+        }
+    }
+
+    private static class Change {
+        Lop lop;
+        String action; // "ADD", "UPDATE", "DELETE"
+        Change(Lop lop, String action) {
+            this.lop = lop;
+            this.action = action;
+        }
+    }
+    
+    private void luuLop() {
+        try {
+            for (Change change : bufferChanges) { 
+                switch (change.action) { 
+                    case "ADD": 
+                        lopBLL.themLop(change.lop); 
+                        break; 
+                    case "UPDATE": 
+                        lopBLL.suaLop(change.lop); 
+                        break; 
+                    case "DELETE": 
+                        lopBLL.xoaLop(change.lop.getMaLop()); // Soft delete
+                        break; 
+                } 
+            } 
+            bufferChanges.clear();
+            JOptionPane.showMessageDialog(this, "Đã lưu thay đổi thành công!");
+            dataChanged = false;
+            updateSaveButtonState();
+            loadTableLop(); // Load lại chỉ các active
+            resetInputForm();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Lỗi khi lưu dữ liệu: " + ex.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void loadTableLop() {
+        modelLop.setRowCount(0);
+        for (Lop l : lopBLL.getAllActive()) { // Chỉ lấy active để hiển thị
+            // Lấy tên GVCN từ combo để hiển thị
+            String tenGVCN = getTenGVFromMa(l.getMaGVCN());
+            
+            modelLop.addRow(new Object[]{
+                l.getMaLop(),
+                l.getTenLop(),
+                l.getSiSo(),
+                l.getMaNH(),
+                tenGVCN
+            });
+        }
+    }
+    
+    private String getTenGVFromMa(String maGV) {
+        for (int i = 0; i < cboGVCN.getItemCount(); i++) {
+            GiaoVien gv = cboGVCN.getItemAt(i);
+            if (gv.getMaGV().equals(maGV)) {
+                return gv.getHoTen();
+            }
+        }
+        return maGV;
     }
 
     //================= UI UTILS ======================//
@@ -409,22 +642,6 @@ public class FormLop extends JPanel {
         tbl.getTableHeader().setBackground(new Color(0, 102, 204));
         tbl.getTableHeader().setForeground(Color.WHITE);
     }
-
-    private void loadTableLop() {
-        modelLop.setRowCount(0);
-        
-        for (Lop l : lopBLL.getAll()) {
-            modelLop.addRow(new Object[]{
-                l.getMaLop(),
-                l.getTenLop(),
-                l.getSiSo(),
-                l.getMaNH(),
-                l.getMaGVCN()
-            });
-        }
-    }
-    
-
     
     private void addFocusEffect(JComponent c) {
         c.setOpaque(true);
@@ -442,4 +659,3 @@ public class FormLop extends JPanel {
         });
     }
 }
-
