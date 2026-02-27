@@ -11,14 +11,15 @@ package DataObject;
 import java.time.LocalDate;
 
 public class HocSinh {
-    // ===== Thuộc tính =====
+ 
+// ===== Thuộc tính =====
     private String maHS;
     private String hoTen;
     private LocalDate ngaySinh;
     private String gioiTinh;
     private String diaChi;
     private String maLop;
-
+    private int trangThai;
     // ===== Constructor rỗng =====
     public HocSinh() {
         maHS = "";
@@ -27,30 +28,32 @@ public class HocSinh {
         gioiTinh = "";
         diaChi = "";
         maLop = "";
+        trangThai =0;
     }
 
     // ===== Constructor đầy đủ =====
     public HocSinh(String maHS, String hoTen, LocalDate ngaySinh,
-                   String gioiTinh, String diaChi, String maLop) {
+                   String gioiTinh, String diaChi, String maLop,
+                   int trangThai) {
         this.maHS = maHS;
         this.hoTen = hoTen;
         this.ngaySinh = ngaySinh;
         this.gioiTinh = gioiTinh;
         this.diaChi = diaChi;
         this.maLop = maLop;
+       this.trangThai = trangThai;
     }
-
     // ===== Constructor copy =====
     public HocSinh(HocSinh hs) {
-        if (hs != null) {
             this.maHS = hs.maHS;
             this.hoTen = hs.hoTen;
             this.ngaySinh = hs.ngaySinh;
             this.gioiTinh = hs.gioiTinh;
             this.diaChi = hs.diaChi;
             this.maLop = hs.maLop;
-        }
+            this.trangThai = hs.trangThai;
     }
+    
 
     // ===== Getter / Setter =====
     public String getMaHS() { return maHS; }
@@ -70,6 +73,9 @@ public class HocSinh {
 
     public String getMaLop() { return maLop; }
     public void setMaLop(String maLop) { this.maLop = maLop; }
+    
+    public int getTrangThai() { return trangThai;}
+    public void setTrangThai(int trangThai ){ this.trangThai = trangThai;}
 
     // ===== Hỗ trợ hiển thị JTable =====
     @Override
@@ -77,3 +83,4 @@ public class HocSinh {
         return maHS + " - " + hoTen;
     }
 }
+    
