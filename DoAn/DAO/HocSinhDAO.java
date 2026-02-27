@@ -37,6 +37,7 @@ public class HocSinhDAO {
                     hs.setGioiTinh(rs.getNString("gioiTinh"));
                     hs.setDiaChi(rs.getNString("diaChi"));
                     hs.setMaLop(rs.getString("maLop"));
+                    hs.setTrangThai(rs.getInt("trangThai")); // dùng cho object bên gui để xét các điều kiện nghiệp vụ them/xoa (formtkb,lop,chitiettiet,phancong)
                 }
             }
         } catch (SQLException e) {
