@@ -5,16 +5,36 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonHocDAO {
+public class MonDAL {
+    private Connection con;
 
-    // Thông tin kết nối - nên đưa ra file config sau này
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=TenCuaDatabase;"
-                                    + "encrypt=true;trustServerCertificate=true;";
-    private static final String USER = "sa";
-    private static final String PASS = "your_password_here"; // thay bằng mật khẩu thật
+    public MonDAL() {
+        DatabaseConnect db = new DatabaseConnect();
+        this.con = db.openConnection();
+    }
+    
+    public MonDAL(Connection con){
+        this.con = con;
+    }
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+    // Lấy tất cả môn học
+    public List<Mon> getAll() {
+        List<Mon> list = new ArrayList<>();
+        String sql = "SELECT maMon, tenMon, trangThai FROM MON";
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Mon mon = new Mon(
+                    rs.getString("maMon"),
+                    rs.getString("tenMon"),
+                    rs.getInt("trangThai")
+                );
+                list.add(mon);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     // Lấy tất cả môn học đang hoạt động
