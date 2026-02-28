@@ -1,28 +1,28 @@
 package DAO;
 
+import DataAcessLayer.DatabaseConnect;
 import DataObject.HocSinh;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HocSinhDAO {
+    private Connection con;
 
-    // Thông tin kết nối - nên đưa ra file config sau này
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=TenCuaDatabase;"
-                                    + "encrypt=true;trustServerCertificate=true;";
-    private static final String USER = "sa";
-    private static final String PASS = "123456";  // thay bằng mật khẩu thật
+    public HocSinhDAO() {
+        DatabaseConnect db = new DatabaseConnect();
+        this.con = db.openConnection();
+    }
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+    public HocSinhDAO(Connection con) {
+        this.con = con;
     }
 
     public HocSinh getById(String maHS) {
         String sql = "SELECT * FROM HOCSINH WHERE maHS = ? AND trangThai = 1";
         HocSinh hs = null;
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, maHS);
             try (ResultSet rs = ps.executeQuery()) {
@@ -48,8 +48,7 @@ public class HocSinhDAO {
         List<HocSinh> list = new ArrayList<>();
         String sql = "SELECT * FROM HOCSINH WHERE trangThai = 1 ORDER BY maHS";
 
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
@@ -73,8 +72,7 @@ public List<HocSinh> getAllActive() {
     List<HocSinh> list = new ArrayList<>();
     String sql = "SELECT * FROM HOCSINH WHERE trangThai = 1 ORDER BY maHS";
 
-    try (Connection conn = getConnection();
-         Statement stmt = conn.createStatement();
+    try (Statement stmt = con.createStatement();
          ResultSet rs = stmt.executeQuery(sql)) {
 
         while (rs.next()) {
@@ -99,8 +97,7 @@ public HocSinh findByMaHS(String maHS) {
     String sql = "SELECT * FROM HOCSINH WHERE maHS = ?";
     HocSinh hs = null;
 
-    try (Connection conn = getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (PreparedStatement ps = con.prepareStatement(sql)) {
 
         ps.setString(1, maHS);
         try (ResultSet rs = ps.executeQuery()) {
@@ -127,8 +124,7 @@ public HocSinh findByMaHS(String maHS) {
         List<HocSinh> list = new ArrayList<>();
         String sql = "SELECT * FROM HOCSINH WHERE maLop = ? AND trangThai = 1";
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, maLop);
             try (ResultSet rs = ps.executeQuery()) {
@@ -154,8 +150,7 @@ public HocSinh findByMaHS(String maHS) {
         String sql = "INSERT INTO HOCSINH (maHS, hoTen, ngaySinh, gioiTinh, diaChi, maLop, trangThai) "
                    + "VALUES (?, ?, ?, ?, ?, ?, 1)";
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, hs.getMaHS());
             ps.setNString(2, hs.getHoTen());
@@ -175,8 +170,7 @@ public HocSinh findByMaHS(String maHS) {
         String sql = "UPDATE HOCSINH SET hoTen = ?, ngaySinh = ?, gioiTinh = ?, diaChi = ?, maLop = ? "
                    + "WHERE maHS = ? AND trangThai = 1";
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setNString(1, hs.getHoTen());
             ps.setDate(2, hs.getNgaySinh() != null ? Date.valueOf(hs.getNgaySinh()) : null);
@@ -195,8 +189,7 @@ public HocSinh findByMaHS(String maHS) {
     public boolean delete(String maHS) {
         String sql = "UPDATE HOCSINH SET trangThai = 0 WHERE maHS = ?";
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, maHS);
             return ps.executeUpdate() > 0;

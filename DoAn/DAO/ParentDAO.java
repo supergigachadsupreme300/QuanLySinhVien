@@ -1,20 +1,21 @@
 package DAO;
 
+import DataAcessLayer.DatabaseConnect;
 import DataObject.Parent;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ParentDAO {
+    private Connection con;
 
-    // Thông tin kết nối - có thể đưa ra file config sau này
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=TenCuaDatabase;"
-                                    + "encrypt=true;trustServerCertificate=true;";
-    private static final String USER = "sa";
-    private static final String PASS = "123456";  // thay bằng mật khẩu thật
+    public ParentDAO() {
+        DatabaseConnect db = new DatabaseConnect();
+        this.con = db.openConnection();
+    }
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+    public ParentDAO(Connection con) {
+        this.con = con;
     }
 
     // Lấy phụ huynh theo mã
@@ -22,8 +23,7 @@ public class ParentDAO {
         String sql = "SELECT * FROM PHUHUYNH WHERE maPH = ? AND trangThai = 1";
         Parent p = null;
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, maPH);
             try (ResultSet rs = ps.executeQuery()) {
@@ -47,8 +47,7 @@ public class ParentDAO {
         List<Parent> list = new ArrayList<>();
         String sql = "SELECT * FROM PHUHUYNH WHERE trangThai = 1";
 
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
@@ -70,8 +69,7 @@ public class ParentDAO {
         String sql = "INSERT INTO PHUHUYNH (maPH, hoTen, soDienThoai, ngheNghiep, trangThai) "
                    + "VALUES (?, ?, ?, ?, 1)";
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, p.getMaPhH());
             ps.setString(2, p.getTenPhH());
@@ -90,8 +88,7 @@ public class ParentDAO {
         String sql = "UPDATE PHUHUYNH SET hoTen = ?, soDienThoai = ?, ngheNghiep = ? "
                    + "WHERE maPH = ? AND trangThai = 1";
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, p.getTenPhH());
             ps.setString(2, p.getSdt());
@@ -109,8 +106,7 @@ public class ParentDAO {
     public boolean delete(String maPH) {
         String sql = "UPDATE PHUHUYNH SET trangThai = 0 WHERE maPH = ?";
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, maPH);
             return ps.executeUpdate() > 0;
@@ -125,8 +121,7 @@ public class ParentDAO {
         List<Parent> list = new ArrayList<>();
         String sql = "SELECT * FROM PHUHUYNH WHERE hoTen LIKE ? AND trangThai = 1";
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, "%" + keyword + "%");
             try (ResultSet rs = ps.executeQuery()) {

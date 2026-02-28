@@ -1,27 +1,27 @@
 package DAO;
 
+import DataAcessLayer.DatabaseConnect;
 import DataObject.GiaoVien;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GiaoVienDAO {
+    private Connection con;
 
-    // Thông tin kết nối - nên đưa ra file config sau này
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=TenCuaDatabase;"
-            + "encrypt=true;trustServerCertificate=true;";
-    private static final String USER = "sa";
-    private static final String PASS = "123456"; // thay bằng mật khẩu thật
+    public GiaoVienDAO() {
+        DatabaseConnect db = new DatabaseConnect();
+        this.con = db.openConnection();
+    }
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+    public GiaoVienDAO(Connection con) {
+        this.con = con;
     }
 
     public GiaoVien getByMa(String maGV) {
         String sql = "SELECT * FROM GIAOVIEN WHERE maGV = ? AND trangThai = 1";
         GiaoVien gv = null;
-        try (Connection conn = getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maGV);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -41,8 +41,7 @@ public class GiaoVienDAO {
     public List<GiaoVien> getAll() {
         List<GiaoVien> list = new ArrayList<>();
         String sql = "SELECT * FROM GIAOVIEN WHERE trangThai = 1 ORDER BY maGV";
-        try (Connection conn = getConnection();
-                Statement stmt = conn.createStatement();
+        try (Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 GiaoVien gv = new GiaoVien();
@@ -61,8 +60,7 @@ public class GiaoVienDAO {
     public List<GiaoVien> getAllFull() {
         List<GiaoVien> list = new ArrayList<>();
         String sql = "SELECT * FROM GIAOVIEN ORDER BY maGV";
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 GiaoVien gv = new GiaoVien();
@@ -84,8 +82,7 @@ public class GiaoVienDAO {
     public List<GiaoVien> getAllActiveByProc() {
         List<GiaoVien> list = new ArrayList<>();
         String sql = "{call sp_getAllActiveGiaoVien()}";
-        try (Connection conn = getConnection();
-             CallableStatement cs = conn.prepareCall(sql);
+        try (CallableStatement cs = con.prepareCall(sql);
              ResultSet rs = cs.executeQuery()) {
             while (rs.next()) {
                 GiaoVien gv = new GiaoVien();
@@ -108,8 +105,7 @@ public class GiaoVienDAO {
     public boolean them(GiaoVien gv) {
         String sql = "INSERT INTO GIAOVIEN (maGV, hoTen, sdt, email, trangThai) "
                 + "VALUES (?, ?, ?, ?, 1)";
-        try (Connection conn = getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, gv.getMaGV());
             ps.setNString(2, gv.getHoTen());
             ps.setString(3, gv.getSdt());
@@ -124,8 +120,7 @@ public class GiaoVienDAO {
     public boolean sua(GiaoVien gv) {
         String sql = "UPDATE GIAOVIEN SET hoTen = ?, sdt = ?, email = ? "
                 + "WHERE maGV = ? AND trangThai = 1";
-        try (Connection conn = getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setNString(1, gv.getHoTen());
             ps.setString(2, gv.getSdt());
             ps.setString(3, gv.getEmail());
@@ -139,8 +134,7 @@ public class GiaoVienDAO {
 
     public boolean xoa(String maGV) {
         String sql = "UPDATE GIAOVIEN SET trangThai = 0 WHERE maGV = ?";
-        try (Connection conn = getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maGV);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
