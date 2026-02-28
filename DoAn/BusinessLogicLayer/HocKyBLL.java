@@ -1,38 +1,51 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package BusinessLogicLayer;
 
+import DataAcessLayer.HocKyDAL;
 import DataObject.HocKy;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author admin
- */
 public class HocKyBLL {
-    private List<HocKy> dsHK = new ArrayList<>();
+    // Tạo sẵn DAL bên trong BUS
+    HocKyDAL hkDAL = new HocKyDAL();
 
-    public void them(HocKy hk) {
-        dsHK.add(hk);
+    // ===== GET ALL =====
+    public List<HocKy> getAll() {
+        return hkDAL.getAll();
     }
 
-    public List<HocKy> getByMaNH(String maNH) {
-        List<HocKy> kq = new ArrayList<>();
-        for (HocKy hk : dsHK) {
-            if (hk.getMaNH().equals(maNH)) {
-                kq.add(hk);
-            }
+    // ===== GET ALL ACTIVE =====
+    public List<HocKy> getAllActive() {
+        return hkDAL.getAllActive();
+    }
+
+    public List<HocKy> getAllActiveByProc() {
+        return hkDAL.getAllActiveByProc();
+    }
+
+    
+    // ===== THÊM =====
+    public boolean themHocKy(HocKy hk) {
+        if (hk == null) return false;
+        if (hkDAL.findByMaHK(hk.getMaHK()) != null) {
+            System.out.println("Mã học kỳ đã tồn tại!");
+            return false;
         }
-        return kq;
+        return hkDAL.insert(hk);
     }
 
+    // ===== SỬA =====
+    public boolean suaHocKy(HocKy hk) {
+        if (hk == null) return false;
+        return hkDAL.update(hk);
+    }
+
+    // ===== XÓA =====
+    public boolean xoaHocKy(String maHK) {
+        return hkDAL.delete(maHK);
+    }
+
+    // ===== TÌM THEO MÃ =====
     public HocKy getByMaHK(String maHK) {
-        for (HocKy hk : dsHK) {
-            if (hk.getMaHK().equals(maHK)) return hk;
-        }
-        return null;
+        return hkDAL.findByMaHK(maHK);
     }
 }

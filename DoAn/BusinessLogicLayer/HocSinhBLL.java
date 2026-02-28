@@ -1,97 +1,56 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package BusinessLogicLayer;
 
-/**
- *
- * @author admin
- */
-/*import DataObject.HocSinh;
-import java.util.ArrayList;
-import java.util.List;
-
-public class HocSinhBLL {
-
-    private List<HocSinh> dsHocSinh;
-
-    public HocSinhBLL() {
-        dsHocSinh = new ArrayList<>();
-    }
-
-    public List<HocSinh> getByMaLop(String maLop) {
-        List<HocSinh> result = new ArrayList<>();
-        for (HocSinh hs : dsHocSinh) {
-            if (hs.getMaLop().equals(maLop)) {
-                result.add(hs);
-            }
-        }
-        return result;
-    }
-
-    public void themHocSinh(HocSinh hs) {
-        dsHocSinh.add(hs);
-    }
-}*/
-
+import DataAcessLayer.HocSinhDAL;
 import DataObject.HocSinh;
-import java.util.ArrayList;
+import java.sql.Connection;
 import java.util.List;
 
 public class HocSinhBLL {
+    // Tạo sẵn đối tượng DAL bên trong BUS
+    HocSinhDAL hsDAL = new HocSinhDAL();
 
-    private List<HocSinh> dsHocSinh;
-
-    public HocSinhBLL() {
-        dsHocSinh = new ArrayList<>();
+    public HocSinhBLL(Connection con) {
+        this.hsDAL = new HocSinhDAL(con);
     }
-
-    // Thêm học sinh
-    public boolean themHocSinh(HocSinh hs) {
-        if (hs == null) return false;
-        dsHocSinh.add(hs);
-        return true;
-    }
-
-    // Lấy HS theo mã lớp
-    public List<HocSinh> getByMaLop(String maLop) {
-        List<HocSinh> result = new ArrayList<>();
-        for (HocSinh hs : dsHocSinh) {
-            if (hs.getMaLop().equals(maLop)) {
-                result.add(hs);
-            }
-        }
-        return result;
-    }
-
-    // Lấy toàn bộ
+    
     public List<HocSinh> getAll() {
-        return dsHocSinh;
+        return hsDAL.getAll();
+    }
+    
+    public List<HocSinh> getAllActive() {
+        return hsDAL.getAllActive();
+    }
+    
+    // ===== GET BY MA LOP =====
+    public List<HocSinh> getByMaLop(String maLop) {
+        return hsDAL.getByMaLop(maLop);
     }
 
-    // Cập nhật học sinh (dựa vào maHS)
-    public boolean suaHocSinh(HocSinh hs) {
-        if (hs == null) return false;
-        for (int i = 0; i < dsHocSinh.size(); i++) {
-            if (dsHocSinh.get(i).getMaHS().equals(hs.getMaHS())) {
-                dsHocSinh.set(i, hs);
-                return true;
-            }
+    // ===== THÊM =====
+    public String themHocSinh(HocSinh hs) {
+        if (hs == null) return "Dữ liệu học sinh không hợp lệ!";
+        if (hsDAL.findByMaHS(hs.getMaHS()) != null) {
+            return "Mã học sinh đã tồn tại!";
         }
-        return false;
+        boolean ok = hsDAL.insert(hs);
+        return ok ? "Thêm học sinh thành công!" : "Thêm học sinh thất bại!";
     }
 
-    // Xóa học sinh theo mã
-    public boolean xoaHocSinh(String maHS) {
-        return dsHocSinh.removeIf(h -> h.getMaHS().equals(maHS));
+    // ===== SỬA =====
+    public String suaHocSinh(HocSinh hs) {
+        if (hs == null) return "Dữ liệu học sinh không hợp lệ!";
+        boolean ok = hsDAL.update(hs);
+        return ok ? "Cập nhật học sinh thành công!" : "Cập nhật học sinh thất bại!";
     }
 
-    // Lấy 1 học sinh theo mã
-    public HocSinh getByMa(String maHS) {
-        for (HocSinh h : dsHocSinh) {
-            if (h.getMaHS().equals(maHS)) return h;
+    // ===== XÓA =====
+    public String xoaHocSinh(String maHS) {
+        HocSinh hs = hsDAL.findByMaHS(maHS);
+        boolean ok = hsDAL.delete(maHS);
+        if (ok && hs != null) {
+            return "Xóa học sinh thành công!";
+        } else {
+            return "Xóa học sinh thất bại!";
         }
-        return null;
     }
 }

@@ -1,48 +1,53 @@
-/*
- * Business logic layer for MonHoc entities.
- */
 package BusinessLogicLayer;
 
-import DataObject.MonHoc;
-import java.util.ArrayList;
+import DataAcessLayer.MonDAL;
+import DataObject.Mon;
 import java.util.List;
+import java.sql.*;
 
-public class MonHocBLL {
-    private List<MonHoc> dsMon;
+public class MonBLL {
+    // Tạo sẵn đối tượng DAL bên trong BUS
+    MonDAL monDAL = new MonDAL();
 
-    public MonHocBLL() {
-        dsMon = new ArrayList<>();
+    // ===== GET ALL =====
+    public List<Mon> getAll() {
+        return monDAL.getAll();
     }
 
-    public List<MonHoc> getAll() {
-        return dsMon;
+    // ===== GET ALL ACTIVE =====
+    public List<Mon> getAllActive() {
+        return monDAL.getAllActive();
+    }
+    
+    public List<Mon> getAllActiveProc(){
+        return monDAL.getAllActiveByProc();
     }
 
-    public boolean themMonHoc(MonHoc mh) {
-        if (mh == null) return false;
-        dsMon.add(mh);
-        return true;
-    }
+    // ===== THÊM =====
+    public boolean themMon(Mon mon) {
+        if (mon == null) return false;
 
-    public boolean suaMonHoc(MonHoc mh) {
-        if (mh == null) return false;
-        for (int i = 0; i < dsMon.size(); i++) {
-            if (dsMon.get(i).getMaMon().equals(mh.getMaMon())) {
-                dsMon.set(i, mh);
-                return true;
-            }
+        // kiểm tra trùng mã
+        if (monDAL.findByMaMon(mon.getMaMon()) != null) {
+            System.out.println("Mã môn đã tồn tại!");
+            return false;
         }
-        return false;
+        return monDAL.insert(mon);
     }
 
-    public boolean xoaMonHoc(String maMon) {
-        return dsMon.removeIf(m -> m.getMaMon().equals(maMon));
+    // ===== SỬA =====
+    public boolean suaMon(Mon mon) {
+        if (mon == null) return false;
+        return monDAL.update(mon);
     }
 
-    public MonHoc getByMa(String maMon) {
-        for (MonHoc m : dsMon) {
-            if (m.getMaMon().equals(maMon)) return m;
-        }
-        return null;
+    // ===== XÓA =====
+    public boolean xoaMon(String maMon) {
+        return monDAL.delete(maMon);
+    }
+
+    // ===== TÌM THEO MÃ =====
+    public Mon getByMaMon(String maMon) {
+        return monDAL.findByMaMon(maMon);
     }
 }

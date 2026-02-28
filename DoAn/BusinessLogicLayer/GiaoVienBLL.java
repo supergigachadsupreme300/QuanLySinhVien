@@ -1,47 +1,49 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package BusinessLogicLayer;
 
-/**
- *
- * @author admin
- */
+import DataAcessLayer.GiaoVienDAL;
 import DataObject.GiaoVien;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GiaoVienBLL {
+    // Tạo sẵn DAL bên trong BUS
+    GiaoVienDAL gvDAL = new GiaoVienDAL();
 
-    private List<GiaoVien> dsGV;
-
-    public GiaoVienBLL() {
-        dsGV = new ArrayList<>();
-    }
-
+    // ===== GET ALL =====
     public List<GiaoVien> getAll() {
-        return dsGV;
+        return gvDAL.getAll();
     }
 
+    public List<GiaoVien> getAllActive() {
+        return gvDAL.getAllActive();
+    }
+
+    public List<GiaoVien> getAllActiveProc(){
+        return gvDAL.getAllActiveByProc();
+    }
+    
+    // ===== THÊM =====
     public boolean themGiaoVien(GiaoVien gv) {
         if (gv == null) return false;
-        dsGV.add(gv);
-        return true;
+        if (gvDAL.findByMaGV(gv.getMaGV()) != null) {
+            System.out.println("Mã giáo viên đã tồn tại!");
+            return false;
+        }
+        return gvDAL.insert(gv);
     }
 
+    // ===== SỬA =====
     public boolean suaGiaoVien(GiaoVien gv) {
         if (gv == null) return false;
-        for (int i = 0; i < dsGV.size(); i++) {
-            if (dsGV.get(i).getMaGV().equals(gv.getMaGV())) {
-                dsGV.set(i, gv);
-                return true;
-            }
-        }
-        return false;
+        return gvDAL.update(gv);
     }
 
+    // ===== XÓA =====
     public boolean xoaGiaoVien(String maGV) {
-        return dsGV.removeIf(g -> g.getMaGV().equals(maGV));
+        return gvDAL.delete(maGV);
+    }
+
+    // ===== TÌM THEO MÃ =====
+    public GiaoVien getByMaGV(String maGV) {
+        return gvDAL.findByMaGV(maGV);
     }
 }

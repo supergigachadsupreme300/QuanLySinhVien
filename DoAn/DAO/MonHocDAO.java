@@ -1,6 +1,6 @@
-package DAO;
+package DataAcessLayer;
 
-import DataObject.MonHoc;
+import DataObject.Mon;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,46 +11,25 @@ public class MonHocDAO {
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=TenCuaDatabase;"
                                     + "encrypt=true;trustServerCertificate=true;";
     private static final String USER = "sa";
-    private static final String PASS = "123456"; // thay bằng mật khẩu thật
+    private static final String PASS = "your_password_here"; // thay bằng mật khẩu thật
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
     }
 
-    public MonHoc getByMa(String maMon) {
-        String sql = "SELECT * FROM MONHOC WHERE maMon = ? AND trangThai = 1";
-        MonHoc mh = null;
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, maMon);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    mh = new MonHoc();
-                    mh.setMaMon(rs.getString("maMon"));
-                    mh.setTenMon(rs.getNString("tenMon"));
-                    mh.setSoTinChi(rs.getInt("soTinChi"));
-                    mh.setKhoa(rs.getNString("khoa"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return mh;
-    }
-
-    public List<MonHoc> getAll() {
-        List<MonHoc> list = new ArrayList<>();
-        String sql = "SELECT * FROM MONHOC WHERE trangThai = 1 ORDER BY maMon";
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+    // Lấy tất cả môn học đang hoạt động
+    public List<Mon> getAllActive() {
+        List<Mon> list = new ArrayList<>();
+        String sql = "SELECT maMon, tenMon, trangThai FROM MON WHERE trangThai = 1";
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                MonHoc mh = new MonHoc();
-                mh.setMaMon(rs.getString("maMon"));
-                mh.setTenMon(rs.getNString("tenMon"));
-                mh.setSoTinChi(rs.getInt("soTinChi"));
-                mh.setKhoa(rs.getNString("khoa"));
-                list.add(mh);
+                Mon mon = new Mon(
+                    rs.getString("maMon"),
+                    rs.getString("tenMon"),
+                    rs.getInt("trangThai")
+                );
+                list.add(mon);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -58,15 +37,34 @@ public class MonHocDAO {
         return list;
     }
 
-    public boolean them(MonHoc mh) {
-        String sql = "INSERT INTO MONHOC (maMon, tenMon, soTinChi, khoa, trangThai) "
-                   + "VALUES (?, ?, ?, ?, 1)";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, mh.getMaMon());
-            ps.setNString(2, mh.getTenMon());
-            ps.setInt(3, mh.getSoTinChi());
-            ps.setNString(4, mh.getKhoa());
+    // ===== GET ALL ACTIVE (Procedure) =====
+    public List<Mon> getAllActiveByProc() {
+        List<Mon> list = new ArrayList<>();
+        String sql = "{call sp_getAllActiveMon()}"; // procedure trong DB
+        try (CallableStatement cs = con.prepareCall(sql);
+             ResultSet rs = cs.executeQuery()) {
+            while (rs.next()) {
+                Mon mon = new Mon(
+                    rs.getString("maMon"),
+                    rs.getString("tenMon"),
+                    rs.getInt("trangThai")
+                );
+                list.add(mon);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    
+    // Thêm môn học
+    public boolean insert(Mon mon) {
+        String sql = "INSERT INTO MON(maMon, tenMon, trangThai) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, mon.getMaMon());
+            ps.setString(2, mon.getTenMon());
+            ps.setInt(3, mon.getTrangThai());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,15 +72,13 @@ public class MonHocDAO {
         }
     }
 
-    public boolean sua(MonHoc mh) {
-        String sql = "UPDATE MONHOC SET tenMon = ?, soTinChi = ?, khoa = ? "
-                   + "WHERE maMon = ? AND trangThai = 1";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setNString(1, mh.getTenMon());
-            ps.setInt(2, mh.getSoTinChi());
-            ps.setNString(3, mh.getKhoa());
-            ps.setString(4, mh.getMaMon());
+    // Cập nhật môn học
+    public boolean update(Mon mon) {
+        String sql = "UPDATE MON SET tenMon=?, trangThai=? WHERE maMon=?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, mon.getTenMon());
+            ps.setInt(2, mon.getTrangThai());
+            ps.setString(3, mon.getMaMon());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -90,15 +86,34 @@ public class MonHocDAO {
         }
     }
 
-    public boolean xoa(String maMon) {
-        String sql = "UPDATE MONHOC SET trangThai = 0 WHERE maMon = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    // Soft delete: đổi trạng thái = 0
+    public boolean delete(String maMon) {
+        String sql = "UPDATE MON SET trangThai = 0 WHERE maMon=?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maMon);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    // Tìm môn học theo mã
+    public Mon findByMaMon(String maMon) {
+        String sql = "SELECT maMon, tenMon, trangThai FROM MON WHERE maMon=?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maMon);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Mon(
+                    rs.getString("maMon"),
+                    rs.getString("tenMon"),
+                    rs.getInt("trangThai")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
