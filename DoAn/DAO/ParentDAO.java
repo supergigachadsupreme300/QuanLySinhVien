@@ -1,7 +1,6 @@
 package DAO;
 
 import DataObject.Parent;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ public class ParentDAO {
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=TenCuaDatabase;"
                                     + "encrypt=true;trustServerCertificate=true;";
     private static final String USER = "sa";
-    private static final String PASS = "your_password_here";  // thay bằng mật khẩu thật
+    private static final String PASS = "123456";  // thay bằng mật khẩu thật
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
