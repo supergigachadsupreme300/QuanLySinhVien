@@ -1,49 +1,97 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.GiaoVienDAL;
+import DAO.GiaoVienDAO;
 import DataObject.GiaoVien;
 import java.util.List;
 
+/**
+ * Lớp xử lý logic nghiệp vụ cho Giáo Viên
+ */
 public class GiaoVienBLL {
-    // Tạo sẵn DAL bên trong BUS
-    GiaoVienDAL gvDAL = new GiaoVienDAL();
 
-    // ===== GET ALL =====
+    private final GiaoVienDAO dao;
+
+    public GiaoVienBLL() {
+        this.dao = new GiaoVienDAO();
+    }
+
     public List<GiaoVien> getAll() {
-        return gvDAL.getAll();
+        return dao.getAll();
     }
 
-    public List<GiaoVien> getAllActive() {
-        return gvDAL.getAllActive();
-    }
-
-    public List<GiaoVien> getAllActiveProc(){
-        return gvDAL.getAllActiveByProc();
-    }
-    
-    // ===== THÊM =====
     public boolean themGiaoVien(GiaoVien gv) {
-        if (gv == null) return false;
-        if (gvDAL.findByMaGV(gv.getMaGV()) != null) {
-            System.out.println("Mã giáo viên đã tồn tại!");
+        if (gv == null) {
             return false;
         }
-        return gvDAL.insert(gv);
+
+        String error = validate(gv);
+        if (error != null) {
+            System.err.println("Validate lỗi: " + error);
+            return false;
+        }
+
+        // Kiểm tra trùng mã giáo viên
+        if (getByMa(gv.getMaGV()) != null) {
+            System.err.println("Mã giáo viên đã tồn tại: " + gv.getMaGV());
+            return false;
+        }
+
+        return dao.them(gv);
     }
 
-    // ===== SỬA =====
     public boolean suaGiaoVien(GiaoVien gv) {
-        if (gv == null) return false;
-        return gvDAL.update(gv);
+        if (gv == null || gv.getMaGV() == null || gv.getMaGV().trim().isEmpty()) {
+            return false;
+        }
+
+        String error = validate(gv);
+        if (error != null) {
+            System.err.println("Validate lỗi khi sửa: " + error);
+            return false;
+        }
+
+        return dao.sua(gv);
     }
 
-    // ===== XÓA =====
     public boolean xoaGiaoVien(String maGV) {
-        return gvDAL.delete(maGV);
+        if (maGV == null || maGV.trim().isEmpty()) {
+            return false;
+        }
+
+        return dao.xoa(maGV);
     }
 
-    // ===== TÌM THEO MÃ =====
-    public GiaoVien getByMaGV(String maGV) {
-        return gvDAL.findByMaGV(maGV);
+    public GiaoVien getByMa(String maGV) {
+        if (maGV == null || maGV.trim().isEmpty()) {
+            return null;
+        }
+        return dao.getByMa(maGV);
+    }
+
+    private String validate(GiaoVien gv) {
+        if (gv.getMaGV() == null || gv.getMaGV().trim().isEmpty()) {
+            return "Mã giáo viên không được để trống";
+        }
+        if (gv.getHoTen() == null || gv.getHoTen().trim().isEmpty()) {
+            return "Họ tên không được để trống";
+        }
+        if (gv.getSdt() == null || gv.getSdt().trim().isEmpty()) {
+            return "Số điện thoại không được để trống";
+        }
+        if (gv.getEmail() == null || gv.getEmail().trim().isEmpty()) {
+            return "Email không được để trống";
+        }
+
+        // Validate định dạng email cơ bản
+        if (!gv.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            return "Email không đúng định dạng";
+        }
+
+        // Validate số điện thoại (10-11 số)
+        if (!gv.getSdt().matches("\\d{10,11}")) {
+            return "Số điện thoại phải là 10 hoặc 11 chữ số";
+        }
+
+        return null; // hợp lệ
     }
 }
