@@ -4,6 +4,7 @@ import java.awt.*; //java -cp ".;lib\miglayout-core-11.4.2.jar;lib\miglayout-swi
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.sql.Connection;
 import BusinessLogicLayer.HocSinhBLL;
 import GUI.FormHocSinh;
 import net.miginfocom.swing.MigLayout;
@@ -19,21 +20,28 @@ public class student_GUI extends JPanel {
     private JTextField txtNgaySinh;
     private JTextField txtGioiTinh;
     private JTextField txtDiaChi;
+    private Diem diemPanel;
+    private HanhKiem hanhKiemPanel;
+    private Connection connection;
 
     // Constructor mặc định (tạo đối tượng rỗng để test)
     public student_GUI() {
-        this(new HocSinh());
+        this(new HocSinh(), null);
     }
 
-    // Constructor nhận đối tượng HocSinh
-    public student_GUI(HocSinh hs) {
+    // Constructor nhận đối tượng HocSinh và Connection
+    public student_GUI(HocSinh hs, Connection conn) {
         this.hocSinh = hs != null ? hs : new HocSinh();
+        this.connection = conn;
         setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]10[]10[]"));
-        panel.setBackground(Color.CYAN);
-        panel.setBorder(BorderFactory.createTitledBorder("THÔNG TIN HỌC SINH"));
-        add(panel, BorderLayout.CENTER);
+        // Panel chính gồm: info + điểm/hạnh kiểm
+        JPanel mainPanel = new JPanel(new MigLayout("fill, insets 10", "[grow]", "[fill][]"));
+        
+        // Panel thông tin học sinh
+        JPanel infoPanel = new JPanel(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]10[]10[]"));
+        infoPanel.setBackground(Color.CYAN);
+        infoPanel.setBorder(BorderFactory.createTitledBorder("THÔNG TIN HỌC SINH"));
 
         // Ảnh (tải nếu tồn tại, tránh NullPointerException)
         java.net.URL imgUrl = getClass().getResource("OIP.jpg");
@@ -41,91 +49,49 @@ public class student_GUI extends JPanel {
             ImageIcon icon = new ImageIcon(imgUrl);
             Image img = icon.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
             JLabel label = new JLabel(new ImageIcon(img));
-            panel.add(label, "span, center");
+            infoPanel.add(label, "span, center");
         } else {
-            // nếu không có ảnh, dùng khoảng trống hoặc nhãn thông báo
-            panel.add(new JLabel("[No Image]"), "span, center");
+            infoPanel.add(new JLabel("[No Image]"), "span, center");
         }
 
-        // Các trường thông tin
-        panel.add(new JLabel("Mã học sinh:"));
-        txtMaHS = new JTextField(20);
-        txtMaHS.setEditable(false);
-        panel.add(txtMaHS, "growx");
+        // Các trường thông tin (tạo bằng helper để giảm trùng lặp)
+        txtMaHS = createReadOnlyField(infoPanel, "Mã học sinh:");
+        txtTen  = createReadOnlyField(infoPanel, "Tên:");
+        txtLop  = createReadOnlyField(infoPanel, "Lớp:");
+        txtNgaySinh = createReadOnlyField(infoPanel, "Ngày sinh:");
+        txtGioiTinh = createReadOnlyField(infoPanel, "Giới tính:");
+        txtDiaChi = createReadOnlyField(infoPanel, "Địa chỉ:");
 
-        panel.add(new JLabel("Tên:"));
-        txtTen = new JTextField(20);
-        txtTen.setEditable(false);
-        panel.add(txtTen, "growx");
-
-        panel.add(new JLabel("Lớp:"));
-        txtLop = new JTextField(20);
-        txtLop.setEditable(false);
-        panel.add(txtLop, "growx");
-
-        panel.add(new JLabel("Ngày sinh:"));
-        txtNgaySinh = new JTextField(20);
-        txtNgaySinh.setEditable(false);
-        panel.add(txtNgaySinh, "growx");
-
-        panel.add(new JLabel("Giới tính:"));
-        txtGioiTinh = new JTextField(20);
-        txtGioiTinh.setEditable(false);
-        panel.add(txtGioiTinh, "growx");
-
-        panel.add(new JLabel("Địa chỉ:"));
-        txtDiaChi = new JTextField(20);
-        txtDiaChi.setEditable(false);
-        panel.add(txtDiaChi, "growx, wrap");
-
-        // bố mẹ buttons row (above others)
+        // bố mẹ buttons row
         JButton btnBo = new JButton("Bố");
         JButton btnMe = new JButton("Mẹ");
-        panel.add(btnBo, "span, split 2, center");
-        panel.add(btnMe, "wrap");
+        infoPanel.add(btnBo, "span, split 2, center");
+        infoPanel.add(btnMe, "wrap");
 
         // Các nút chức năng chính
         JButton btnXemDiem = new JButton("Xem điểm");
         JButton btnHanhKiem = new JButton("Hạnh kiểm");
-        panel.add(btnXemDiem, "span, split 2, center");
-        panel.add(btnHanhKiem, "wrap");
+        infoPanel.add(btnXemDiem, "span, split 2, center");
+        infoPanel.add(btnHanhKiem, "wrap");
 
-        // action listeners to open corresponding panels
+        // action listeners to show/hide panels
         btnXemDiem.addActionListener(e -> {
-            JFrame f = new JFrame("Điểm");
-            f.setSize(500, 400);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new Diem());
-            f.setVisible(true);
+            if (diemPanel != null) {
+                diemPanel.loadDiem(hocSinh.getMaHS());
+                diemPanel.setVisible(!diemPanel.isVisible());
+            }
         });
 
         btnHanhKiem.addActionListener(e -> {
-            JFrame f = new JFrame("Hạnh kiểm");
-            f.setSize(400, 300);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new HanhKiem());
-            f.setVisible(true);
+            if (hanhKiemPanel != null) {
+                hanhKiemPanel.loadHanhKiem(hocSinh.getMaHS());
+                hanhKiemPanel.setVisible(!hanhKiemPanel.isVisible());
+            }
         });
 
         // parent buttons behavior
-        btnBo.addActionListener(e -> {
-            JFrame f = new JFrame("Thông tin phụ huynh - Bố");
-            f.setSize(400, 400);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new parent_GUI());
-            f.setVisible(true);
-        });
-        btnMe.addActionListener(e -> {
-            JFrame f = new JFrame("Thông tin phụ huynh - Mẹ");
-            f.setSize(400, 400);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new parent_GUI());
-            f.setVisible(true);
-        });
+        btnBo.addActionListener(e -> openParentWindow("Thông tin phụ huynh - Bố"));
+        btnMe.addActionListener(e -> openParentWindow("Thông tin phụ huynh - Mẹ"));
 
         // Buttons: center-aligned Edit and Delete
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
@@ -133,11 +99,22 @@ public class student_GUI extends JPanel {
         JButton btnEdit = new JButton("Sửa");
         btnRow.add(btnEdit);
         btnRow.add(btnXoa);
-        // ensure the button row takes full width and centers its contents
-        panel.add(btnRow, "span, growx, align center, wrap");
+        infoPanel.add(btnRow, "span, growx, align center, wrap");
 
-        // set preferred size smaller when embedded
-        setPreferredSize(new Dimension(360, 300));
+        mainPanel.add(infoPanel, "grow, wrap");
+        
+        // Panel cho Điểm và Hạnh kiểm
+        if (connection != null) {
+            diemPanel = new Diem(connection);
+            diemPanel.setVisible(false);
+            mainPanel.add(diemPanel, "growx, wrap");
+            
+            hanhKiemPanel = new HanhKiem(connection);
+            hanhKiemPanel.setVisible(false);
+            mainPanel.add(hanhKiemPanel, "growx");
+        }
+        
+        add(new JScrollPane(mainPanel), BorderLayout.CENTER);
 
         // action listeners using HocSinhBLL reference
         btnXoa.addActionListener(ev -> {
@@ -222,12 +199,37 @@ public class student_GUI extends JPanel {
         }
     }
 
-    // removed external listener - use BLL reference via setHocSinhBLL()
-
     // Phương thức cập nhật đối tượng HocSinh
     public void setHocSinh(HocSinh hs) {
         this.hocSinh = hs;
         updateDisplay();
+    }
+
+    // --------------------------------
+    // Utility helpers used within this panel
+    // --------------------------------
+
+    /**
+     * Create a labeled, non-editable text field and add it to the given panel.
+     */
+    private JTextField createReadOnlyField(JPanel panel, String label) {
+        panel.add(new JLabel(label));
+        JTextField fld = new JTextField(20);
+        fld.setEditable(false);
+        panel.add(fld, "growx");
+        return fld;
+    }
+
+    /**
+     * Open a simple parent info frame with given title.
+     */
+    private void openParentWindow(String title) {
+        JFrame f = new JFrame(title);
+        f.setSize(400, 400);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setLocationRelativeTo(null);
+        f.add(new parent_GUI());
+        f.setVisible(true);
     }
 
     // Phương thức lấy đối tượng HocSinh hiện tại
@@ -245,7 +247,7 @@ public class student_GUI extends JPanel {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Student Information");
-            frame.setSize(400, 550);
+            frame.setSize(500, 600);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.add(new student_GUI());
             frame.setVisible(true);

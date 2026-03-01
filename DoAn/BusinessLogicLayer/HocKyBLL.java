@@ -2,11 +2,20 @@ package BusinessLogicLayer;
 
 import DataAcessLayer.HocKyDAL;
 import DataObject.HocKy;
+import java.sql.Connection;
 import java.util.List;
 
 public class HocKyBLL {
     // Tạo sẵn DAL bên trong BUS
     HocKyDAL hkDAL = new HocKyDAL();
+    
+    public HocKyBLL() {
+        this.hkDAL = new HocKyDAL();
+    }
+    
+    public HocKyBLL(Connection con) {
+        this.hkDAL = new HocKyDAL(con);
+    }
 
     // ===== GET ALL =====
     public List<HocKy> getAll() {
