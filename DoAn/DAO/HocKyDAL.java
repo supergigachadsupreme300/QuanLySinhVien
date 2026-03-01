@@ -22,7 +22,7 @@ public class HocKyDAL {
     // ===== GET ALL =====
     public List<HocKy> getAll() {
         List<HocKy> list = new ArrayList<>();
-        String sql = "SELECT maHK, tenHK, maNam, trangThai FROM HOCKY";
+        String sql = "SELECT maHK, tenHK, maNam, ngayBatDau, ngayKetThuc, trangThai FROM HOCKY";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -30,7 +30,9 @@ public class HocKyDAL {
                     rs.getString("maHK"),
                     rs.getString("tenHK"),
                     rs.getString("maNam"),
-                    rs.getInt("trangThai")
+                    rs.getDate("ngayBatDau").toLocalDate(),
+                    rs.getDate("ngayKetThuc").toLocalDate(),
+                    rs.getBoolean("trangThai") ? 1 : 0
                 );
                 list.add(hk);
             }
@@ -43,7 +45,7 @@ public class HocKyDAL {
     // ===== GET ALL ACTIVE =====
     public List<HocKy> getAllActive() {
         List<HocKy> list = new ArrayList<>();
-        String sql = "SELECT maHK, tenHK, maNam, trangThai FROM HOCKY WHERE trangThai = 1";
+        String sql = "SELECT maHK, tenHK, maNam, ngayBatDau, ngayKetThuc, trangThai FROM HOCKY WHERE trangThai = 1";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -51,7 +53,9 @@ public class HocKyDAL {
                     rs.getString("maHK"),
                     rs.getString("tenHK"),
                     rs.getString("maNam"),
-                    rs.getInt("trangThai")
+                    rs.getDate("ngayBatDau").toLocalDate(),
+                    rs.getDate("ngayKetThuc").toLocalDate(),
+                    rs.getBoolean("trangThai") ? 1 : 0
                 );
                 list.add(hk);
             }
@@ -72,7 +76,9 @@ public class HocKyDAL {
                     rs.getString("maHK"),
                     rs.getString("tenHK"),
                     rs.getString("maNam"),
-                    rs.getInt("trangThai")
+                    rs.getDate("ngayBatDau").toLocalDate(),
+                    rs.getDate("ngayKetThuc").toLocalDate(),
+                    rs.getBoolean("trangThai") ? 1 : 0
                 );
                 list.add(hk);
             }
@@ -85,12 +91,14 @@ public class HocKyDAL {
     
     // ===== INSERT =====
     public boolean insert(HocKy hk) {
-        String sql = "INSERT INTO HOCKY(maHK, tenHK, maNam, trangThai) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO HOCKY(maHK, tenHK, maNam, ngayBatDau, ngayKetThuc, trangThai) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, hk.getMaHK());
             ps.setString(2, hk.getTenHK());
             ps.setString(3, hk.getMaNH());
-            ps.setInt(4, hk.getTrangThai());
+            ps.setDate(4, Date.valueOf(hk.getNgayBatDau()));
+            ps.setDate(5, Date.valueOf(hk.getNgayKetThuc()));
+            ps.setBoolean(6, hk.getTrangThai() == 1);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,12 +108,14 @@ public class HocKyDAL {
 
     // ===== UPDATE =====
     public boolean update(HocKy hk) {
-        String sql = "UPDATE HOCKY SET tenHK=?, maNam=?, trangThai=? WHERE maHK=?";
+        String sql = "UPDATE HOCKY SET tenHK=?, maNam=?, ngayBatDau=?, ngayKetThuc=?, trangThai=? WHERE maHK=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, hk.getTenHK());
             ps.setString(2, hk.getMaNH());
-            ps.setInt(3, hk.getTrangThai());
-            ps.setString(4, hk.getMaHK());
+            ps.setDate(3, Date.valueOf(hk.getNgayBatDau()));
+            ps.setDate(4, Date.valueOf(hk.getNgayKetThuc()));
+            ps.setBoolean(5, hk.getTrangThai() == 1);
+            ps.setString(6, hk.getMaHK());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -127,7 +137,7 @@ public class HocKyDAL {
 
     // ===== FIND BY ID =====
     public HocKy findByMaHK(String maHK) {
-        String sql = "SELECT maHK, tenHK, maNam, trangThai FROM HOCKY WHERE maHK=?";
+        String sql = "SELECT maHK, tenHK, maNam, ngayBatDau, ngayKetThuc, trangThai FROM HOCKY WHERE maHK=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maHK);
             ResultSet rs = ps.executeQuery();
@@ -136,7 +146,9 @@ public class HocKyDAL {
                     rs.getString("maHK"),
                     rs.getString("tenHK"),
                     rs.getString("maNam"),
-                    rs.getInt("trangThai")
+                    rs.getDate("ngayBatDau").toLocalDate(),
+                    rs.getDate("ngayKetThuc").toLocalDate(),
+                    rs.getBoolean("trangThai") ? 1 : 0
                 );
             }
         } catch (SQLException e) {
@@ -145,3 +157,4 @@ public class HocKyDAL {
         return null;
     }
 }
+
