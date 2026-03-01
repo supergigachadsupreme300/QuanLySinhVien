@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.NamHocDAL;
+import DAO.NamHocDAL;
 import DataObject.NamHoc;
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package DataAcessLayer;
+package DAO;
 
-import DataAcessLayer.DatabaseConnect;
+import DAO.DatabaseConnect;
 import DataObject.Diem;
 import java.sql.*;
 import java.util.ArrayList;

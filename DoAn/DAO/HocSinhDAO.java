@@ -1,6 +1,6 @@
 package DAO;
 
-import DataAcessLayer.DatabaseConnect;
+import DAO.DatabaseConnect;
 import DataObject.HocSinh;
 import java.sql.*;
 import java.util.ArrayList;
@@ -197,5 +197,14 @@ public HocSinh findByMaHS(String maHS) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    // ===== ALIAS METHODS =====
+    public boolean insert(HocSinh hs) {
+        return add(hs);
+    }
+
+    public List<HocSinh> getByMaLop(String maLop) {
+        return getByClass(maLop);
     }
 }

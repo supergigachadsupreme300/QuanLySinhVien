@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.DiemDAL;
+import DAO.DiemDAL;
 import DataObject.Diem;
 import java.sql.Connection;
 import java.util.List;

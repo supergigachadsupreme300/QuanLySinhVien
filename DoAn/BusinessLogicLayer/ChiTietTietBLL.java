@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.ChiTietTietDAL;
+import DAO.ChiTietTietDAL;
 import DataObject.ChiTietTiet;
 import java.util.List;
 

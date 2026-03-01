@@ -1,6 +1,6 @@
 package DAO;
 
-import DataAcessLayer.DatabaseConnect;
+import DAO.DatabaseConnect;
 import DataObject.GiaoVien;
 import java.sql.*;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class GiaoVienDAO {
                     gv = new GiaoVien();
                     gv.setMaGV(rs.getString("maGV"));
                     gv.setHoTen(rs.getNString("hoTen"));
-                    gv.setSdt(rs.getString("sdt"));
+                    gv.setDienThoai(rs.getString("sdt"));
                     gv.setEmail(rs.getString("email"));
                 }
             }
@@ -47,7 +47,7 @@ public class GiaoVienDAO {
                 GiaoVien gv = new GiaoVien();
                 gv.setMaGV(rs.getString("maGV"));
                 gv.setHoTen(rs.getNString("hoTen"));
-                gv.setSdt(rs.getString("sdt"));
+                gv.setDienThoai(rs.getString("sdt"));
                 gv.setEmail(rs.getString("email"));
                 list.add(gv);
             }
@@ -66,7 +66,7 @@ public class GiaoVienDAO {
                 GiaoVien gv = new GiaoVien();
                 gv.setMaGV(rs.getString("maGV"));
                 gv.setHoTen(rs.getNString("hoTen"));
-                gv.setSdt(rs.getString("sdt"));
+                gv.setDienThoai(rs.getString("sdt"));
                 gv.setEmail(rs.getString("email"));
                 gv.setDiaChi(rs.getString("diaChi"));
                 gv.setTrangThai(rs.getInt("trangThai"));
@@ -88,7 +88,7 @@ public class GiaoVienDAO {
                 GiaoVien gv = new GiaoVien();
                 gv.setMaGV(rs.getString("maGV"));
                 gv.setHoTen(rs.getNString("hoTen"));
-                gv.setSdt(rs.getString("sdt"));
+                gv.setDienThoai(rs.getString("sdt"));
                 gv.setEmail(rs.getString("email"));
                 gv.setDiaChi(rs.getString("diaChi"));
                 gv.setTrangThai(rs.getInt("trangThai"));
@@ -108,7 +108,7 @@ public class GiaoVienDAO {
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, gv.getMaGV());
             ps.setNString(2, gv.getHoTen());
-            ps.setString(3, gv.getSdt());
+            ps.setString(3, gv.getDienThoai());
             ps.setString(4, gv.getEmail());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -122,7 +122,7 @@ public class GiaoVienDAO {
                 + "WHERE maGV = ? AND trangThai = 1";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setNString(1, gv.getHoTen());
-            ps.setString(2, gv.getSdt());
+            ps.setString(2, gv.getDienThoai());
             ps.setString(3, gv.getEmail());
             ps.setString(4, gv.getMaGV());
             return ps.executeUpdate() > 0;

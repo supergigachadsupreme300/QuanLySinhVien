@@ -1,4 +1,4 @@
-package DataAcessLayer;
+package DAO;
 
 import DataObject.XepLoai;
 import java.sql.*;

@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.LopDAL;
+import DAO.LopDAL;
 import DataObject.Lop;
 import java.sql.Connection;
 import java.util.List;

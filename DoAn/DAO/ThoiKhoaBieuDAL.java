@@ -1,4 +1,4 @@
-package DataAcessLayer;
+package DAO;
 
 import DataObject.ThoiKhoaBieu;
 import java.sql.*;

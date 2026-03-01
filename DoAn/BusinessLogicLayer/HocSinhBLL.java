@@ -1,16 +1,16 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.HocSinhDAL;
+import DAO.HocSinhDAO;
 import DataObject.HocSinh;
 import java.sql.Connection;
 import java.util.List;
 
 public class HocSinhBLL {
     // Tạo sẵn đối tượng DAL bên trong BUS
-    HocSinhDAL hsDAL = new HocSinhDAL();
+    HocSinhDAO hsDAL = new HocSinhDAO();
 
     public HocSinhBLL(Connection con) {
-        this.hsDAL = new HocSinhDAL(con);
+        this.hsDAL = new HocSinhDAO(con);
     }
     
     public List<HocSinh> getAll() {

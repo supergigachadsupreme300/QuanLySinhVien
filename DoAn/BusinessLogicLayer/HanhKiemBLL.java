@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.HanhKiemDAL;
+import DAO.HanhKiemDAL;
 import DataObject.HanhKiem;
 import java.util.List;
 

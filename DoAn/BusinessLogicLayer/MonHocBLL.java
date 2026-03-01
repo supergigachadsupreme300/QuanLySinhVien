@@ -1,7 +1,7 @@
 package BusinessLogicLayer;
 
 import DAO.MonHocDAO;
-import DataObject.MonHoc;
+import DataObject.Mon;
 import java.util.List;
 
 /**
@@ -18,16 +18,16 @@ public class MonHocBLL {
     /**
      * Lấy toàn bộ danh sách môn học
      */
-    public List<MonHoc> getAll() {
+    public List<Mon> getAll() {
         return dao.getAll();
     }
 
     /**
      * Thêm mới một môn học
-     * @param mh đối tượng MonHoc cần thêm
+     * @param mh đối tượng Mon cần thêm
      * @return true nếu thành công, false nếu thất bại hoặc vi phạm ràng buộc
      */
-    public boolean themMonHoc(MonHoc mh) {
+    public boolean themMonHoc(Mon mh) {
         if (mh == null) {
             return false;
         }
@@ -53,7 +53,7 @@ public class MonHocBLL {
      * @param mh đối tượng đã cập nhật (phải có mã môn)
      * @return true nếu sửa thành công
      */
-    public boolean suaMonHoc(MonHoc mh) {
+    public boolean suaMonHoc(Mon mh) {
         if (mh == null || mh.getMaMon() == null || mh.getMaMon().trim().isEmpty()) {
             return false;
         }
@@ -87,7 +87,7 @@ public class MonHocBLL {
      * @param maMon mã môn cần tìm
      * @return đối tượng hoặc null nếu không tìm thấy
      */
-    public MonHoc getByMa(String maMon) {
+    public Mon getByMa(String maMon) {
         if (maMon == null || maMon.trim().isEmpty()) {
             return null;
         }
@@ -98,7 +98,7 @@ public class MonHocBLL {
     //               HÀM VALIDATE NGHIỆP VỤ
     // ────────────────────────────────────────────────
 
-    private String validate(MonHoc mh) {
+    private String validate(Mon mh) {
         if (mh.getMaMon() == null || mh.getMaMon().trim().isEmpty()) {
             return "Mã môn học không được để trống";
         }

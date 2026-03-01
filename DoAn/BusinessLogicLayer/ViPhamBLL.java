@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.ViPhamDAO;
+import DAO.ViPhamDAO;
 import DataObject.ViPham;
 import java.util.List;
 

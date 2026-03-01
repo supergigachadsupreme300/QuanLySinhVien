@@ -3,7 +3,7 @@ package GUI;
 import BusinessLogicLayer.PhanCongBLL;
 import BusinessLogicLayer.LopBLL;
 import BusinessLogicLayer.GiaoVienBLL;
-import BusinessLogicLayer.MonBLL;
+import BusinessLogicLayer.MonHocBLL;
 import BusinessLogicLayer.NamHocBLL;
 import DataObject.PhanCong;
 import DataObject.Lop;
@@ -618,7 +618,7 @@ public class FormPhanCong extends JPanel {
 
     private void loadComboMon() {
         cboMon.removeAllItems();
-        for (Mon m : new MonBLL().getAllActive()) {
+        for (Mon m : new MonHocBLL().getAllActive()) {
             cboMon.addItem(m);
         }
     }

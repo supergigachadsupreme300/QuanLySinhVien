@@ -11,7 +11,7 @@ import BusinessLogicLayer.GiaoVienBLL;
 import BusinessLogicLayer.LopBLL;
 import BusinessLogicLayer.HocSinhBLL;
 import BusinessLogicLayer.NamHocBLL;
-import DataAcessLayer.DatabaseConnect;
+import DAO.DatabaseConnect;
 import DataObject.GiaoVien;
 import DataObject.Lop;
 import DataObject.HocSinh;

@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.ThoiKhoaBieuDAL;
+import DAO.ThoiKhoaBieuDAL;
 import DataObject.ThoiKhoaBieu;
 import java.util.List;
 

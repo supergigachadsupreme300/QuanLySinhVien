@@ -1,19 +1,19 @@
-package DataAcessLayer;
+package DAO;
 
 import DataObject.Mon;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonDAL {
+public class MonHocDAO {
     private Connection con;
 
-    public MonDAL() {
+    public MonHocDAO() {
         DatabaseConnect db = new DatabaseConnect();
         this.con = db.openConnection();
     }
     
-    public MonDAL(Connection con){
+    public MonHocDAO(Connection con){
         this.con = con;
     }
 

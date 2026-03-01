@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.HocKyDAL;
+import DAO.HocKyDAL;
 import DataObject.HocKy;
 import java.sql.Connection;
 import java.util.List;

@@ -1,7 +1,7 @@
 package GUI;
 
 import BusinessLogicLayer.MonHocBLL;
-import DataObject.MonHoc;
+import DataObject.Mon;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -241,8 +241,8 @@ public class FromMonHoc extends JPanel {
 
     // ================= Helper =================
 
-    private MonHoc getEntityFromForm() {
-        MonHoc mh = new MonHoc();
+    private Mon getEntityFromForm() {
+        Mon mh = new Mon();
         mh.setMaMon(txtMaMon.getText().trim());
         mh.setTenMon(txtTenMon.getText().trim());
 

@@ -75,7 +75,7 @@ public class GiaoVienBLL {
         if (gv.getHoTen() == null || gv.getHoTen().trim().isEmpty()) {
             return "Họ tên không được để trống";
         }
-        if (gv.getSdt() == null || gv.getSdt().trim().isEmpty()) {
+        if (gv.getDienThoai() == null || gv.getDienThoai().trim().isEmpty()) {
             return "Số điện thoại không được để trống";
         }
         if (gv.getEmail() == null || gv.getEmail().trim().isEmpty()) {
@@ -88,7 +88,7 @@ public class GiaoVienBLL {
         }
 
         // Validate số điện thoại (10-11 số)
-        if (!gv.getSdt().matches("\\d{10,11}")) {
+        if (!gv.getDienThoai().matches("\\d{10,11}")) {
             return "Số điện thoại phải là 10 hoặc 11 chữ số";
         }
 

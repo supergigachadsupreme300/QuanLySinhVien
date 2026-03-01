@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DataAcessLayer.XepLoaiDAO;
+import DAO.XepLoaiDAO;
 import DataObject.XepLoai;
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package GUI;
 
 import BusinessLogicLayer.ChiTietTietBLL;
-import BusinessLogicLayer.MonBLL;
+import BusinessLogicLayer.MonHocBLL;
 import BusinessLogicLayer.ThoiKhoaBieuBLL;
 import DataObject.ChiTietTiet;
 import DataObject.Mon;
@@ -27,7 +27,7 @@ public class FormChiTietTiet extends JPanel {
     private MainMenu mainFrame;
     private ChiTietTietBLL ctBLL;
     private ThoiKhoaBieuBLL tkbBLL;
-    private MonBLL monBLL;
+    private MonHocBLL monBLL;
 
     private boolean dataChanged = false;
     private List<Change> bufferChanges = new ArrayList<>();
@@ -50,7 +50,7 @@ public class FormChiTietTiet extends JPanel {
         this.mainFrame = frame;
         this.ctBLL = new ChiTietTietBLL();
         this.tkbBLL = new ThoiKhoaBieuBLL();
-        this.monBLL = new MonBLL();
+        this.monBLL = new MonHocBLL();
         initUI();
         loadComboTKB();
         loadComboMon();
