@@ -1,7 +1,7 @@
 package GUI;
 
-import BusinessLogicLayer.ChiTietMonBLL;
-import DataObject.ChiTietMon;
+import BusinessLogicLayer.MonHocBLL;
+import DataObject.Mon;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -11,23 +11,23 @@ import java.util.List;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * FORM QUẢN LÝ CHI TIẾT MÔN HỌC
+ * FORM QUẢN LÝ MÔN HỌC
  */
-public class FromChiTietMon extends JPanel {
+public class FormMonHoc extends JPanel {
 
-    private final ChiTietMonBLL chiTietMonBLL = new ChiTietMonBLL();
+    private final MonHocBLL monHocBLL = new MonHocBLL();
 
     /* ================= TABLE ================= */
-    private JTable tblChiTietMon;
-    private DefaultTableModel modelChiTietMon;
+    private JTable tblMonHoc;
+    private DefaultTableModel modelMonHoc;
 
     /* ================= FORM ================= */
-    private JTextField txtMaChiTiet, txtMaMon, txtTenChiTiet, txtHeSo;
+    private JTextField txtMaMon, txtTenMon, txtSoTinChi, txtKhoa;
 
     /* ================= BUTTON ================= */
     private JButton btnThem, btnSua, btnXoa, btnClear;
 
-    public FromChiTietMon() {
+    public FormMonHoc() {
         initUI();
     }
 
@@ -35,7 +35,7 @@ public class FromChiTietMon extends JPanel {
         setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[grow]"));
 
         // Tiêu đề
-        JLabel lblTitle = new JLabel("QUẢN LÝ CHI TIẾT MÔN HỌC", JLabel.CENTER);
+        JLabel lblTitle = new JLabel("QUẢN LÝ MÔN HỌC", JLabel.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
         lblTitle.setForeground(new Color(0, 102, 204));
         add(lblTitle, "growx, wrap");
@@ -45,27 +45,26 @@ public class FromChiTietMon extends JPanel {
                 "insets 15",
                 "[]15[grow]30[]15[grow]",
                 "[]10[]10[]10[]"));
-        pnlForm.setBorder(BorderFactory.createTitledBorder("Thông tin chi tiết môn"));
+        pnlForm.setBorder(BorderFactory.createTitledBorder("Thông tin môn học"));
 
-        txtMaChiTiet = new JTextField();
         txtMaMon = new JTextField();
-        txtTenChiTiet = new JTextField();
-        txtHeSo = new JTextField();
+        txtTenMon = new JTextField();
+        txtSoTinChi = new JTextField();
+        txtKhoa = new JTextField();
 
-        pnlForm.add(new JLabel("Mã chi tiết:"));
-        pnlForm.add(txtMaChiTiet, "growx");
-        pnlForm.add(new JLabel("Mã môn:"));
-        pnlForm.add(txtMaMon, "growx, wrap");
+        pnlForm.add(new JLabel("Mã môn học:"));
+        pnlForm.add(txtMaMon, "growx");
+        pnlForm.add(new JLabel("Tên môn học:"));
+        pnlForm.add(txtTenMon, "growx, wrap");
 
-        pnlForm.add(new JLabel("Tên chi tiết:"));
-        pnlForm.add(txtTenChiTiet, "growx, span 3, wrap");
-
-        pnlForm.add(new JLabel("Hệ số:"));
-        pnlForm.add(txtHeSo, "growx");
+        pnlForm.add(new JLabel("Số tín chỉ:"));
+        pnlForm.add(txtSoTinChi, "growx");
+        pnlForm.add(new JLabel("Khoa:"));
+        pnlForm.add(txtKhoa, "growx");
 
         add(pnlForm, "growx, wrap");
 
-        // Panel nút chức năng ← THÊM LẠI ĐOẠN NÀY
+        // Panel nút chức năng
         JPanel pnlBtn = new JPanel();
         btnThem = createButton("Thêm", new Color(34, 139, 34)); // xanh lá
         btnSua = createButton("Sửa", new Color(0, 150, 136)); // xanh ngọc
@@ -79,39 +78,39 @@ public class FromChiTietMon extends JPanel {
         add(pnlBtn, "growx, wrap");
 
         // Table hiển thị danh sách
-        modelChiTietMon = new DefaultTableModel(
-                new String[] { "Mã chi tiết", "Mã môn", "Tên chi tiết", "Hệ số" }, 0) {
+        modelMonHoc = new DefaultTableModel(
+                new String[] { "Mã môn", "Tên môn", "Số tín chỉ", "Khoa" }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        tblChiTietMon = new JTable(modelChiTietMon);
-        styleTable(tblChiTietMon);
-        tblChiTietMon.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tblChiTietMon.setPreferredScrollableViewportSize(new Dimension(600, 300));
-        tblChiTietMon.setFillsViewportHeight(true);
+        tblMonHoc = new JTable(modelMonHoc);
+        styleTable(tblMonHoc);
+        tblMonHoc.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tblMonHoc.setPreferredScrollableViewportSize(new Dimension(600, 300));
+        tblMonHoc.setFillsViewportHeight(true);
 
-        tblChiTietMon.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tblChiTietMon.getColumnModel().getColumn(1).setPreferredWidth(100);
-        tblChiTietMon.getColumnModel().getColumn(2).setPreferredWidth(250);
-        tblChiTietMon.getColumnModel().getColumn(3).setPreferredWidth(80);
+        tblMonHoc.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tblMonHoc.getColumnModel().getColumn(1).setPreferredWidth(250);
+        tblMonHoc.getColumnModel().getColumn(2).setPreferredWidth(100);
+        tblMonHoc.getColumnModel().getColumn(3).setPreferredWidth(200);
 
-        JScrollPane spChiTiet = new JScrollPane(tblChiTietMon);
-        spChiTiet.setBorder(BorderFactory.createTitledBorder("Danh sách chi tiết môn"));
-        spChiTiet.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        add(spChiTiet, "grow");
+        JScrollPane spMonHoc = new JScrollPane(tblMonHoc);
+        spMonHoc.setBorder(BorderFactory.createTitledBorder("Danh sách môn học"));
+        spMonHoc.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        add(spMonHoc, "grow");
 
         // Sự kiện
-        btnThem.addActionListener(e -> themChiTietMon());
-        btnSua.addActionListener(e -> suaChiTietMon());
-        btnXoa.addActionListener(e -> xoaChiTietMon());
+        btnThem.addActionListener(e -> themMonHoc());
+        btnSua.addActionListener(e -> suaMonHoc());
+        btnXoa.addActionListener(e -> xoaMonHoc());
         btnClear.addActionListener(e -> clearForm());
 
-        tblChiTietMon.getSelectionModel().addListSelectionListener(e -> {
+        tblMonHoc.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                int row = tblChiTietMon.getSelectedRow();
+                int row = tblMonHoc.getSelectedRow();
                 if (row >= 0) {
                     fillFormFromTable(row);
                     updateButtonState();
@@ -119,24 +118,24 @@ public class FromChiTietMon extends JPanel {
             }
         });
 
-        // Hiệu ứng focus cho các ô nhập
-        addFocusEffect(txtMaChiTiet);
+        // Hiệu ứng focus
         addFocusEffect(txtMaMon);
-        addFocusEffect(txtTenChiTiet);
-        addFocusEffect(txtHeSo);
+        addFocusEffect(txtTenMon);
+        addFocusEffect(txtSoTinChi);
+        addFocusEffect(txtKhoa);
 
         updateButtonState();
-        loadTableChiTietMon();
+        loadTableMonHoc();
     }
 
     // Validate form nhập liệu
     private boolean validateForm() {
-        String maCT = txtMaChiTiet.getText().trim();
         String maMon = txtMaMon.getText().trim();
-        String tenCT = txtTenChiTiet.getText().trim();
-        String heSoStr = txtHeSo.getText().trim();
+        String tenMon = txtTenMon.getText().trim();
+        String soTinChiStr = txtSoTinChi.getText().trim();
+        String khoa = txtKhoa.getText().trim();
 
-        if (maCT.isEmpty() || maMon.isEmpty() || tenCT.isEmpty() || heSoStr.isEmpty()) {
+        if (maMon.isEmpty() || tenMon.isEmpty() || soTinChiStr.isEmpty() || khoa.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Vui lòng nhập đầy đủ thông tin!",
                     "Thiếu dữ liệu", JOptionPane.WARNING_MESSAGE);
@@ -144,45 +143,48 @@ public class FromChiTietMon extends JPanel {
         }
 
         try {
-            int heSo = Integer.parseInt(heSoStr);
-            if (heSo <= 0) {
+            int soTinChi = Integer.parseInt(soTinChiStr);
+            if (soTinChi <= 0) {
                 JOptionPane.showMessageDialog(this,
-                        "Hệ số phải là số nguyên dương (> 0)!",
+                        "Số tín chỉ phải là số nguyên dương (> 0)!",
                         "Lỗi dữ liệu", JOptionPane.ERROR_MESSAGE);
-                txtHeSo.requestFocus();
+                txtSoTinChi.requestFocus();
                 return false;
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this,
-                    "Hệ số phải là số nguyên!",
+                    "Số tín chỉ phải là số nguyên!",
                     "Lỗi dữ liệu", JOptionPane.ERROR_MESSAGE);
-            txtHeSo.requestFocus();
+            txtSoTinChi.requestFocus();
             return false;
         }
+
         return true;
     }
 
-    private void themChiTietMon() {
+    // ================= CRUD =================
+
+    private void themMonHoc() {
         if (!validateForm())
             return;
 
-        ChiTietMon ct = getEntityFromForm();
+        MonHoc mh = getEntityFromForm();
 
-        if (chiTietMonBLL.themChiTietMon(ct)) {
+        if (monHocBLL.themMonHoc(mh)) {
             JOptionPane.showMessageDialog(this,
-                    "Thêm chi tiết môn thành công!",
+                    "Thêm môn học thành công!",
                     "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            loadTableChiTietMon();
+            loadTableMonHoc();
             clearForm();
         } else {
             JOptionPane.showMessageDialog(this,
-                    "Thêm thất bại!\nCó thể mã chi tiết đã tồn tại hoặc lỗi kết nối dữ liệu.",
+                    "Thêm thất bại!\nCó thể mã môn học đã tồn tại hoặc lỗi dữ liệu.",
                     "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void suaChiTietMon() {
-        int row = tblChiTietMon.getSelectedRow();
+    private void suaMonHoc() {
+        int row = tblMonHoc.getSelectedRow();
         if (row < 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần sửa!", "Chưa chọn",
                     JOptionPane.WARNING_MESSAGE);
@@ -199,96 +201,101 @@ public class FromChiTietMon extends JPanel {
         if (confirm != JOptionPane.YES_OPTION)
             return;
 
-        ChiTietMon ct = getEntityFromForm();
+        MonHoc mh = getEntityFromForm();
 
-        if (chiTietMonBLL.suaChiTietMon(ct)) {
+        if (monHocBLL.suaMonHoc(mh)) {
             JOptionPane.showMessageDialog(this, "Sửa thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            loadTableChiTietMon();
+            loadTableMonHoc();
         } else {
             JOptionPane.showMessageDialog(this, "Sửa thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void xoaChiTietMon() {
-        int row = tblChiTietMon.getSelectedRow();
+    private void xoaMonHoc() {
+        int row = tblMonHoc.getSelectedRow();
         if (row < 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa!", "Chưa chọn",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String maChiTiet = modelChiTietMon.getValueAt(row, 0).toString();
+        String maMon = modelMonHoc.getValueAt(row, 0).toString();
 
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Bạn có chắc muốn xóa chi tiết môn này?\nHành động không thể hoàn tác.",
+                "Bạn có chắc muốn xóa môn học này?\nHành động không thể hoàn tác.",
                 "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
 
         if (confirm != JOptionPane.YES_OPTION)
             return;
 
-        if (chiTietMonBLL.xoaChiTietMon(maChiTiet)) {
+        if (monHocBLL.xoaMonHoc(maMon)) {
             JOptionPane.showMessageDialog(this, "Xóa thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            loadTableChiTietMon();
+            loadTableMonHoc();
             clearForm();
         } else {
             JOptionPane.showMessageDialog(this,
-                    "Xóa thất bại!\nCó thể chi tiết môn đang được sử dụng ở nơi khác.",
+                    "Xóa thất bại!\nCó thể môn học đang được sử dụng ở nơi khác.",
                     "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private ChiTietMon getEntityFromForm() {
-        ChiTietMon ct = new ChiTietMon();
-        ct.setMaChiTiet(txtMaChiTiet.getText().trim());
-        ct.setMaMon(txtMaMon.getText().trim());
-        ct.setTenChiTiet(txtTenChiTiet.getText().trim());
+    // ================= Helper =================
+
+    private Mon getEntityFromForm() {
+        Mon mh = new Mon();
+        mh.setMaMon(txtMaMon.getText().trim());
+        mh.setTenMon(txtTenMon.getText().trim());
 
         try {
-            ct.setHeSo(Integer.parseInt(txtHeSo.getText().trim()));
+            mh.setSoTinChi(Integer.parseInt(txtSoTinChi.getText().trim()));
         } catch (NumberFormatException e) {
-            ct.setHeSo(1);
+            mh.setSoTinChi(1); // mặc định nếu lỗi (không nên xảy ra)
         }
-        return ct;
+
+        mh.setKhoa(txtKhoa.getText().trim());
+        return mh;
     }
 
     private void fillFormFromTable(int row) {
-        txtMaChiTiet.setText(modelChiTietMon.getValueAt(row, 0).toString());
-        txtMaMon.setText(modelChiTietMon.getValueAt(row, 1).toString());
-        txtTenChiTiet.setText(modelChiTietMon.getValueAt(row, 2).toString());
-        txtHeSo.setText(modelChiTietMon.getValueAt(row, 3).toString());
+        txtMaMon.setText(modelMonHoc.getValueAt(row, 0).toString());
+        txtTenMon.setText(modelMonHoc.getValueAt(row, 1).toString());
+        txtSoTinChi.setText(modelMonHoc.getValueAt(row, 2).toString());
+        txtKhoa.setText(modelMonHoc.getValueAt(row, 3).toString());
 
-        txtMaChiTiet.setEnabled(false);
+        txtMaMon.setEnabled(false); // Không cho sửa mã khi chỉnh sửa
     }
 
     private void clearForm() {
-        txtMaChiTiet.setText("");
         txtMaMon.setText("");
-        txtTenChiTiet.setText("");
-        txtHeSo.setText("");
-        txtMaChiTiet.setEnabled(true);
-        tblChiTietMon.clearSelection();
+        txtTenMon.setText("");
+        txtSoTinChi.setText("");
+        txtKhoa.setText("");
+        txtMaMon.setEnabled(true);
+        tblMonHoc.clearSelection();
         updateButtonState();
-        txtMaChiTiet.requestFocus();
+        txtMaMon.requestFocus();
     }
 
     private void updateButtonState() {
-        boolean selected = tblChiTietMon.getSelectedRow() >= 0;
+        boolean selected = tblMonHoc.getSelectedRow() >= 0;
         btnSua.setEnabled(selected);
         btnXoa.setEnabled(selected);
     }
 
-    private void loadTableChiTietMon() {
-        modelChiTietMon.setRowCount(0);
-        List<ChiTietMon> list = chiTietMonBLL.getAll();
-        for (ChiTietMon ct : list) {
-            modelChiTietMon.addRow(new Object[] {
-                    ct.getMaChiTiet(),
-                    ct.getMaMon(),
-                    ct.getTenChiTiet(),
-                    ct.getHeSo()
+    private void loadTableMonHoc() {
+        modelMonHoc.setRowCount(0);
+        List<MonHoc> list = monHocBLL.getAll();
+        for (MonHoc mh : list) {
+            modelMonHoc.addRow(new Object[] {
+                    mh.getMaMon(),
+                    mh.getTenMon(),
+                    mh.getSoTinChi(),
+                    mh.getKhoa()
             });
         }
     }
+
+    // ================= UI Utils =================
 
     private JButton createButton(String text, Color bg) {
         JButton btn = new JButton(text);
@@ -302,10 +309,12 @@ public class FromChiTietMon extends JPanel {
         // Hover effect
         Color hoverColor = bg.brighter();
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
                 btn.setBackground(hoverColor);
             }
 
+            @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
                 btn.setBackground(bg);
             }
@@ -336,11 +345,12 @@ public class FromChiTietMon extends JPanel {
         });
     }
 
+    // Test nhanh
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Quản lý Chi tiết Môn học");
+            JFrame frame = new JFrame("Quản lý Môn học");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(new FromChiTietMon());
+            frame.add(new FormMonHoc());
             frame.setSize(800, 600);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);

@@ -13,7 +13,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * FORM QUẢN LÝ GIÁO VIÊN
  */
-public class FromGiaoVien extends JPanel {
+public class FormGiaoVien extends JPanel {
 
     private final GiaoVienBLL giaoVienBLL = new GiaoVienBLL(); // Tạo BLL tương tự ChiTietMonBLL
 
@@ -27,7 +27,7 @@ public class FromGiaoVien extends JPanel {
     /* ================= BUTTON ================= */
     private JButton btnThem, btnSua, btnXoa, btnClear;
 
-    public FromGiaoVien() {
+    public FormGiaoVien() {
         initUI();
     }
 
@@ -333,7 +333,7 @@ public class FromGiaoVien extends JPanel {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Quản lý Giáo viên");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(new FromGiaoVien());
+            frame.add(new FormGiaoVien());
             frame.setSize(800, 600);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
