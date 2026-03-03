@@ -45,7 +45,7 @@ public class MonHocBLL {
             return false;
         }
 
-        return dao.them(mh);
+        return dao.insert(mh);
     }
 
     /**
@@ -64,7 +64,7 @@ public class MonHocBLL {
             return false;
         }
 
-        return dao.sua(mh);
+        return dao.update(mh);
     }
 
     /**
@@ -79,7 +79,7 @@ public class MonHocBLL {
 
      
 
-        return dao.xoa(maMon);
+        return dao.delete(maMon);
     }
 
     /**
@@ -91,7 +91,7 @@ public class MonHocBLL {
         if (maMon == null || maMon.trim().isEmpty()) {
             return null;
         }
-        return dao.getByMa(maMon);
+        return dao.findByMaMon(maMon);
     }
 
     // ────────────────────────────────────────────────
@@ -105,11 +105,8 @@ public class MonHocBLL {
         if (mh.getTenMon() == null || mh.getTenMon().trim().isEmpty()) {
             return "Tên môn học không được để trống";
         }
-        if (mh.getSoTinChi() <= 0) {
-            return "Số tín chỉ phải là số nguyên dương (> 0)";
-        }
-        if (mh.getKhoa() == null || mh.getKhoa().trim().isEmpty()) {
-            return "Khoa không được để trống";
+        if (mh.getTrangThai() < 0) {
+            return "Trạng thái không hợp lệ";
         }
 
        
