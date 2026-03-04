@@ -35,6 +35,18 @@ public class Sidebar extends JPanel {
         add(createTabButton("Quản lí Thời khóa biểu", e -> mainFrame.showForm(MainMenu.TKB)), "growx, wrap");
         add(createTabButton("Quản lý Phân công", e -> mainFrame.showForm(MainMenu.PHANCONG)), "growx, wrap");
         add(createTabButton("Quản lý Chi Tiết Tiết", e -> mainFrame.showForm(MainMenu.CHITIETTIET)), "growx, wrap");
+        add(createTabButton("Quản lý Chi Tiết Môn", e -> mainFrame.showForm(MainMenu.CHITIETHMON)), "growx, wrap");
+        add(createTabButton("Quản lý Điểm", e -> mainFrame.showForm(MainMenu.DIEM)), "growx, wrap");
+        add(createTabButton("Quản lý Giáo viên", e -> mainFrame.showForm(MainMenu.GIAOVIER)), "growx, wrap");
+        add(createTabButton("Quản lý Hạnh kiểm", e -> mainFrame.showForm(MainMenu.HANHKIEM)), "growx, wrap");
+        add(createTabButton("Quản lý Học kỳ", e -> mainFrame.showForm(MainMenu.HOCKY)), "growx, wrap");
+        add(createTabButton("Quản lý Học sinh", e -> mainFrame.showForm(MainMenu.HOCSINH)), "growx, wrap");
+        add(createTabButton("Quản lý Môn học", e -> mainFrame.showForm(MainMenu.MONHOC)), "growx, wrap");
+        add(createTabButton("Quản lý Năm học", e -> mainFrame.showForm(MainMenu.NAMHOC)), "growx, wrap");
+        add(createTabButton("Quản lý Phụ huynh", e -> mainFrame.showForm(MainMenu.PHUHUYNH)), "growx, wrap");
+        add(createTabButton("Báo cáo", e -> mainFrame.showForm(MainMenu.REPORT)), "growx, wrap");
+        add(createTabButton("Quản lý Vi phạm", e -> mainFrame.showForm(MainMenu.VIPHAM)), "growx, wrap");
+        add(createTabButton("Quản lý Xếp loại", e -> mainFrame.showForm(MainMenu.XEPLOAI)), "growx, wrap");
     //    add(createTabButton("Quản lý Lớp Test", e -> mainFrame.showForm(MainMenu.TestLOP)), "growx, wrap");
     //    add(createTabButton("Quản lí Thời khóa biểu Test", e -> mainFrame.showForm(MainMenu.TestTKB)), "growx, wrap");
         add(createTabButton("Thoát", e -> System.exit(0)), "growx");
