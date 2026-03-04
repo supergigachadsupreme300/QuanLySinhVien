@@ -11,6 +11,10 @@ package DAO;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import javax.swing.JOptionPane;
 
 public class DatabaseConnect {
     
@@ -53,13 +57,45 @@ public class DatabaseConnect {
         } catch (ClassNotFoundException ex) {
             System.err.println("❌ Không tìm thấy JDBC Driver!");
             ex.printStackTrace();
-            return null;
+            JOptionPane.showMessageDialog(null,
+                    "Không tìm thấy JDBC Driver. Ứng dụng sẽ chuyển sang chế độ không có database.",
+                    "Lỗi kết nối", JOptionPane.ERROR_MESSAGE);
+            return createFailingConnection("JDBC Driver not found");
             
         } catch (SQLException ex) {
             System.err.println("❌ Lỗi kết nối database!");
             ex.printStackTrace();
-            return null;
+            JOptionPane.showMessageDialog(null,
+                    "Không thể kết nối tới cơ sở dữ liệu. Ứng dụng sẽ chạy ở chế độ không có database.",
+                    "Lỗi kết nối", JOptionPane.ERROR_MESSAGE);
+            return createFailingConnection(ex.getMessage());
         }
+    }
+
+    /**
+     * Tạo một Connection proxy trả về SQLException cho mọi thao tác.
+     * Việc này tránh NullPointerException ở các DAO và cho phép các
+     * catch(SQLException) xử lý lỗi một cách an toàn.
+     */
+    private Connection createFailingConnection(String reason) {
+        InvocationHandler handler = new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                String name = method.getName();
+                // Một số phương thức an toàn có thể trả giá trị mặc định
+                if ("isValid".equals(name)) return false;
+                if ("isClosed".equals(name)) return true;
+                if ("close".equals(name)) return null;
+                // Trả về SQLException cho các thao tác khác
+                throw new SQLException("No database connection: " + reason);
+            }
+        };
+
+        return (Connection) Proxy.newProxyInstance(
+                Connection.class.getClassLoader(),
+                new Class<?>[]{Connection.class},
+                handler
+        );
     }
     
     /**

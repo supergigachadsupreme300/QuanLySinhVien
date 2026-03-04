@@ -1,6 +1,5 @@
 package DAO;
 
-import DAO.DatabaseConnect;
 import DataObject.HocSinh;
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,6 +15,26 @@ public class HocSinhDAO {
 
     public HocSinhDAO(Connection con) {
         this.con = con;
+    }
+
+    public boolean add(HocSinh hs) {
+        String sql = "INSERT INTO HOCSINH (maHS, hoTen, ngaySinh, gioiTinh, diaChi, maLop, trangThai) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, 1)";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, hs.getMaHS());
+            ps.setNString(2, hs.getHoTen());
+            ps.setDate(3, hs.getNgaySinh() != null ? Date.valueOf(hs.getNgaySinh()) : null);
+            ps.setNString(4, hs.getGioiTinh());
+            ps.setNString(5, hs.getDiaChi());
+            ps.setString(6, hs.getMaLop());
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public HocSinh getById(String maHS) {
@@ -36,6 +55,32 @@ public class HocSinhDAO {
                     hs.setDiaChi(rs.getNString("diaChi"));
                     hs.setMaLop(rs.getString("maLop"));
                     hs.setTrangThai(rs.getInt("trangThai")); // dùng cho object bên gui để xét các điều kiện nghiệp vụ them/xoa (formtkb,lop,chitiettiet,phancong)
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hs;
+    }
+
+    // ===== FIND BY MAHS =====
+    public HocSinh findByMaHS(String maHS) {
+        String sql = "SELECT * FROM HOCSINH WHERE maHS = ?";
+        HocSinh hs = null;
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, maHS);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    hs = new HocSinh();
+                    hs.setMaHS(rs.getString("maHS"));
+                    hs.setHoTen(rs.getNString("hoTen"));
+                    Date ns = rs.getDate("ngaySinh");
+                    hs.setNgaySinh(ns != null ? ns.toLocalDate() : null);
+                    hs.setGioiTinh(rs.getNString("gioiTinh"));
+                    hs.setDiaChi(rs.getNString("diaChi"));
+                    hs.setMaLop(rs.getString("maLop"));
                 }
             }
         } catch (SQLException e) {
@@ -67,42 +112,17 @@ public class HocSinhDAO {
         }
         return list;
     }
-// ===== GET ALL ACTIVE =====
-public List<HocSinh> getAllActive() {
-    List<HocSinh> list = new ArrayList<>();
-    String sql = "SELECT * FROM HOCSINH WHERE trangThai = 1 ORDER BY maHS";
 
-    try (Statement stmt = con.createStatement();
-         ResultSet rs = stmt.executeQuery(sql)) {
+    // ===== GET ALL ACTIVE =====
+    public List<HocSinh> getAllActive() {
+        List<HocSinh> list = new ArrayList<>();
+        String sql = "SELECT * FROM HOCSINH WHERE trangThai = 1 ORDER BY maHS";
 
-        while (rs.next()) {
-            HocSinh hs = new HocSinh();
-            hs.setMaHS(rs.getString("maHS"));
-            hs.setHoTen(rs.getNString("hoTen"));
-            Date ns = rs.getDate("ngaySinh");
-            hs.setNgaySinh(ns != null ? ns.toLocalDate() : null);
-            hs.setGioiTinh(rs.getNString("gioiTinh"));
-            hs.setDiaChi(rs.getNString("diaChi"));
-            hs.setMaLop(rs.getString("maLop"));
-            list.add(hs);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return list;
-}
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
-// ===== FIND BY MAHS =====
-public HocSinh findByMaHS(String maHS) {
-    String sql = "SELECT * FROM HOCSINH WHERE maHS = ?";
-    HocSinh hs = null;
-
-    try (PreparedStatement ps = con.prepareStatement(sql)) {
-
-        ps.setString(1, maHS);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                hs = new HocSinh();
+            while (rs.next()) {
+                HocSinh hs = new HocSinh();
                 hs.setMaHS(rs.getString("maHS"));
                 hs.setHoTen(rs.getNString("hoTen"));
                 Date ns = rs.getDate("ngaySinh");
@@ -110,17 +130,15 @@ public HocSinh findByMaHS(String maHS) {
                 hs.setGioiTinh(rs.getNString("gioiTinh"));
                 hs.setDiaChi(rs.getNString("diaChi"));
                 hs.setMaLop(rs.getString("maLop"));
+                list.add(hs);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return list;
     }
-    return hs;
-}
 
-
-    
-    public List<HocSinh> getByClass(String maLop) {
+    public List<HocSinh> getByMaLop(String maLop) {
         List<HocSinh> list = new ArrayList<>();
         String sql = "SELECT * FROM HOCSINH WHERE maLop = ? AND trangThai = 1";
 
@@ -144,26 +162,6 @@ public HocSinh findByMaHS(String maHS) {
             e.printStackTrace();
         }
         return list;
-    }
-
-    public boolean add(HocSinh hs) {
-        String sql = "INSERT INTO HOCSINH (maHS, hoTen, ngaySinh, gioiTinh, diaChi, maLop, trangThai) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, 1)";
-
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, hs.getMaHS());
-            ps.setNString(2, hs.getHoTen());
-            ps.setDate(3, hs.getNgaySinh() != null ? Date.valueOf(hs.getNgaySinh()) : null);
-            ps.setNString(4, hs.getGioiTinh());
-            ps.setNString(5, hs.getDiaChi());
-            ps.setString(6, hs.getMaLop());
-
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     public boolean update(HocSinh hs) {
@@ -199,12 +197,5 @@ public HocSinh findByMaHS(String maHS) {
         }
     }
 
-    // ===== ALIAS METHODS =====
-    public boolean insert(HocSinh hs) {
-        return add(hs);
-    }
-
-    public List<HocSinh> getByMaLop(String maLop) {
-        return getByClass(maLop);
-    }
+    // NOTE: removed alias methods `insert` and `getByClass` to keep canonical names `add` and `getByMaLop`.
 }

@@ -72,9 +72,9 @@ public class FormReport extends JFrame {
                     doc.add(new Paragraph("    TKB HK " + t.getMaHocKy() +
                             " từ " + t.getNgayBatDau() + " đến " + t.getNgayKetThuc()));
                     // chi tiết tiết
-                    List<ChiTietTiet> tiet = new ChiTietTietDAL().getByTKB(t.getMaTKB());
-                    for (ChiTietTiet ct : tiet) {
-                            DataObject.Mon m = new MonHocDAO().getByMa(ct.getMaMon());
+                        List<ChiTietTiet> tiet = new ChiTietTietDAL().getByTKB(t.getMaTKB());
+                        for (ChiTietTiet ct : tiet) {
+                            DataObject.Mon m = new MonHocDAO().findByMaMon(ct.getMaMon());
                             doc.add(new Paragraph("      " + ct.getThu() + " tiết " + ct.getTiet() +
                                 " môn " + (m==null?"<không>":m.getTenMon()) + " phòng " + ct.getPhongHoc()));
                     }
@@ -92,7 +92,7 @@ public class FormReport extends JFrame {
                     doc.add(new Paragraph("  Phụ huynh: " + p.getTenPhH() + " – " + p.getQuanHe()));
                 }
                 // bảng điểm
-                List<DataObject.Diem> diem = diemDao.getByHocSinh(hs.getMaHS());
+                List<DataObject.Diem> diem = diemDao.getByMaHS(hs.getMaHS());
                 for (DataObject.Diem d : diem) {
                     doc.add(new Paragraph("  Điểm " + d.getMaChiTiet() + " HK " + d.getMaHocKy() +
                             ": TX=" + d.getDiemThuongXuyen() + ", GK=" + d.getDiemGiuaKy() +

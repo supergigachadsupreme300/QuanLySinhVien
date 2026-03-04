@@ -37,7 +37,7 @@ public class HocSinhBLL {
         if (hsDAL.findByMaHS(hs.getMaHS()) != null) {
             return false;
         }
-        return hsDAL.insert(hs);
+        return hsDAL.add(hs);
     }
 
     // ===== SỬA =====

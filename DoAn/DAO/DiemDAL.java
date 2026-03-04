@@ -99,10 +99,7 @@ public class DiemDAL {
         return list;
     }
 
-    // compatibility alias
-    public List<Diem> getByHocSinh(String maHS) {
-        return getByMaHS(maHS);
-    }
+    // compatibility alias removed; use `getByMaHS` directly
 
     // ===== ADD =====
     public boolean add(Diem d) {
