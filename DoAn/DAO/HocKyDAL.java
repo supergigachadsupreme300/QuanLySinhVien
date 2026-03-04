@@ -67,25 +67,8 @@ public class HocKyDAL {
 
     // ===== GET ALL ACTIVE (Procedure) =====
     public List<HocKy> getAllActiveByProc() {
-        List<HocKy> list = new ArrayList<>();
-        String sql = "{call sp_getAllActiveHocKy()}"; // procedure trong DB
-        try (CallableStatement cs = con.prepareCall(sql);
-             ResultSet rs = cs.executeQuery()) {
-            while (rs.next()) {
-                HocKy hk = new HocKy(
-                    rs.getString("maHK"),
-                    rs.getString("tenHK"),
-                    rs.getString("maNam"),
-                    rs.getDate("ngayBatDau").toLocalDate(),
-                    rs.getDate("ngayKetThuc").toLocalDate(),
-                    rs.getBoolean("trangThai") ? 1 : 0
-                );
-                list.add(hk);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
+        // Stored procedure may not exist; reuse SELECT implementation
+        return getAllActive();
     }
 
     

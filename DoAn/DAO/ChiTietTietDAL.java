@@ -148,55 +148,14 @@ public class ChiTietTietDAL {
     
     // Lấy tất cả chi tiết tiết đang hoạt động bằng proc
 public List<ChiTietTiet> getAllActiveProc() {
-    List<ChiTietTiet> list = new ArrayList<>();
-    String sql = "{call sp_getAllActiveChiTietTiet()}"; // proc trong DB
-    try (CallableStatement cs = con.prepareCall(sql);
-         ResultSet rs = cs.executeQuery()) {
-        while (rs.next()) {
-            ChiTietTiet ct = new ChiTietTiet(
-                rs.getString("maChiTiet"),
-                rs.getString("maTKB"),
-                rs.getString("maMon"),
-                rs.getString("thu"),
-                rs.getInt("tiet"),
-                rs.getString("phongHoc"),
-                rs.getTime("gioBatDau").toLocalTime().toString(),
-                    rs.getTime("gioKetThuc").toLocalTime().toString(),
-                rs.getInt("trangThai")
-            );
-            list.add(ct);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return list;
+    // Delegate to SELECT based implementation when stored procedure is not available
+    return getAllActive();
 }
 
     // Lấy chi tiết tiết theo mã TKB bằng proc
     public List<ChiTietTiet> getByMaTKBByProc(String maTKB) {
-        List<ChiTietTiet> list = new ArrayList<>();
-        String sql = "{call sp_getChiTietTietByMaTKB(?)}"; // proc trong DB
-        try (CallableStatement cs = con.prepareCall(sql)) {
-            cs.setString(1, maTKB);
-            ResultSet rs = cs.executeQuery();
-            while (rs.next()) {
-                ChiTietTiet ct = new ChiTietTiet(
-                    rs.getString("maChiTiet"),
-                    rs.getString("maTKB"),
-                    rs.getString("maMon"),
-                    rs.getString("thu"),
-                    rs.getInt("tiet"),
-                    rs.getString("phongHoc"),
-                    rs.getTime("gioBatDau").toLocalTime().toString(),
-                    rs.getTime("gioKetThuc").toLocalTime().toString(),
-                    rs.getInt("trangThai")
-                );
-                list.add(ct);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
+        // Use SELECT query implementation instead of missing stored procedure
+        return getByTKB(maTKB);
     }
 
     // Lấy chi tiết tiết theo mã TKB (bằng query chuẩn)

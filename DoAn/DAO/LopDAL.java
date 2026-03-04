@@ -65,25 +65,8 @@ public class LopDAL {
 
     // ===== GET ALL ACTIVE (Procedure) =====
     public List<Lop> getAllActiveByProc() {
-        List<Lop> list = new ArrayList<>();
-        String sql = "{call sp_getAllActiveLop()}"; // procedure trong DB
-        try (CallableStatement cs = con.prepareCall(sql);
-             ResultSet rs = cs.executeQuery()) {
-            while (rs.next()) {
-                Lop lop = new Lop(
-                    rs.getString("maLop"),
-                    rs.getString("tenLop"),
-                    rs.getInt("siSo"),
-                    rs.getString("maNH"),
-                    rs.getString("maGVCN"),
-                    rs.getInt("trangThai")
-                );
-                list.add(lop);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
+        // Stored procedure not present on DB; reuse SELECT
+        return getAllActive();
     }
 
     

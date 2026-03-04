@@ -58,21 +58,8 @@ public class NamHocDAL {
     }
 
     public List<NamHoc> getAllActiveByProc() {
-        List<NamHoc> list = new ArrayList<>();
-        String sql = "{call sp_getAllActiveNamHoc()}";
-        try (CallableStatement cs = con.prepareCall(sql);
-             ResultSet rs = cs.executeQuery()) {
-            while (rs.next()) {
-                list.add(new NamHoc(
-                    rs.getString("maNam"),
-                    rs.getString("tenNam"),
-                    rs.getInt("trangThai")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
+        // Stored procedure may not exist; reuse SELECT-based method
+        return getAllActive();
     }
 
     

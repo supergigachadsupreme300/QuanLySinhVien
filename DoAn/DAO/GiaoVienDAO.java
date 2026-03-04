@@ -1,6 +1,5 @@
 package DAO;
 
-import DAO.DatabaseConnect;
 import DataObject.GiaoVien;
 import java.sql.*;
 import java.util.ArrayList;
@@ -80,24 +79,8 @@ public class GiaoVienDAO {
     
     
     public List<GiaoVien> getAllActiveByProc() {
-        List<GiaoVien> list = new ArrayList<>();
-        String sql = "{call sp_getAllActiveGiaoVien()}";
-        try (CallableStatement cs = con.prepareCall(sql);
-             ResultSet rs = cs.executeQuery()) {
-            while (rs.next()) {
-                GiaoVien gv = new GiaoVien();
-                gv.setMaGV(rs.getString("maGV"));
-                gv.setHoTen(rs.getNString("hoTen"));
-                gv.setDienThoai(rs.getString("sdt"));
-                gv.setEmail(rs.getString("email"));
-                gv.setDiaChi(rs.getString("diaChi"));
-                gv.setTrangThai(rs.getInt("trangThai"));
-                list.add(gv);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
+        // Stored procedure not present in DB; delegate to SELECT-based method
+        return getAll();
     }
 
 

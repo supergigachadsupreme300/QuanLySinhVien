@@ -59,22 +59,8 @@ public class MonHocDAO {
 
     // ===== GET ALL ACTIVE (Procedure) =====
     public List<Mon> getAllActiveByProc() {
-        List<Mon> list = new ArrayList<>();
-        String sql = "{call sp_getAllActiveMon()}"; // procedure trong DB
-        try (CallableStatement cs = con.prepareCall(sql);
-             ResultSet rs = cs.executeQuery()) {
-            while (rs.next()) {
-                Mon mon = new Mon(
-                    rs.getString("maMon"),
-                    rs.getString("tenMon"),
-                    rs.getInt("trangThai")
-                );
-                list.add(mon);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
+        // Stored procedure not required; reuse SELECT implementation
+        return getAllActive();
     }
 
     

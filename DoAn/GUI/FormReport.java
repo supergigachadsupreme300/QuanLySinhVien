@@ -12,15 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class FormReport extends JFrame {
+public class FormReport extends JPanel {
     private JButton btnExport;
 
     public FormReport() {
-        super("Báo cáo tổng hợp");
         btnExport = new JButton("Xuất PDF");
-        add(btnExport);
-        setSize(300,100);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.add(btnExport);
         btnExport.addActionListener(e -> onExport());
     }
 
@@ -112,6 +109,14 @@ public class FormReport extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FormReport().setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            JFrame f = new JFrame("Báo cáo tổng hợp");
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.getContentPane().add(new FormReport());
+            f.pack();
+            f.setSize(400,200);
+            f.setLocationRelativeTo(null);
+            f.setVisible(true);
+        });
     }
 }
