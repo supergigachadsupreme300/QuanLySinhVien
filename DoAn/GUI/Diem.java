@@ -1,7 +1,7 @@
 package GUI;
 
 import javax.swing.*;
-import javax.swing.border.BorderFactory;
+import javax.swing.BorderFactory;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.util.List;
@@ -90,6 +90,11 @@ public class Diem extends JPanel {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
         }
+    }
+
+    // alias for older callers
+    public void loadDiem(String maHS) {
+        loadData(maHS);
     }
     
     private void suaDiem() {

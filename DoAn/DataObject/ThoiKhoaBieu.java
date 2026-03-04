@@ -60,6 +60,10 @@ private String maTKB;
 
     public String getMaHK() { return maHK; }
     public void setMaHK(String maHK) { this.maHK = maHK; }
+
+    // compatibility: allow code to call getMaHocKy()/setMaHocKy()
+    public String getMaHocKy() { return maHK; }
+    public void setMaHocKy(String maHocKy) { this.maHK = maHocKy; }
     
     public int getTrangThai(){return trangThai;}
     public void setTrangThai(int trangThai){this.trangThai = trangThai;}

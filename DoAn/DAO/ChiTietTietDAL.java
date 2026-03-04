@@ -199,5 +199,33 @@ public List<ChiTietTiet> getAllActiveProc() {
         return list;
     }
 
+    // Lấy chi tiết tiết theo mã TKB (bằng query chuẩn)
+    public List<ChiTietTiet> getByTKB(String maTKB) {
+        List<ChiTietTiet> list = new ArrayList<>();
+        String sql = "SELECT maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai FROM CHITIETTIET WHERE maTKB = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maTKB);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ChiTietTiet ct = new ChiTietTiet(
+                        rs.getString("maChiTiet"),
+                        rs.getString("maTKB"),
+                        rs.getString("maMon"),
+                        rs.getString("thu"),
+                        rs.getInt("tiet"),
+                        rs.getString("phongHoc"),
+                        rs.getTime("gioBatDau").toLocalTime().toString(),
+                        rs.getTime("gioKetThuc").toLocalTime().toString(),
+                        rs.getInt("trangThai")
+                    );
+                    list.add(ct);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 
 }

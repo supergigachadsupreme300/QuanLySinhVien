@@ -136,4 +136,9 @@ public class MonHocDAO {
         }
         return null;
     }
+
+    // compatibility wrapper
+    public Mon getByMa(String maMon) {
+        return findByMaMon(maMon);
+    }
 }

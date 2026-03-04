@@ -12,6 +12,8 @@ public class Mon {
     private String maMon;
     private String tenMon;
     private int trangThai;
+    private int soTinChi;
+    private String khoa;
     
     public Mon(){
         maMon ="";
@@ -23,6 +25,8 @@ public class Mon {
         this.maMon = maMon;
         this.tenMon = tenMon;
         this.trangThai = trangThai;
+        this.soTinChi = 0;
+        this.khoa = "";
     }
     
     public Mon (Mon mon){
@@ -39,6 +43,12 @@ public class Mon {
     
     public int getTrangThai(){return trangThai;}
     public void setTrangThai(int trangThai){ this.trangThai = trangThai;}
+
+    public int getSoTinChi() { return soTinChi; }
+    public void setSoTinChi(int soTinChi) { this.soTinChi = soTinChi; }
+
+    public String getKhoa() { return khoa; }
+    public void setKhoa(String khoa) { this.khoa = khoa; }
     
     @Override
     public String toString() {

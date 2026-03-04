@@ -9,6 +9,11 @@ public class HocSinhBLL {
     // Tạo sẵn đối tượng DAL bên trong BUS
     HocSinhDAO hsDAL = new HocSinhDAO();
 
+    public HocSinhBLL() {
+        // sử dụng constructor mặc định của HocSinhDAO (tự mở connection)
+        this.hsDAL = new HocSinhDAO();
+    }
+
     public HocSinhBLL(Connection con) {
         this.hsDAL = new HocSinhDAO(con);
     }
@@ -27,30 +32,28 @@ public class HocSinhBLL {
     }
 
     // ===== THÊM =====
-    public String themHocSinh(HocSinh hs) {
-        if (hs == null) return "Dữ liệu học sinh không hợp lệ!";
+    public boolean themHocSinh(HocSinh hs) {
+        if (hs == null) return false;
         if (hsDAL.findByMaHS(hs.getMaHS()) != null) {
-            return "Mã học sinh đã tồn tại!";
+            return false;
         }
-        boolean ok = hsDAL.insert(hs);
-        return ok ? "Thêm học sinh thành công!" : "Thêm học sinh thất bại!";
+        return hsDAL.insert(hs);
     }
 
     // ===== SỬA =====
-    public String suaHocSinh(HocSinh hs) {
-        if (hs == null) return "Dữ liệu học sinh không hợp lệ!";
-        boolean ok = hsDAL.update(hs);
-        return ok ? "Cập nhật học sinh thành công!" : "Cập nhật học sinh thất bại!";
+    public boolean suaHocSinh(HocSinh hs) {
+        if (hs == null) return false;
+        return hsDAL.update(hs);
     }
 
     // ===== XÓA =====
-    public String xoaHocSinh(String maHS) {
+    public boolean xoaHocSinh(String maHS) {
         HocSinh hs = hsDAL.findByMaHS(maHS);
         boolean ok = hsDAL.delete(maHS);
-        if (ok && hs != null) {
-            return "Xóa học sinh thành công!";
-        } else {
-            return "Xóa học sinh thất bại!";
-        }
+        return ok && hs != null;
+    }
+
+    public HocSinh getByMa(String maHS) {
+        return hsDAL.getById(maHS);
     }
 }

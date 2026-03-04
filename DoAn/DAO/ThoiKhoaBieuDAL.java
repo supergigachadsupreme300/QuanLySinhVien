@@ -131,4 +131,29 @@ public class ThoiKhoaBieuDAL {
         }
         return null;
     }
+
+    // Lấy danh sách TKB theo mã lớp
+    public List<ThoiKhoaBieu> getByLop(String maLop) {
+        List<ThoiKhoaBieu> list = new ArrayList<>();
+        String sql = "SELECT maTKB, maLop, maHocKy, trangThai, ngayBatDau, ngayKetThuc FROM THOIKHOABIEU WHERE maLop = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maLop);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ThoiKhoaBieu tkb = new ThoiKhoaBieu(
+                        rs.getString("maTKB"),
+                        rs.getString("maLop"),
+                        rs.getString("maHocKy"),
+                        rs.getInt("trangThai"),
+                        rs.getDate("ngayBatDau") != null ? rs.getDate("ngayBatDau").toLocalDate() : null,
+                        rs.getDate("ngayKetThuc") != null ? rs.getDate("ngayKetThuc").toLocalDate() : null
+                    );
+                    list.add(tkb);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

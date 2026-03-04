@@ -168,7 +168,7 @@ public class FormMonHoc extends JPanel {
         if (!validateForm())
             return;
 
-        MonHoc mh = getEntityFromForm();
+        Mon mh = getEntityFromForm();
 
         if (monHocBLL.themMonHoc(mh)) {
             JOptionPane.showMessageDialog(this,
@@ -201,7 +201,7 @@ public class FormMonHoc extends JPanel {
         if (confirm != JOptionPane.YES_OPTION)
             return;
 
-        MonHoc mh = getEntityFromForm();
+        Mon mh = getEntityFromForm();
 
         if (monHocBLL.suaMonHoc(mh)) {
             JOptionPane.showMessageDialog(this, "Sửa thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
@@ -284,8 +284,8 @@ public class FormMonHoc extends JPanel {
 
     private void loadTableMonHoc() {
         modelMonHoc.setRowCount(0);
-        List<MonHoc> list = monHocBLL.getAll();
-        for (MonHoc mh : list) {
+        List<Mon> list = monHocBLL.getAll();
+        for (Mon mh : list) {
             modelMonHoc.addRow(new Object[] {
                     mh.getMaMon(),
                     mh.getTenMon(),

@@ -1,11 +1,9 @@
 package GUI;
 
-import javax.swing.*;
 import java.awt.*;
-import GUI.FormLop;
-import GUI.Sidebar;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.*;
 
 public class MainMenu extends JFrame {
 
@@ -64,18 +62,18 @@ public class MainMenu extends JFrame {
         mainPanel.add(new FormTKB(this), TKB);
         mainPanel.add(new FormPhanCong(this), PHANCONG);
         mainPanel.add(new FormChiTietTiet(this), CHITIETTIET);
-        mainPanel.add(new FormChiTietMon(this), CHITIETHMON);
-        mainPanel.add(new FormDiem(this), DIEM);
-        mainPanel.add(new FormGiaoVien(this), GIAOVIER);
-        mainPanel.add(new FormHanhKiem(this), HANHKIEM);
-        mainPanel.add(new FormHocKy(this), HOCKY);
-        mainPanel.add(new FormHocSinh(this), HOCSINH);
-        mainPanel.add(new FormMonHoc(this), MONHOC);
+        mainPanel.add(new FormChiTietMon(), CHITIETHMON);
+        mainPanel.add(new FormDiem(), DIEM);
+        mainPanel.add(new FormGiaoVien(), GIAOVIER);
+        mainPanel.add(new FormHanhKiem(), HANHKIEM);
+        mainPanel.add(new FormHocKy(), HOCKY);
+        mainPanel.add(new FormHocSinh(), HOCSINH);
+        mainPanel.add(new FormMonHoc(), MONHOC);
         mainPanel.add(new FormNamHoc(this), NAMHOC);
-        mainPanel.add(new FormPhuHuynh(this), PHUHUYNH);
-        mainPanel.add(new FormReport(this), REPORT);
-        mainPanel.add(new FormViPham(this), VIPHAM);
-        mainPanel.add(new FormXepLoai(this), XEPLOAI);
+        mainPanel.add(new FormPhuHuynh(), PHUHUYNH);
+        mainPanel.add(new FormReport(), REPORT);
+        mainPanel.add(new FormViPham(), VIPHAM);
+        mainPanel.add(new FormXepLoai(), XEPLOAI);
     //    mainPanel.add(new TestFormTKB(this), TestTKB);
     //    mainPanel.add(new TestFormLop(this), TestLOP);
         add(sidebar, BorderLayout.WEST);

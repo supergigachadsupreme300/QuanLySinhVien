@@ -36,6 +36,8 @@ public class FormLop extends JPanel {
     private Connection con;
     private LopBLL lopBLL;
     private HocSinhBLL hocSinhBLL;
+    private NamHocBLL namHocBLL;
+    private GiaoVienBLL giaoVienBLL;
 
     /* ================= TABLE ================= */
     private JTable tblLop, tblHS;
@@ -59,6 +61,8 @@ public class FormLop extends JPanel {
         this.con = db.openConnection();
         this.lopBLL = new LopBLL(con); 
         this.hocSinhBLL = new HocSinhBLL(con);
+        this.namHocBLL = new NamHocBLL();
+        this.giaoVienBLL = new GiaoVienBLL();
         this.mainFrame = frame;
         initUI();
         loadTableLop(); 
@@ -516,31 +520,55 @@ public class FormLop extends JPanel {
             });
         }
     }
-
-
-    private void clearForm() {
-        txtMaLop.setText("");
+    private void resetInputForm() {
+        txtMaLop.setText(generateMaLop((Integer) cboKhoi.getSelectedItem()));
         txtTenLop.setText("");
         txtSiSo.setText("0");
         cboNamHoc.setSelectedIndex(-1);
         cboGVCN.setSelectedIndex(-1);
         cboKhoi.setEnabled(true);
-        
-        // Tạo lại mã tự động dựa trên khối hiện tại
-        generateAndSetMaLop();
-        
         tblLop.clearSelection();
         modelHS.setRowCount(0);
         updateButtonState();
         txtTenLop.requestFocus();
     }
-    
+
     private void clearForm() {
         resetInputForm();
         bufferChanges.clear();
         dataChanged = false;
         updateSaveButtonState();
         loadTableLop();
+    }
+
+    private Lop getLopFromForm() {
+        Lop lop = new Lop();
+        lop.setMaLop(txtMaLop.getText().trim());
+        lop.setTenLop(txtTenLop.getText().trim());
+        try {
+            lop.setSiSo(Integer.parseInt(txtSiSo.getText().trim()));
+        } catch (NumberFormatException e) {
+            lop.setSiSo(0);
+        }
+        NamHoc nh = (NamHoc) cboNamHoc.getSelectedItem();
+        lop.setMaNH(nh != null ? nh.getMaNH() : null);
+        GiaoVien gv = (GiaoVien) cboGVCN.getSelectedItem();
+        lop.setMaGVCN(gv != null ? gv.getMaGV() : null);
+        return lop;
+    }
+
+    private void loadComboNamHoc() {
+        cboNamHoc.removeAllItems();
+        for (NamHoc nh : namHocBLL.getAllActive()) {
+            cboNamHoc.addItem(nh);
+        }
+    }
+
+    private void loadComboGiaoVien() {
+        cboGVCN.removeAllItems();
+        for (GiaoVien gv : giaoVienBLL.getAll()) {
+            cboGVCN.addItem(gv);
+        }
     }
 
     private void updateButtonState() {

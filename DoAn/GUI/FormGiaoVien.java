@@ -236,7 +236,7 @@ public class FormGiaoVien extends JPanel {
         GiaoVien gv = new GiaoVien();
         gv.setMaGV(txtMaGV.getText().trim());
         gv.setHoTen(txtHoTen.getText().trim());
-        gv.setSdt(txtSDT.getText().trim());
+        gv.setDienThoai(txtSDT.getText().trim());
         gv.setEmail(txtEmail.getText().trim());
         return gv;
     }
@@ -274,7 +274,7 @@ public class FormGiaoVien extends JPanel {
             modelGiaoVien.addRow(new Object[] {
                     gv.getMaGV(),
                     gv.getHoTen(),
-                    gv.getSdt(),
+                    gv.getDienThoai(),
                     gv.getEmail()
             });
         }

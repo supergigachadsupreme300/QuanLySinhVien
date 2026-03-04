@@ -68,6 +68,10 @@ public class GiaoVienBLL {
         return dao.getByMa(maGV);
     }
 
+    public java.util.List<GiaoVien> getAllActiveProc() {
+        return dao.getAllActiveByProc();
+    }
+
     private String validate(GiaoVien gv) {
         if (gv.getMaGV() == null || gv.getMaGV().trim().isEmpty()) {
             return "Mã giáo viên không được để trống";

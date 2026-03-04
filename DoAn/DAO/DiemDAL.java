@@ -1,6 +1,5 @@
 package DAO;
 
-import DAO.DatabaseConnect;
 import DataObject.Diem;
 import java.sql.*;
 import java.util.ArrayList;
@@ -98,6 +97,11 @@ public class DiemDAL {
             e.printStackTrace();
         }
         return list;
+    }
+
+    // compatibility alias
+    public List<Diem> getByHocSinh(String maHS) {
+        return getByMaHS(maHS);
     }
 
     // ===== ADD =====

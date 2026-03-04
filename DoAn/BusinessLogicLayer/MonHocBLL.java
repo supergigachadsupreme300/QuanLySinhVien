@@ -94,6 +94,14 @@ public class MonHocBLL {
         return dao.findByMaMon(maMon);
     }
 
+    public List<Mon> getAllActive() {
+        return dao.getAllActive();
+    }
+
+    public List<Mon> getAllActiveProc() {
+        return dao.getAllActiveByProc();
+    }
+
     // ────────────────────────────────────────────────
     //               HÀM VALIDATE NGHIỆP VỤ
     // ────────────────────────────────────────────────

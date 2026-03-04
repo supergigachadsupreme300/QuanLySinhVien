@@ -1,6 +1,5 @@
 package DAO;
 
-import DAO.DatabaseConnect;
 import DataObject.Parent;
 import java.sql.*;
 import java.util.ArrayList;
@@ -131,6 +130,31 @@ public class ParentDAO {
                     p.setTenPhH(rs.getString("hoTen"));
                     p.setSdt(rs.getString("soDienThoai"));
                     p.setNgheNghiep(rs.getString("ngheNghiep"));
+                    list.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Lấy phụ huynh theo mã học sinh (bảng quan hệ HOCSINH_PHUHUYNH)
+    public List<Parent> getParentsByHocSinh(String maHS) {
+        List<Parent> list = new ArrayList<>();
+        String sql = "SELECT p.maPH, p.hoTen, p.soDienThoai, p.ngheNghiep, h.quanHe "
+                   + "FROM PHUHUYNH p JOIN HOCSINH_PHUHUYNH h ON p.maPH = h.maPH "
+                   + "WHERE h.maHS = ? AND p.trangThai = 1 AND h.trangThai = 1";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maHS);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Parent p = new Parent();
+                    p.setMaPhH(rs.getString("maPH"));
+                    p.setTenPhH(rs.getString("hoTen"));
+                    p.setSdt(rs.getString("soDienThoai"));
+                    p.setNgheNghiep(rs.getString("ngheNghiep"));
+                    p.setQuanHe(rs.getString("quanHe"));
                     list.add(p);
                 }
             }
