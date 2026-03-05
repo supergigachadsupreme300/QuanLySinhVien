@@ -554,6 +554,8 @@ public class FormLop extends JPanel {
         lop.setMaNH(nh != null ? nh.getMaNH() : null);
         GiaoVien gv = (GiaoVien) cboGVCN.getSelectedItem();
         lop.setMaGVCN(gv != null ? gv.getMaGV() : null);
+        // Khi tạo/ghi lớp từ form, mặc định đặt trạng thái là active (1)
+        lop.setTrangThai(1);
         return lop;
     }
 

@@ -1,6 +1,5 @@
 package DAO;
 
-import DAO.DatabaseConnect;
 import DataObject.ChiTietMon;
 import java.sql.*;
 import java.util.ArrayList;
@@ -79,8 +78,35 @@ public class ChiTietMonDAO {
     }
 
     public boolean them(ChiTietMon ct) {
-        String sql = "INSERT INTO CHITIETMON (maChiTiet, maMon, tenChiTiet, heSo, trangThai) "
-                + "VALUES (?, ?, ?, ?, 1)";
+        // If a record exists but is soft-deleted, reactivate it instead of failing on PK
+        String checkSql = "SELECT trangThai FROM CHITIETMON WHERE maChiTiet = ?";
+        try (PreparedStatement checkPs = con.prepareStatement(checkSql)) {
+            checkPs.setString(1, ct.getMaChiTiet());
+            try (ResultSet rs = checkPs.executeQuery()) {
+                if (rs.next()) {
+                    int trangThai = rs.getInt("trangThai");
+                    if (trangThai == 1) {
+                        // already exists active
+                        return false;
+                    } else {
+                        // reactivate existing record
+                        String upd = "UPDATE CHITIETMON SET maMon = ?, tenChiTiet = ?, heSo = ?, trangThai = 1 WHERE maChiTiet = ?";
+                        try (PreparedStatement ups = con.prepareStatement(upd)) {
+                            ups.setString(1, ct.getMaMon());
+                            ups.setNString(2, ct.getTenChiTiet());
+                            ups.setInt(3, ct.getHeSo());
+                            ups.setString(4, ct.getMaChiTiet());
+                            return ups.executeUpdate() > 0;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        String sql = "INSERT INTO CHITIETMON (maChiTiet, maMon, tenChiTiet, heSo, trangThai) VALUES (?, ?, ?, ?, 1)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ct.getMaChiTiet());
             ps.setString(2, ct.getMaMon());

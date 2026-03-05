@@ -1,5 +1,6 @@
 package DAO;
 
+import DataObject.HocSinh;
 import DataObject.Parent;
 import java.sql.*;
 import java.util.ArrayList;
@@ -156,6 +157,60 @@ public class ParentDAO {
                     p.setNgheNghiep(rs.getString("ngheNghiep"));
                     p.setQuanHe(rs.getString("quanHe"));
                     list.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Thêm quan hệ HOCSINH_PHUHUYNH
+    public boolean addRelation(String maHS, String maPH, String quanHe) {
+        String sql = "INSERT INTO HOCSINH_PHUHUYNH (maHS, maPH, quanHe, trangThai) VALUES (?, ?, ?, 1)";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maHS);
+            ps.setString(2, maPH);
+            ps.setNString(3, quanHe);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Xóa mềm quan hệ
+    public boolean deleteRelation(String maHS, String maPH) {
+        String sql = "UPDATE HOCSINH_PHUHUYNH SET trangThai = 0 WHERE maHS = ? AND maPH = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maHS);
+            ps.setString(2, maPH);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Lấy danh sách học sinh của 1 phụ huynh
+    public List<HocSinh> getStudentsByParent(String maPH) {
+        List<HocSinh> list = new ArrayList<>();
+        String sql = "SELECT hs.maHS, hs.hoTen, hs.ngaySinh, hs.gioiTinh, hs.diaChi, hs.maLop "
+                   + "FROM HOCSINH hs JOIN HOCSINH_PHUHUYNH h ON hs.maHS = h.maHS "
+                   + "WHERE h.maPH = ? AND hs.trangThai = 1 AND h.trangThai = 1";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maPH);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    HocSinh hs = new HocSinh();
+                    hs.setMaHS(rs.getString("maHS"));
+                    hs.setHoTen(rs.getString("hoTen"));
+                    java.sql.Date d = rs.getDate("ngaySinh");
+                    if (d != null) hs.setNgaySinh(d.toLocalDate());
+                    hs.setGioiTinh(rs.getString("gioiTinh"));
+                    hs.setDiaChi(rs.getString("diaChi"));
+                    hs.setMaLop(rs.getString("maLop"));
+                    list.add(hs);
                 }
             }
         } catch (SQLException e) {

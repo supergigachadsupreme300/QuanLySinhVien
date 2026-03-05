@@ -659,6 +659,8 @@ public class FormTKB extends JPanel {
         dataChanged = false;
         updateSaveButtonState();
         loadTableFromList();
+        // reload combo to reflect any class changes
+        loadComboLop();
     }
     
     private void luuTKB() {

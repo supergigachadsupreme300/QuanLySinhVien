@@ -29,10 +29,20 @@ public class FormPhuHuynh extends JPanel {
     private parent_GUI parentPanel;
 
     // input form
-    private JTextField txtMa, txtTen, txtSdt, txtNghe, txtQuanHe;
+    private JTextField txtMa, txtTen, txtSdt, txtNghe, txtQuanHe, txtMaHS;
     private JButton btnThem, btnClear;
 
     public FormPhuHuynh() {
+        initUI();
+    }
+
+    private String filterMaHS = null;
+
+    /**
+     * Tạo form và chỉ hiển thị phụ huynh liên quan tới mã học sinh truyền vào
+     */
+    public FormPhuHuynh(String maHS) {
+        this.filterMaHS = maHS;
         initUI();
     }
 
@@ -89,12 +99,13 @@ public class FormPhuHuynh extends JPanel {
         // input form
         JPanel pnlForm = new JPanel(new MigLayout("insets 15", "[]15[grow]30[]15[grow]", "[]10[]10[]10[]"));
         pnlForm.setBorder(BorderFactory.createTitledBorder("Nhập / sửa thông tin"));
-        txtMa = new JTextField(); txtTen = new JTextField(); txtSdt = new JTextField(); txtNghe = new JTextField(); txtQuanHe = new JTextField();
+        txtMa = new JTextField(); txtTen = new JTextField(); txtSdt = new JTextField(); txtNghe = new JTextField(); txtQuanHe = new JTextField(); txtMaHS = new JTextField();
         pnlForm.add(new JLabel("Mã PH:")); pnlForm.add(txtMa, "growx");
         pnlForm.add(new JLabel("Họ tên:")); pnlForm.add(txtTen, "growx, wrap");
         pnlForm.add(new JLabel("SDT:")); pnlForm.add(txtSdt, "growx");
         pnlForm.add(new JLabel("Nghề nghiệp:")); pnlForm.add(txtNghe, "growx, wrap");
         pnlForm.add(new JLabel("Quan hệ:")); pnlForm.add(txtQuanHe, "growx, wrap");
+        pnlForm.add(new JLabel("Mã học sinh (liên kết):")); pnlForm.add(txtMaHS, "growx, wrap");
         add(pnlForm, "growx, wrap");
 
         JPanel pnlBtn = new JPanel();
@@ -128,9 +139,19 @@ public class FormPhuHuynh extends JPanel {
 
     public void loadTable() {
         modelParent.setRowCount(0);
+        if (filterMaHS != null && !filterMaHS.isEmpty()) {
+            for (Parent p : parentBLL.getParentsByHocSinh(filterMaHS)) {
+                modelParent.addRow(new Object[]{p.getMaPhH(), p.getTenPhH(), p.getSdt(), p.getNgheNghiep(), p.getQuanHe()});
+            }
+            return;
+        }
         for (Parent p : parentBLL.getAll()) {
             modelParent.addRow(new Object[]{p.getMaPhH(), p.getTenPhH(), p.getSdt(), p.getNgheNghiep(), p.getQuanHe()});
         }
+    }
+
+    public void setFilterMaHS(String maHS) {
+        this.filterMaHS = maHS;
     }
 
     private void searchByName() {
@@ -190,7 +211,19 @@ public class FormPhuHuynh extends JPanel {
         return p;
     }
 
-    private void them() { if (parentBLL.themParent(getEntityFromForm())) { JOptionPane.showMessageDialog(this, "Thêm thành công"); loadTable(); clearForm(); } }
+    private void them() {
+        Parent p = getEntityFromForm();
+        if (parentBLL.themParent(p)) {
+            // nếu có mã HS nhập vào, thêm quan hệ
+            String maHS = txtMaHS.getText().trim();
+            if (!maHS.isEmpty()) {
+                parentBLL.addRelation(maHS, p.getMaPhH(), p.getQuanHe());
+            }
+            JOptionPane.showMessageDialog(this, "Thêm thành công"); loadTable(); clearForm();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     private void sua() { int r = tblParent.getSelectedRow(); if (r<0) { JOptionPane.showMessageDialog(this, "Chọn 1 phụ huynh"); return;} if (parentBLL.suaParent(getEntityFromForm())) { JOptionPane.showMessageDialog(this, "Sửa thành công"); loadTable(); clearForm(); } }
     private void xoa() { int r = tblParent.getSelectedRow(); if (r<0) { JOptionPane.showMessageDialog(this, "Chọn 1 phụ huynh"); return;} String ma = modelParent.getValueAt(r,0).toString(); if (parentBLL.xoaParent(ma)) { JOptionPane.showMessageDialog(this, "Xóa thành công"); loadTable(); clearForm(); } }
 

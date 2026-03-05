@@ -30,7 +30,7 @@ public class FormDiem extends JPanel {
     private JPanel createMainPanel() {
         JPanel panel = new JPanel(new MigLayout("fill, insets 0", "[300!][grow]", "[grow]"));
 
-        panel.add(createInputPanel(), "growy");
+        panel.add(createInputPanel(), "grow");
         panel.add(createTablePanel(), "grow");
 
         return panel;

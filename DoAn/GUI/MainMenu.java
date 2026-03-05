@@ -87,6 +87,39 @@ public class MainMenu extends JFrame {
         cardLayout.show(mainPanel, name);
     }
 
+    /**
+     * Open PhuHuynh form and filter by a specific student (maHS).
+     */
+    public void openPhuHuynhForStudent(String maHS) {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormPhuHuynh) {
+                FormPhuHuynh fp = (FormPhuHuynh) comp;
+                fp.setFilterMaHS(maHS);
+                fp.loadTable();
+                showForm(PHUHUYNH);
+                return;
+            }
+        }
+        // fallback
+        showForm(PHUHUYNH);
+    }
+
+    /**
+     * Open HocSinh form and filter by a specific parent (maPH).
+     */
+    public void openHocSinhForParent(String maPH) {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormHocSinh) {
+                FormHocSinh fh = (FormHocSinh) comp;
+                fh.loadStudentsByParent(maPH);
+                showForm(HOCSINH);
+                return;
+            }
+        }
+        // fallback
+        showForm(HOCSINH);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
     }

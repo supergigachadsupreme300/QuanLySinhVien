@@ -27,7 +27,7 @@ public class GiaoVienDAO {
                     gv = new GiaoVien();
                     gv.setMaGV(rs.getString("maGV"));
                     gv.setHoTen(rs.getNString("hoTen"));
-                    gv.setDienThoai(rs.getString("sdt"));
+                    gv.setDienThoai(rs.getString("soDienThoai"));
                     gv.setEmail(rs.getString("email"));
                 }
             }
@@ -46,7 +46,7 @@ public class GiaoVienDAO {
                 GiaoVien gv = new GiaoVien();
                 gv.setMaGV(rs.getString("maGV"));
                 gv.setHoTen(rs.getNString("hoTen"));
-                gv.setDienThoai(rs.getString("sdt"));
+                gv.setDienThoai(rs.getString("soDienThoai"));
                 gv.setEmail(rs.getString("email"));
                 list.add(gv);
             }
@@ -65,7 +65,7 @@ public class GiaoVienDAO {
                 GiaoVien gv = new GiaoVien();
                 gv.setMaGV(rs.getString("maGV"));
                 gv.setHoTen(rs.getNString("hoTen"));
-                gv.setDienThoai(rs.getString("sdt"));
+                gv.setDienThoai(rs.getString("soDienThoai"));
                 gv.setEmail(rs.getString("email"));
                 gv.setDiaChi(rs.getString("diaChi"));
                 gv.setTrangThai(rs.getInt("trangThai"));
@@ -86,8 +86,8 @@ public class GiaoVienDAO {
 
     
     public boolean them(GiaoVien gv) {
-        String sql = "INSERT INTO GIAOVIEN (maGV, hoTen, sdt, email, trangThai) "
-                + "VALUES (?, ?, ?, ?, 1)";
+        String sql = "INSERT INTO GIAOVIEN (maGV, hoTen, soDienThoai, email, trangThai) "
+            + "VALUES (?, ?, ?, ?, 1)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, gv.getMaGV());
             ps.setNString(2, gv.getHoTen());
@@ -101,8 +101,8 @@ public class GiaoVienDAO {
     }
 
     public boolean sua(GiaoVien gv) {
-        String sql = "UPDATE GIAOVIEN SET hoTen = ?, sdt = ?, email = ? "
-                + "WHERE maGV = ? AND trangThai = 1";
+        String sql = "UPDATE GIAOVIEN SET hoTen = ?, soDienThoai = ?, email = ? "
+            + "WHERE maGV = ? AND trangThai = 1";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setNString(1, gv.getHoTen());
             ps.setString(2, gv.getDienThoai());

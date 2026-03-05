@@ -60,14 +60,25 @@ public class parent_GUI extends JPanel {
         btnRow.add(btnHocSinh);
         add(btnRow, "span, center");
 
-        // Gắn sự kiện mở panel student_GUI
+        // Gắn sự kiện mở panel FormHocSinh lọc theo phụ huynh
         btnHocSinh.addActionListener(e -> {
-            JFrame f = new JFrame("Thông tin học sinh");
-            f.setSize(400, 550);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationRelativeTo(null);
-            f.add(new student_GUI()); // mở panel student_GUI
-            f.setVisible(true);
+            if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                ((MainMenu) w).openHocSinhForParent(parent.getMaPhH());
+            } else {
+                JFrame f = new JFrame("Học sinh của phụ huynh " + parent.getMaPhH());
+                f.setSize(900, 600);
+                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                f.setLocationRelativeTo(null);
+                FormHocSinh formHS = new FormHocSinh();
+                formHS.loadStudentsByParent(parent.getMaPhH());
+                f.add(formHS);
+                f.setVisible(true);
+            }
         });
         // edit and delete actions
         btnEdit.addActionListener(e -> {

@@ -62,17 +62,13 @@ public class student_GUI extends JPanel {
         txtGioiTinh = createReadOnlyField(infoPanel, "Giới tính:");
         txtDiaChi = createReadOnlyField(infoPanel, "Địa chỉ:");
 
-        // bố mẹ buttons row
-        JButton btnBo = new JButton("Bố");
-        JButton btnMe = new JButton("Mẹ");
-        infoPanel.add(btnBo, "span, split 2, center");
-        infoPanel.add(btnMe, "wrap");
-
         // Các nút chức năng chính
         JButton btnXemDiem = new JButton("Xem điểm");
         JButton btnHanhKiem = new JButton("Hạnh kiểm");
-        infoPanel.add(btnXemDiem, "span, split 2, center");
-        infoPanel.add(btnHanhKiem, "wrap");
+        JButton btnPhuHuynh = new JButton("Phụ huynh");
+        infoPanel.add(btnXemDiem, "split 3, center");
+        infoPanel.add(btnHanhKiem);
+        infoPanel.add(btnPhuHuynh, "wrap");
 
         // action listeners to show/hide panels
         btnXemDiem.addActionListener(e -> {
@@ -89,9 +85,26 @@ public class student_GUI extends JPanel {
             }
         });
 
-        // parent buttons behavior
-        btnBo.addActionListener(e -> openParentWindow("Thông tin phụ huynh - Bố"));
-        btnMe.addActionListener(e -> openParentWindow("Thông tin phụ huynh - Mẹ"));
+        // parent button behavior: mở FormPhuHuynh lọc theo học sinh
+        btnPhuHuynh.addActionListener(e -> {
+            if (hocSinh == null || hocSinh.getMaHS() == null || hocSinh.getMaHS().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có học sinh để xem phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                ((MainMenu) w).openPhuHuynhForStudent(hocSinh.getMaHS());
+            } else {
+                // fallback: open in new frame
+                JFrame f = new JFrame("Phụ huynh của " + hocSinh.getMaHS());
+                f.setSize(900, 600);
+                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                f.setLocationRelativeTo(null);
+                FormPhuHuynh fp = new FormPhuHuynh(hocSinh.getMaHS());
+                f.add(fp);
+                f.setVisible(true);
+            }
+        });
 
         // Buttons: center-aligned Edit and Delete
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));

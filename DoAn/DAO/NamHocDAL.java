@@ -106,7 +106,7 @@ public class NamHocDAL {
 
     // Tìm năm học theo mã (chỉ lấy đang hoạt động)
     public NamHoc findByMaNH(String maNH) {
-        String sql = "SELECT maNam, tenNam, trangThai FROM NAMHOC WHERE maNH=? AND trangThai = 1";
+        String sql = "SELECT maNam, tenNam, trangThai FROM NAMHOC WHERE maNam=? AND trangThai = 1";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maNH);
             ResultSet rs = ps.executeQuery();

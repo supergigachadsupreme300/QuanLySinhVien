@@ -58,7 +58,7 @@ public class FormChiTietMon extends JPanel {
         pnlForm.add(txtMaMon, "growx, wrap");
 
         pnlForm.add(new JLabel("Tên chi tiết:"));
-        pnlForm.add(txtTenChiTiet, "growx, span 3, wrap");
+        pnlForm.add(txtTenChiTiet, "growx, wrap");
 
         pnlForm.add(new JLabel("Hệ số:"));
         pnlForm.add(txtHeSo, "growx");

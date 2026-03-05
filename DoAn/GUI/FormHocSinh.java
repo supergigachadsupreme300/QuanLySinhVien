@@ -41,6 +41,22 @@ public class FormHocSinh extends JPanel {
         initUI();
     }
 
+    /**
+     * Load students that belong to a specific parent (maPH) and display them.
+     */
+    public void loadStudentsByParent(String maPH) {
+        modelHocSinh.setRowCount(0);
+        BusinessLogicLayer.ParentBLL pbll = new BusinessLogicLayer.ParentBLL();
+        java.util.List<DataObject.HocSinh> list = pbll.getStudentsByParent(maPH);
+        for (DataObject.HocSinh hs : list) {
+            modelHocSinh.addRow(new Object[]{
+                    hs.getMaHS(), hs.getHoTen(),
+                    hs.getNgaySinh() == null ? "" : hs.getNgaySinh().format(fmt),
+                    hs.getGioiTinh(), hs.getDiaChi(), hs.getMaLop()
+            });
+        }
+    }
+
     private void initUI() {
         setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[grow]15[]15[]"));
 
