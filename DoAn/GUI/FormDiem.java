@@ -98,6 +98,30 @@ public class FormDiem extends JPanel {
         table.setRowHeight(25);
         table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
 
+        // Khi chọn 1 hàng trong bảng, hiển thị thông tin tương ứng lên form nhập
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = table.getSelectedRow();
+                if (row >= 0) {
+                    String maHS = (model.getValueAt(row, 0) != null) ? model.getValueAt(row, 0).toString() : "";
+                    String ten = (model.getValueAt(row, 1) != null) ? model.getValueAt(row, 1).toString() : "";
+                    String lop = (model.getValueAt(row, 2) != null) ? model.getValueAt(row, 2).toString() : "";
+                    String mon = (model.getValueAt(row, 3) != null) ? model.getValueAt(row, 3).toString() : "";
+                    String tx = (model.getValueAt(row, 4) != null) ? model.getValueAt(row, 4).toString() : "";
+                    String gk = (model.getValueAt(row, 5) != null) ? model.getValueAt(row, 5).toString() : "";
+                    String ck = (model.getValueAt(row, 6) != null) ? model.getValueAt(row, 6).toString() : "";
+
+                    txtMaHS.setText(maHS);
+                    txtTenHS.setText(ten);
+                    txtLop.setText(lop);
+                    txtMon.setText(mon);
+                    txtDiemTX.setText(tx);
+                    txtDiemGK.setText(gk);
+                    txtDiemCK.setText(ck);
+                }
+            }
+        });
+
         return new JScrollPane(table);
     }
 
@@ -121,6 +145,10 @@ public class FormDiem extends JPanel {
         // Events
         btnLoad.addActionListener(e -> loadByMaHS());
         btnThem.addActionListener(e -> themDiem());
+        btnSua.addActionListener(e -> suaDiem());
+        btnXoa.addActionListener(e -> xoaDiem());
+        btnLuu.addActionListener(e -> luuDiem());
+        btnClear.addActionListener(e -> clearForm());
 
         return panel;
     }
@@ -184,4 +212,67 @@ public class FormDiem extends JPanel {
     }
 
     public void setFilterMaHS(String maHS) { this.filterMaHS = maHS; }
+
+    private Diem getSelectedDiemFromTable() {
+        int row = table.getSelectedRow();
+        if (row < 0) return null;
+        String maHS = (model.getValueAt(row, 0) != null) ? model.getValueAt(row, 0).toString() : "";
+        String maChiTiet = (model.getValueAt(row, 3) != null) ? model.getValueAt(row, 3).toString() : "";
+        if (maHS.isEmpty() || maChiTiet.isEmpty()) return null;
+        for (Diem d : diemBLL.getByMaHS(maHS)) {
+            if (maChiTiet.equals(d.getMaChiTiet())) return d;
+        }
+        return null;
+    }
+
+    private void suaDiem() {
+        Diem sel = getSelectedDiemFromTable();
+        if (sel == null) {
+            JOptionPane.showMessageDialog(this, "Chọn một dòng để sửa.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        // Cập nhật từ form
+        sel.setMaHS(txtMaHS.getText().trim());
+        sel.setMaChiTiet(txtMon.getText().trim());
+        sel.setDiemThuongXuyen(parseOrZero(txtDiemTX.getText().trim()));
+        sel.setDiemGiuaKy(parseOrZero(txtDiemGK.getText().trim()));
+        sel.setDiemCuoiKy(parseOrZero(txtDiemCK.getText().trim()));
+        sel.setDiemTBMonHocKy((sel.getDiemThuongXuyen()+sel.getDiemGiuaKy()+sel.getDiemCuoiKy())/3.0);
+        String res = diemBLL.sua(sel);
+        JOptionPane.showMessageDialog(this, res);
+        loadByMaHS();
+    }
+
+    private void xoaDiem() {
+        Diem sel = getSelectedDiemFromTable();
+        if (sel == null) {
+            JOptionPane.showMessageDialog(this, "Chọn một dòng để xóa.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+        String res = diemBLL.xoa(sel.getMaDiem());
+        JOptionPane.showMessageDialog(this, res);
+        loadByMaHS();
+    }
+
+    private void luuDiem() {
+        // Lưu hành động giống sửa nếu có dòng được chọn, nếu không thì thêm mới
+        if (table.getSelectedRow() >= 0) {
+            suaDiem();
+        } else {
+            themDiem();
+        }
+    }
+
+    private void clearForm() {
+        txtMaHS.setText("");
+        txtTenHS.setText("");
+        txtLop.setText("");
+        txtMon.setText("");
+        txtDiemTX.setText("");
+        txtDiemGK.setText("");
+        txtDiemCK.setText("");
+        table.clearSelection();
+    }
 }

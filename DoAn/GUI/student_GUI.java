@@ -1,6 +1,7 @@
 package GUI;
-import javax.swing.*; //javac -cp "lib\miglayout-core-11.4.2.jar;lib\miglayout-swing-11.4.2.jar" student_GUI.java
-import java.awt.*; //java -cp ".;lib\miglayout-core-11.4.2.jar;lib\miglayout-swing-11.4.2.jar" student_GUI
+
+import javax.swing.*;
+import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -9,8 +10,6 @@ import BusinessLogicLayer.HocSinhBLL;
 import GUI.FormHocSinh;
 import net.miginfocom.swing.MigLayout;
 import DataObject.HocSinh;
-import GUI.Diem;
-import GUI.HanhKiem;
 
 public class student_GUI extends JPanel {
     private HocSinh hocSinh;
@@ -20,8 +19,6 @@ public class student_GUI extends JPanel {
     private JTextField txtNgaySinh;
     private JTextField txtGioiTinh;
     private JTextField txtDiaChi;
-    private Diem diemPanel;
-    private HanhKiem hanhKiemPanel;
     private Connection connection;
 
     // Constructor mặc định (tạo đối tượng rỗng để test)
@@ -35,8 +32,8 @@ public class student_GUI extends JPanel {
         this.connection = conn;
         setLayout(new BorderLayout());
 
-        // Panel chính gồm: info + điểm/hạnh kiểm
-        JPanel mainPanel = new JPanel(new MigLayout("fill, insets 10", "[grow]", "[fill][]"));
+        // Panel chính gồm: info + (không còn điểm/hạnh kiểm nhúng)
+        JPanel mainPanel = new JPanel(new MigLayout("fill, insets 10", "[grow]", "[fill]"));
         
         // Panel thông tin học sinh
         JPanel infoPanel = new JPanel(new MigLayout("wrap 2", "[300!][grow]", "[]10[]10[]10[]"));
@@ -54,7 +51,7 @@ public class student_GUI extends JPanel {
             infoPanel.add(new JLabel("[No Image]"), "cell 1 0, top");
         }
 
-        // Các trường thông tin (dùng MigLayout trực tiếp)
+        // Các trường thông tin
         infoPanel.add(new JLabel("Mã học sinh:"));
         txtMaHS = new JTextField(20);
         txtMaHS.setEditable(false);
@@ -93,7 +90,7 @@ public class student_GUI extends JPanel {
         infoPanel.add(btnHanhKiem);
         infoPanel.add(btnPhuHuynh, "wrap");
 
-        // action listeners to open respective pages in MainMenu
+        // Action listener cho Xem điểm
         btnXemDiem.addActionListener(e -> {
             if (hocSinh == null || hocSinh.getMaHS() == null || hocSinh.getMaHS().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Không có học sinh để xem điểm.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -103,14 +100,13 @@ public class student_GUI extends JPanel {
             if (w instanceof MainMenu) {
                 ((MainMenu) w).openDiemForStudent(hocSinh.getMaHS());
             } else {
-                if (diemPanel != null) {
-                    diemPanel.setFilterMaHS(hocSinh.getMaHS());
-                    diemPanel.loadByMaHS();
-                    diemPanel.setVisible(!diemPanel.isVisible());
-                }
+                JOptionPane.showMessageDialog(this, 
+                    "Chức năng xem điểm chỉ hỗ trợ từ giao diện chính (MainMenu).", 
+                    "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
+        // Action listener cho Hạnh kiểm
         btnHanhKiem.addActionListener(e -> {
             if (hocSinh == null || hocSinh.getMaHS() == null || hocSinh.getMaHS().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Không có học sinh để xem hạnh kiểm.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -120,15 +116,13 @@ public class student_GUI extends JPanel {
             if (w instanceof MainMenu) {
                 ((MainMenu) w).openHanhKiemForStudent(hocSinh.getMaHS());
             } else {
-                if (hanhKiemPanel != null) {
-                    hanhKiemPanel.setFilterMaHS(hocSinh.getMaHS());
-                    hanhKiemPanel.loadByMaHS();
-                    hanhKiemPanel.setVisible(!hanhKiemPanel.isVisible());
-                }
+                JOptionPane.showMessageDialog(this, 
+                    "Chức năng xem hạnh kiểm chỉ hỗ trợ từ giao diện chính (MainMenu).", 
+                    "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
-        // parent button behavior: mở FormPhuHuynh lọc theo học sinh
+        // Nút Phụ huynh (giữ nguyên)
         btnPhuHuynh.addActionListener(e -> {
             if (hocSinh == null || hocSinh.getMaHS() == null || hocSinh.getMaHS().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Không có học sinh để xem phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -157,19 +151,8 @@ public class student_GUI extends JPanel {
         btnRow.add(btnXoa);
         infoPanel.add(btnRow, "span, growx, align center, wrap");
 
-        mainPanel.add(infoPanel, "grow, wrap");
-        
-        // Panel cho Điểm và Hạnh kiểm
-        if (connection != null) {
-            diemPanel = new Diem(connection);
-            diemPanel.setVisible(false);
-            mainPanel.add(diemPanel, "growx, wrap");
-            
-            hanhKiemPanel = new HanhKiem(connection);
-            hanhKiemPanel.setVisible(false);
-            mainPanel.add(hanhKiemPanel, "growx");
-        }
-        
+        mainPanel.add(infoPanel, "grow");
+
         add(new JScrollPane(mainPanel), BorderLayout.CENTER);
 
         // action listeners using HocSinhBLL reference
@@ -197,21 +180,32 @@ public class student_GUI extends JPanel {
         btnEdit.addActionListener(ev -> {
             boolean editable = !txtTen.isEditable();
             if (editable) {
-                txtTen.setEditable(true); txtLop.setEditable(true); txtNgaySinh.setEditable(true); txtGioiTinh.setEditable(true); txtDiaChi.setEditable(true);
+                txtTen.setEditable(true); 
+                txtLop.setEditable(true); 
+                txtNgaySinh.setEditable(true); 
+                txtGioiTinh.setEditable(true); 
+                txtDiaChi.setEditable(true);
                 btnEdit.setText("Lưu");
             } else {
-                txtTen.setEditable(false); txtLop.setEditable(false); txtNgaySinh.setEditable(false); txtGioiTinh.setEditable(false); txtDiaChi.setEditable(false);
+                txtTen.setEditable(false); 
+                txtLop.setEditable(false); 
+                txtNgaySinh.setEditable(false); 
+                txtGioiTinh.setEditable(false); 
+                txtDiaChi.setEditable(false);
                 btnEdit.setText("Sửa");
+
                 if (hocSinhBLLRef == null) {
                     JOptionPane.showMessageDialog(this, "Chưa kết nối xử lý dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+
                 HocSinh newHs = new HocSinh();
                 newHs.setMaHS(txtMaHS.getText());
                 newHs.setHoTen(txtTen.getText());
                 newHs.setGioiTinh(txtGioiTinh.getText());
                 newHs.setDiaChi(txtDiaChi.getText());
                 newHs.setMaLop(txtLop.getText());
+
                 if (!txtNgaySinh.getText().trim().isEmpty()) {
                     try {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -222,6 +216,7 @@ public class student_GUI extends JPanel {
                         return;
                     }
                 }
+
                 if (hocSinhBLLRef.suaHocSinh(newHs)) {
                     JOptionPane.showMessageDialog(this, "Cập nhật thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                     FormHocSinh owner = (FormHocSinh) SwingUtilities.getAncestorOfClass(FormHocSinh.class, this);
@@ -259,24 +254,6 @@ public class student_GUI extends JPanel {
     public void setHocSinh(HocSinh hs) {
         this.hocSinh = hs;
         updateDisplay();
-    }
-
-    // --------------------------------
-    // Utility helpers used within this panel
-    // --------------------------------
-
-    // createReadOnlyField removed: fields created inline using MigLayout
-
-    /**
-     * Open a simple parent info frame with given title.
-     */
-    private void openParentWindow(String title) {
-        JFrame f = new JFrame(title);
-        f.setSize(400, 400);
-        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        f.setLocationRelativeTo(null);
-        f.add(new parent_GUI());
-        f.setVisible(true);
     }
 
     // Phương thức lấy đối tượng HocSinh hiện tại

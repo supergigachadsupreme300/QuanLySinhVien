@@ -146,6 +146,10 @@ public class FormHanhKiem extends JPanel {
 
         btnLoad.addActionListener(e -> loadByMaHS());
         btnThem.addActionListener(e -> themHanhKiem());
+        btnSua.addActionListener(e -> suaHanhKiem());
+        btnXoa.addActionListener(e -> xoaHanhKiem());
+        btnLuu.addActionListener(e -> luuHanhKiem());
+        btnClear.addActionListener(e -> clearForm());
 
         return panel;
     }
@@ -199,4 +203,66 @@ public class FormHanhKiem extends JPanel {
     }
 
     public void setFilterMaHS(String maHS) { this.filterMaHS = maHS; }
+
+    private String buildMaHanhKiem(String maHS, String hk) {
+        if (maHS == null || maHS.isEmpty() || hk == null || hk.isEmpty()) return "";
+        return "HK_" + maHS + "_" + hk;
+    }
+
+    private void suaHanhKiem() {
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Chọn một dòng để sửa.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        String maHS = txtMaHS.getText().trim();
+        String hk = cboHocKy.getSelectedItem().toString();
+        String xep = cboXepLoai.getSelectedItem().toString();
+        String nhan = txtNhanXet.getText().trim();
+        HanhKiem h = new HanhKiem();
+        h.setMaHanhKiem(buildMaHanhKiem(maHS, hk));
+        h.setMaHS(maHS);
+        h.setMaHocKy(hk);
+        h.setXepLoai(xep);
+        h.setNhanXet(nhan);
+        h.setSoLanViPham(0);
+
+        boolean ok = hanhKiemBLL.update(h);
+        if (ok) JOptionPane.showMessageDialog(this, "Cập nhật hạnh kiểm thành công.");
+        else JOptionPane.showMessageDialog(this, "Cập nhật thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        loadByMaHS();
+    }
+
+    private void xoaHanhKiem() {
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Chọn một dòng để xóa.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        String maHS = txtMaHS.getText().trim();
+        String hk = cboHocKy.getSelectedItem().toString();
+        String maHK = buildMaHanhKiem(maHS, hk);
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+        boolean ok = hanhKiemBLL.delete(maHK);
+        if (ok) JOptionPane.showMessageDialog(this, "Xóa thành công.");
+        else JOptionPane.showMessageDialog(this, "Xóa thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        loadByMaHS();
+    }
+
+    private void luuHanhKiem() {
+        // Nếu có dòng chọn -> cập nhật, ngược lại thêm mới
+        if (table.getSelectedRow() >= 0) suaHanhKiem(); else themHanhKiem();
+    }
+
+    private void clearForm() {
+        txtMaHS.setText("");
+        txtTenHS.setText("");
+        txtLop.setText("");
+        cboHocKy.setSelectedIndex(0);
+        cboNamHoc.setSelectedIndex(0);
+        cboXepLoai.setSelectedIndex(0);
+        txtNhanXet.setText("");
+        table.clearSelection();
+    }
 }

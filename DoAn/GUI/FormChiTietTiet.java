@@ -59,6 +59,19 @@ public class FormChiTietTiet extends JPanel {
         updateButtonState();
     }
 
+    /**
+     * Public helper to refresh/load TKB combo and grid from outside (used by MainMenu).
+     */
+    public void refreshTKBList() {
+        try {
+            loadComboTKB();
+            loadDefaultLuoi();
+        } catch (Exception ex) {
+            // swallow to avoid crashing callers
+            ex.printStackTrace();
+        }
+    }
+
     private void initUI() {
         setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[grow]"));
 
