@@ -65,9 +65,10 @@ C:\study\java\DoAn\DoAn\GUI\HanhKiem.java
 C:\study\java\DoAn\DoAn\GUI\HocKy.java
 C:\study\java\DoAn\DoAn\GUI\MainMenu.java
 C:\study\java\DoAn\DoAn\GUI\parent_GUI.java
-C:\study\java\DoAn\DoAn\GUI\RunFormHocSinh.java
-C:\study\java\DoAn\DoAn\GUI\RunFormPhuHuynh.java
 C:\study\java\DoAn\DoAn\GUI\Sidebar.java
 C:\study\java\DoAn\DoAn\GUI\student_GUI.java
 C:\study\java\DoAn\DoAn\GUI\TietHoc.java
+C:\study\java\DoAn\DoAn\test\GuiInitTest.java
 C:\study\java\DoAn\DoAn\test\TestAdds.java
+C:\study\java\DoAn\DoAn\test\TestAddsUnique.java
+C:\study\java\DoAn\DoAn\tools\SeedDatabase.java

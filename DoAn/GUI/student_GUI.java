@@ -39,7 +39,7 @@ public class student_GUI extends JPanel {
         JPanel mainPanel = new JPanel(new MigLayout("fill, insets 10", "[grow]", "[fill][]"));
         
         // Panel thông tin học sinh
-        JPanel infoPanel = new JPanel(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]10[]10[]"));
+        JPanel infoPanel = new JPanel(new MigLayout("wrap 2", "[300!][grow]", "[]10[]10[]10[]"));
         infoPanel.setBackground(Color.CYAN);
         infoPanel.setBorder(BorderFactory.createTitledBorder("THÔNG TIN HỌC SINH"));
 
@@ -49,18 +49,41 @@ public class student_GUI extends JPanel {
             ImageIcon icon = new ImageIcon(imgUrl);
             Image img = icon.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
             JLabel label = new JLabel(new ImageIcon(img));
-            infoPanel.add(label, "span, center");
+            infoPanel.add(label, "cell 0 0, top");
         } else {
-            infoPanel.add(new JLabel("[No Image]"), "span, center");
+            infoPanel.add(new JLabel("[No Image]"), "cell 1 0, top");
         }
 
-        // Các trường thông tin (tạo bằng helper để giảm trùng lặp)
-        txtMaHS = createReadOnlyField(infoPanel, "Mã học sinh:");
-        txtTen  = createReadOnlyField(infoPanel, "Tên:");
-        txtLop  = createReadOnlyField(infoPanel, "Lớp:");
-        txtNgaySinh = createReadOnlyField(infoPanel, "Ngày sinh:");
-        txtGioiTinh = createReadOnlyField(infoPanel, "Giới tính:");
-        txtDiaChi = createReadOnlyField(infoPanel, "Địa chỉ:");
+        // Các trường thông tin (dùng MigLayout trực tiếp)
+        infoPanel.add(new JLabel("Mã học sinh:"));
+        txtMaHS = new JTextField(20);
+        txtMaHS.setEditable(false);
+        infoPanel.add(txtMaHS, "cell 0 1,growx, wrap");
+
+        infoPanel.add(new JLabel("Tên:"));
+        txtTen = new JTextField(20);
+        txtTen.setEditable(false);
+        infoPanel.add(txtTen, "cell 0 2,growx, wrap");
+
+        infoPanel.add(new JLabel("Lớp:"));
+        txtLop = new JTextField(20);
+        txtLop.setEditable(false);
+        infoPanel.add(txtLop, "cell 0 3,growx, wrap");
+
+        infoPanel.add(new JLabel("Ngày sinh:"));
+        txtNgaySinh = new JTextField(20);
+        txtNgaySinh.setEditable(false);
+        infoPanel.add(txtNgaySinh, "cell 0 4,growx, wrap");
+
+        infoPanel.add(new JLabel("Giới tính:"));
+        txtGioiTinh = new JTextField(20);
+        txtGioiTinh.setEditable(false);
+        infoPanel.add(txtGioiTinh, "cell 0 5,growx, wrap");
+
+        infoPanel.add(new JLabel("Địa chỉ:"));
+        txtDiaChi = new JTextField(20);
+        txtDiaChi.setEditable(false);
+        infoPanel.add(txtDiaChi, "cell 0 6, growx, wrap");
 
         // Các nút chức năng chính
         JButton btnXemDiem = new JButton("Xem điểm");
@@ -70,18 +93,38 @@ public class student_GUI extends JPanel {
         infoPanel.add(btnHanhKiem);
         infoPanel.add(btnPhuHuynh, "wrap");
 
-        // action listeners to show/hide panels
+        // action listeners to open respective pages in MainMenu
         btnXemDiem.addActionListener(e -> {
-            if (diemPanel != null) {
-                diemPanel.loadDiem(hocSinh.getMaHS());
-                diemPanel.setVisible(!diemPanel.isVisible());
+            if (hocSinh == null || hocSinh.getMaHS() == null || hocSinh.getMaHS().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có học sinh để xem điểm.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                ((MainMenu) w).openDiemForStudent(hocSinh.getMaHS());
+            } else {
+                if (diemPanel != null) {
+                    diemPanel.setFilterMaHS(hocSinh.getMaHS());
+                    diemPanel.loadByMaHS();
+                    diemPanel.setVisible(!diemPanel.isVisible());
+                }
             }
         });
 
         btnHanhKiem.addActionListener(e -> {
-            if (hanhKiemPanel != null) {
-                hanhKiemPanel.loadHanhKiem(hocSinh.getMaHS());
-                hanhKiemPanel.setVisible(!hanhKiemPanel.isVisible());
+            if (hocSinh == null || hocSinh.getMaHS() == null || hocSinh.getMaHS().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có học sinh để xem hạnh kiểm.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                ((MainMenu) w).openHanhKiemForStudent(hocSinh.getMaHS());
+            } else {
+                if (hanhKiemPanel != null) {
+                    hanhKiemPanel.setFilterMaHS(hocSinh.getMaHS());
+                    hanhKiemPanel.loadByMaHS();
+                    hanhKiemPanel.setVisible(!hanhKiemPanel.isVisible());
+                }
             }
         });
 
@@ -222,16 +265,7 @@ public class student_GUI extends JPanel {
     // Utility helpers used within this panel
     // --------------------------------
 
-    /**
-     * Create a labeled, non-editable text field and add it to the given panel.
-     */
-    private JTextField createReadOnlyField(JPanel panel, String label) {
-        panel.add(new JLabel(label));
-        JTextField fld = new JTextField(20);
-        fld.setEditable(false);
-        panel.add(fld, "growx");
-        return fld;
-    }
+    // createReadOnlyField removed: fields created inline using MigLayout
 
     /**
      * Open a simple parent info frame with given title.

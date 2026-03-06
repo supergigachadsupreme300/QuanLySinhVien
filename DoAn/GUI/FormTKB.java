@@ -327,17 +327,25 @@ public class FormTKB extends JPanel {
             }
         }
         
-        // 3. Tạo mã cơ bản
-        String baseCode = "TKB_" + maLop + "_" + maHK;
-        String newCode = baseCode;
+        // 3. Tạo mã cơ bản và đảm bảo độ dài không vượt quá giới hạn DB
+        String baseCode = ("TKB" + maLop + maHK).replaceAll("\\s+", "");
+        int maxLen = 9; // conservative max to avoid DB truncation
+
+        // If base too long, truncate to leave room for numeric suffix
+        String base = baseCode;
+        if (base.length() > maxLen) base = base.substring(0, maxLen);
+
+        String newCode = base;
         int counter = 1;
-        
-        // 4. Nếu đã tồn tại (kể cả đã xóa), thêm số đuôi
+
         while (used.contains(newCode)) {
-            newCode = baseCode + "_" + counter;
+            String suffix = String.valueOf(counter);
+            int keep = Math.max(0, maxLen - suffix.length());
+            String left = base.length() <= keep ? base : base.substring(0, keep);
+            newCode = left + suffix;
             counter++;
         }
-        
+
         return newCode;
     }
 
@@ -665,19 +673,31 @@ public class FormTKB extends JPanel {
     
     private void luuTKB() {
         try {
+            // Execute buffered changes one by one; abort if any operation fails
             for (Change change : bufferChanges) {
+                String res = null;
                 switch (change.action) {
-                    case "ADD": 
-                        tkbBLL.themThoiKhoaBieu(change.tkb); 
+                    case "ADD":
+                        res = tkbBLL.themThoiKhoaBieu(change.tkb);
                         break;
-                    case "UPDATE": 
-                        tkbBLL.suaThoiKhoaBieu(change.tkb); 
+                    case "UPDATE":
+                        res = tkbBLL.suaThoiKhoaBieu(change.tkb);
                         break;
-                    case "DELETE": 
-                        tkbBLL.xoaThoiKhoaBieu(change.tkb.getMaTKB()); // Soft delete
+                    case "DELETE":
+                        res = tkbBLL.xoaThoiKhoaBieu(change.tkb.getMaTKB()); // Soft delete
                         break;
                 }
+                if (res == null || !res.toLowerCase().contains("thành công") && !res.toLowerCase().contains("thanh cong")) {
+                    // Do not clear buffer; notify user and abort remaining saves
+                    JOptionPane.showMessageDialog(this,
+                        "Lưu thất bại: " + (res == null ? "Không rõ lỗi" : res),
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
+
+            // All ops succeeded
             bufferChanges.clear();
             JOptionPane.showMessageDialog(this, "Đã lưu thay đổi thành công!");
             dataChanged = false;

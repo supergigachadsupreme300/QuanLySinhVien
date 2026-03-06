@@ -83,14 +83,14 @@ public class ThoiKhoaBieuDAL {
 
     // Cập nhật TKB
     public boolean update(ThoiKhoaBieu tkb) {
-        String sql = "UPDATE THOIKHOABIEU SET maLop=?, maHocKy=?, trangThai=?, ngayBatDau, ngayKetThuc WHERE maTKB=?";
+        String sql = "UPDATE THOIKHOABIEU SET maLop=?, maHocKy=?, trangThai=?, ngayBatDau=?, ngayKetThuc=? WHERE maTKB=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, tkb.getMaLop());
             ps.setString(2, tkb.getMaHK());
             ps.setInt(3, tkb.getTrangThai());
-            ps.setString(4, tkb.getMaTKB());
-            ps.setDate(5, Date.valueOf(tkb.getNgayBatDau()));
-            ps.setDate(6, Date.valueOf(tkb.getNgayKetThuc()));
+            ps.setDate(4, tkb.getNgayBatDau() != null ? Date.valueOf(tkb.getNgayBatDau()) : null);
+            ps.setDate(5, tkb.getNgayKetThuc() != null ? Date.valueOf(tkb.getNgayKetThuc()) : null);
+            ps.setString(6, tkb.getMaTKB());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

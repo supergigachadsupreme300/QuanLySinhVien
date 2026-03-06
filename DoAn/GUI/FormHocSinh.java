@@ -5,7 +5,6 @@ import DataObject.HocSinh;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
@@ -33,7 +32,7 @@ public class FormHocSinh extends JPanel {
 
     // form chỉnh sửa/nhập liệu (có thể tái sử dụng cho thêm/sửa)
     private JTextField txtMaHS, txtHoTen, txtNgaySinh, txtGioiTinh, txtDiaChi, txtMaLop;
-    private JButton btnThem, btnSua, btnXoa, btnClear;
+    private JButton btnThem, btnXoa, btnClear;
 
     private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -151,9 +150,8 @@ public class FormHocSinh extends JPanel {
 
         JPanel pnlBtn = new JPanel();
         btnThem = createButton("Thêm", new Color(34, 139, 34));
-        btnSua = createButton("Sửa", new Color(0, 150, 136));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
-        pnlBtn.add(btnThem); pnlBtn.add(btnSua); pnlBtn.add(btnClear);
+        pnlBtn.add(btnThem); pnlBtn.add(btnClear);
         add(pnlBtn, "growx, wrap");
 
         // focus effects
@@ -169,7 +167,6 @@ public class FormHocSinh extends JPanel {
         btnTim.addActionListener(e -> searchByName());
         btnNangCao.addActionListener(e -> showAdvancedSearch());
         btnThem.addActionListener(e -> themHocSinh());
-        btnSua.addActionListener(e -> suaHocSinh());
         btnClear.addActionListener(e -> clearForm());
 
         tblHocSinh.getSelectionModel().addListSelectionListener(e -> {
@@ -324,26 +321,27 @@ public class FormHocSinh extends JPanel {
             JOptionPane.showMessageDialog(this, "Thêm học sinh thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             loadTable();
             clearForm();
+            // Refresh FormLop if present to update sĩ số
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof MainMenu) {
+                MainMenu mm = (MainMenu) w;
+                for (Component comp : mm.getContentPane().getComponents()) {
+                    if (comp instanceof JPanel) {
+                        for (Component c : ((JPanel) comp).getComponents()) {
+                            if (c.getClass().getSimpleName().equals("FormLop")) {
+                                try {
+                                    java.lang.reflect.Method m = c.getClass().getMethod("refreshTableAfterChange");
+                                    m.invoke(c);
+                                } catch (Exception ex) {
+                                    // ignore: best-effort refresh
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Thêm thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void suaHocSinh() {
-        int row = tblHocSinh.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn học sinh cần sửa!", "Chưa chọn", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (!validateForm()) return;
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn sửa học sinh này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) return;
-        if (hocSinhBLL.suaHocSinh(getEntityFromForm())) {
-            JOptionPane.showMessageDialog(this, "Sửa thông tin thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            loadTable();
-            clearForm();
-        } else {
-            JOptionPane.showMessageDialog(this, "Sửa thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 

@@ -645,6 +645,11 @@ public class FormLop extends JPanel {
         }
     }
     
+    // Public refresher so other forms can request an update after related DB changes
+    public void refreshTableAfterChange() {
+        loadTableLop();
+    }
+    
     private String getTenGVFromMa(String maGV) {
         for (int i = 0; i < cboGVCN.getItemCount(); i++) {
             GiaoVien gv = cboGVCN.getItemAt(i);

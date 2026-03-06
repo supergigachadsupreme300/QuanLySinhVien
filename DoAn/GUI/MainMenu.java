@@ -120,6 +120,38 @@ public class MainMenu extends JFrame {
         showForm(HOCSINH);
     }
 
+    /**
+     * Open Diem form and filter by student
+     */
+    public void openDiemForStudent(String maHS) {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormDiem) {
+                FormDiem fd = (FormDiem) comp;
+                fd.setFilterMaHS(maHS);
+                fd.loadByMaHS();
+                showForm(DIEM);
+                return;
+            }
+        }
+        showForm(DIEM);
+    }
+
+    /**
+     * Open HanhKiem form and filter by student
+     */
+    public void openHanhKiemForStudent(String maHS) {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormHanhKiem) {
+                FormHanhKiem fh = (FormHanhKiem) comp;
+                fh.setFilterMaHS(maHS);
+                fh.loadByMaHS();
+                showForm(HANHKIEM);
+                return;
+            }
+        }
+        showForm(HANHKIEM);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
     }

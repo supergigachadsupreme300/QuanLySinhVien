@@ -15,6 +15,7 @@ public class Diem extends JPanel {
     private Connection connection;
     private HocSinhBLL hocSinhBLL;      // may be useful later
     protected String currentMaHS;
+    protected String filterMaHS;
 
     private JTextField txtMaHS, txtDiemMieng, txtDiem15Phut, txtDiemGiuaKy, txtDiemCuoiKy;
     private JButton btnSua;
@@ -138,6 +139,18 @@ public class Diem extends JPanel {
     // helper copied from previous base class
     protected void setCurrentMaHS(String maHS) {
         this.currentMaHS = maHS;
+    }
+
+    // Allow external components to set a filter and trigger loading
+    public void setFilterMaHS(String maHS) { this.filterMaHS = maHS; }
+
+    public void loadByMaHS() {
+        String ma = (filterMaHS != null && !filterMaHS.isEmpty()) ? filterMaHS : this.currentMaHS;
+        if (ma == null || ma.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không có mã HS để tải.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        loadData(ma);
     }
 }
 

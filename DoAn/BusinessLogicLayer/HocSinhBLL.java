@@ -37,7 +37,18 @@ public class HocSinhBLL {
         if (hsDAL.findByMaHS(hs.getMaHS()) != null) {
             return false;
         }
-        return hsDAL.add(hs);
+        boolean ok = hsDAL.add(hs);
+        if (ok) {
+            // Sau khi thêm học sinh thành công, cập nhật lại sĩ số lớp
+            try {
+                DAO.LopDAL lopDAL = new DAO.LopDAL();
+                lopDAL.updateSiSo(hs.getMaLop());
+            } catch (Exception ex) {
+                // Không ném lỗi lên GUI; in stack để debug
+                ex.printStackTrace();
+            }
+        }
+        return ok;
     }
 
     // ===== SỬA =====

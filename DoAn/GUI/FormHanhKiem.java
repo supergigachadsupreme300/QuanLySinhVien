@@ -3,6 +3,12 @@ package GUI;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import BusinessLogicLayer.HanhKiemBLL;
+import BusinessLogicLayer.HocSinhBLL;
+import DAO.DatabaseConnect;
+import DataObject.HanhKiem;
+import DataObject.HocSinh;
+import java.sql.Connection;
 import net.miginfocom.swing.MigLayout;
 
 public class FormHanhKiem extends JPanel {
@@ -12,9 +18,21 @@ public class FormHanhKiem extends JPanel {
     private JTextArea txtNhanXet;
     private JTable table;
     private DefaultTableModel model;
+    private HanhKiemBLL hanhKiemBLL;
+    private HocSinhBLL hocSinhBLL = new HocSinhBLL();
+    private DatabaseConnect db;
+    private Connection con;
+    private String filterMaHS = null;
 
     public FormHanhKiem() {
+        initDB();
         initUI();
+    }
+
+    private void initDB() {
+        db = new DatabaseConnect();
+        con = db.openConnection();
+        hanhKiemBLL = new HanhKiemBLL();
     }
 
     private void initUI() {
@@ -88,11 +106,22 @@ public class FormHanhKiem extends JPanel {
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new MigLayout("center", "[]15[]15[]15[]15[]", "[]"));
 
-        panel.add(createButton("Thêm"));
-        panel.add(createButton("Sửa"));
-        panel.add(createButton("Xóa"));
-        panel.add(createButton("Lưu"));
-        panel.add(createButton("Làm mới"));
+        JButton btnLoad = createButton("Tải");
+        JButton btnThem = createButton("Thêm");
+        JButton btnSua = createButton("Sửa");
+        JButton btnXoa = createButton("Xóa");
+        JButton btnLuu = createButton("Lưu");
+        JButton btnClear = createButton("Làm mới");
+
+        panel.add(btnLoad);
+        panel.add(btnThem);
+        panel.add(btnSua);
+        panel.add(btnXoa);
+        panel.add(btnLuu);
+        panel.add(btnClear);
+
+        btnLoad.addActionListener(e -> loadByMaHS());
+        btnThem.addActionListener(e -> themHanhKiem());
 
         return panel;
     }
@@ -103,4 +132,47 @@ public class FormHanhKiem extends JPanel {
         btn.setPreferredSize(new Dimension(110, 35));
         return btn;
     }
+
+    public void loadByMaHS() {
+        String maHS = (filterMaHS != null && !filterMaHS.isEmpty()) ? filterMaHS : txtMaHS.getText().trim();
+        if (maHS.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nhập mã HS để tải hạnh kiểm.", "Thiếu dữ liệu", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        model.setRowCount(0);
+        HocSinh hs = hocSinhBLL.getByMa(maHS);
+        String ten = hs != null ? hs.getHoTen() : "";
+        String lop = hs != null ? hs.getMaLop() : "";
+        java.util.List<HanhKiem> list = hanhKiemBLL.getByMaHS(maHS);
+        if (list != null) {
+            for (HanhKiem hk : list) {
+                model.addRow(new Object[]{hk.getMaHS(), ten, lop, hk.getMaHocKy(), "", hk.getXepLoai(), hk.getNhanXet()});
+            }
+        }
+    }
+
+    private void themHanhKiem() {
+        String maHS = txtMaHS.getText().trim();
+        String hk = cboHocKy.getSelectedItem().toString();
+        String xep = cboXepLoai.getSelectedItem().toString();
+        String nhan = txtNhanXet.getText().trim();
+        if (maHS.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nhập mã HS để thêm hạnh kiểm.", "Thiếu dữ liệu", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        HanhKiem h = new HanhKiem();
+        h.setMaHanhKiem("HK_" + maHS + "_" + hk);
+        h.setMaHS(maHS);
+        h.setMaHocKy(hk);
+        h.setXepLoai(xep);
+        h.setSoLanViPham(0);
+        h.setNhanXet(nhan);
+
+        boolean ok = hanhKiemBLL.add(h);
+        if (ok) JOptionPane.showMessageDialog(this, "Thêm hạnh kiểm thành công.");
+        else JOptionPane.showMessageDialog(this, "Thêm hạnh kiểm thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        loadByMaHS();
+    }
+
+    public void setFilterMaHS(String maHS) { this.filterMaHS = maHS; }
 }

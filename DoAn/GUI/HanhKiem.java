@@ -14,6 +14,7 @@ public class HanhKiem extends JPanel {
     private Connection connection;
     private HocSinhBLL hocSinhBLL;
     protected String currentMaHS;
+    protected String filterMaHS;
 
     private JTextField txtMaHS;
     private JComboBox<String> cbXepLoai;
@@ -120,6 +121,17 @@ public class HanhKiem extends JPanel {
 
     protected void setCurrentMaHS(String maHS) {
         this.currentMaHS = maHS;
+    }
+
+    public void setFilterMaHS(String maHS) { this.filterMaHS = maHS; }
+
+    public void loadByMaHS() {
+        String ma = (filterMaHS != null && !filterMaHS.isEmpty()) ? filterMaHS : this.currentMaHS;
+        if (ma == null || ma.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không có mã HS để tải hạnh kiểm.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        loadData(ma);
     }
 }
 
