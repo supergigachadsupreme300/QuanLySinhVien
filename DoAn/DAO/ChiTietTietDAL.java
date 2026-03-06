@@ -167,7 +167,7 @@ public List<ChiTietTiet> getAllActiveProc() {
     // Lấy chi tiết tiết theo mã TKB (bằng query chuẩn)
     public List<ChiTietTiet> getByTKB(String maTKB) {
         List<ChiTietTiet> list = new ArrayList<>();
-        String sql = "SELECT maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai FROM CHITIETTIET WHERE maTKB = ?";
+        String sql = "SELECT maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai FROM CHITIETTIET WHERE maTKB = ? AND trangThai = 1"; // chỉnh cho cái này
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maTKB);
             try (ResultSet rs = ps.executeQuery()) {
@@ -194,3 +194,4 @@ public List<ChiTietTiet> getAllActiveProc() {
 
 
 }
+
