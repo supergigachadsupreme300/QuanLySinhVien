@@ -100,6 +100,30 @@ public class FormHanhKiem extends JPanel {
         table.setRowHeight(25);
         table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
 
+        // Khi chọn 1 hàng trong bảng, hiển thị thông tin tương ứng lên form nhập
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = table.getSelectedRow();
+                if (row >= 0) {
+                    String maHS = (model.getValueAt(row, 0) != null) ? model.getValueAt(row, 0).toString() : "";
+                    String ten = (model.getValueAt(row, 1) != null) ? model.getValueAt(row, 1).toString() : "";
+                    String lop = (model.getValueAt(row, 2) != null) ? model.getValueAt(row, 2).toString() : "";
+                    String hk = (model.getValueAt(row, 3) != null) ? model.getValueAt(row, 3).toString() : "";
+                    String nam = (model.getValueAt(row, 4) != null) ? model.getValueAt(row, 4).toString() : "";
+                    String xep = (model.getValueAt(row, 5) != null) ? model.getValueAt(row, 5).toString() : "";
+                    String nhan = (model.getValueAt(row, 6) != null) ? model.getValueAt(row, 6).toString() : "";
+
+                    txtMaHS.setText(maHS);
+                    txtTenHS.setText(ten);
+                    txtLop.setText(lop);
+                    if (!hk.isEmpty()) cboHocKy.setSelectedItem(hk);
+                    if (!nam.isEmpty()) cboNamHoc.setSelectedItem(nam);
+                    if (!xep.isEmpty()) cboXepLoai.setSelectedItem(xep);
+                    txtNhanXet.setText(nhan);
+                }
+            }
+        });
+
         return new JScrollPane(table);
     }
 

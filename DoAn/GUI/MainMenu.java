@@ -88,6 +88,23 @@ public class MainMenu extends JFrame {
     }
 
     /**
+     * Called by other forms to notify the ChiTietTiet form to refresh its TKB list.
+     */
+    public void refreshChiTietTietTKB() {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormChiTietTiet) {
+                FormChiTietTiet f = (FormChiTietTiet) comp;
+                try {
+                    f.refreshTKBList();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return;
+            }
+        }
+    }
+
+    /**
      * Open PhuHuynh form and filter by a specific student (maHS).
      */
     public void openPhuHuynhForStudent(String maHS) {
