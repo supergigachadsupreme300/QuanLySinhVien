@@ -45,6 +45,8 @@ public class FormHanhKiem extends JPanel {
 
         add(createMainPanel(), "grow, wrap");
         add(createButtonPanel(), "dock south");
+        // load all active hạnh kiểm on open
+        loadAllActiveHanhKiem();
     }
 
     private JPanel createMainPanel() {
@@ -130,26 +132,23 @@ public class FormHanhKiem extends JPanel {
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new MigLayout("center", "[]15[]15[]15[]15[]", "[]"));
 
-        JButton btnLoad = createButton("Tải");
         JButton btnThem = createButton("Thêm");
         JButton btnSua = createButton("Sửa");
         JButton btnXoa = createButton("Xóa");
         JButton btnLuu = createButton("Lưu");
         JButton btnClear = createButton("Làm mới");
 
-        panel.add(btnLoad);
         panel.add(btnThem);
         panel.add(btnSua);
         panel.add(btnXoa);
         panel.add(btnLuu);
         panel.add(btnClear);
 
-        btnLoad.addActionListener(e -> loadByMaHS());
         btnThem.addActionListener(e -> themHanhKiem());
         btnSua.addActionListener(e -> suaHanhKiem());
         btnXoa.addActionListener(e -> xoaHanhKiem());
         btnLuu.addActionListener(e -> luuHanhKiem());
-        btnClear.addActionListener(e -> clearForm());
+        btnClear.addActionListener(e -> { clearForm(); loadAllActiveHanhKiem(); });
 
         return panel;
     }
@@ -199,10 +198,23 @@ public class FormHanhKiem extends JPanel {
         boolean ok = hanhKiemBLL.add(h);
         if (ok) JOptionPane.showMessageDialog(this, "Thêm hạnh kiểm thành công.");
         else JOptionPane.showMessageDialog(this, "Thêm hạnh kiểm thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        loadByMaHS();
+        loadAllActiveHanhKiem();
     }
 
     public void setFilterMaHS(String maHS) { this.filterMaHS = maHS; }
+
+    private void loadAllActiveHanhKiem() {
+        model.setRowCount(0);
+        java.util.List<HocSinh> students = hocSinhBLL.getAllActive();
+        if (students == null) return;
+        for (HocSinh hs : students) {
+            java.util.List<HanhKiem> list = hanhKiemBLL.getByMaHS(hs.getMaHS());
+            if (list == null) continue;
+            for (HanhKiem hk : list) {
+                model.addRow(new Object[]{hk.getMaHS(), hs.getHoTen(), hs.getMaLop(), hk.getMaHocKy(), "", hk.getXepLoai(), hk.getNhanXet()});
+            }
+        }
+    }
 
     private String buildMaHanhKiem(String maHS, String hk) {
         if (maHS == null || maHS.isEmpty() || hk == null || hk.isEmpty()) return "";
@@ -230,7 +242,7 @@ public class FormHanhKiem extends JPanel {
         boolean ok = hanhKiemBLL.update(h);
         if (ok) JOptionPane.showMessageDialog(this, "Cập nhật hạnh kiểm thành công.");
         else JOptionPane.showMessageDialog(this, "Cập nhật thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        loadByMaHS();
+        loadAllActiveHanhKiem();
     }
 
     private void xoaHanhKiem() {
@@ -247,7 +259,7 @@ public class FormHanhKiem extends JPanel {
         boolean ok = hanhKiemBLL.delete(maHK);
         if (ok) JOptionPane.showMessageDialog(this, "Xóa thành công.");
         else JOptionPane.showMessageDialog(this, "Xóa thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        loadByMaHS();
+        loadAllActiveHanhKiem();
     }
 
     private void luuHanhKiem() {

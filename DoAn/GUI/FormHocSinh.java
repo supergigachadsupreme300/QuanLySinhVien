@@ -168,7 +168,7 @@ public class FormHocSinh extends JPanel {
         btnNangCao.addActionListener(e -> showAdvancedSearch());
         btnThem.addActionListener(e -> themHocSinh());
         btnClear.addActionListener(e -> clearForm());
-
+        tblHocSinh.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tblHocSinh.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int row = tblHocSinh.getSelectedRow();

@@ -65,7 +65,7 @@ public class FormPhuHuynh extends JPanel {
         };
         tblParent = new JTable(modelParent);
         styleTable(tblParent);
-        tblParent.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tblParent.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         // make taller vertically; keep horizontal widths as before
         tblParent.setPreferredScrollableViewportSize(new Dimension(700, 600));
         tblParent.getColumnModel().getColumn(0).setPreferredWidth(80);

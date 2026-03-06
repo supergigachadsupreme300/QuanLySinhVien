@@ -7,19 +7,23 @@ import java.sql.Connection;
 import DAO.DatabaseConnect;
 import BusinessLogicLayer.DiemBLL;
 import BusinessLogicLayer.HocSinhBLL;
+import BusinessLogicLayer.HocKyBLL;
 import DataObject.Diem;
 import DataObject.HocSinh;
+import DataObject.HocKy;
 import net.miginfocom.swing.MigLayout;
 
 public class FormDiem extends JPanel {
 
     private JTextField txtMaHS, txtTenHS, txtLop, txtMon, txtDiemTX, txtDiemGK, txtDiemCK;
+    private JComboBox<String> cboHocKy;
     private JTable table;
     private DefaultTableModel model;
     private DatabaseConnect db;
     private Connection con;
     private DiemBLL diemBLL;
     private HocSinhBLL hocSinhBLL = new HocSinhBLL();
+    private HocKyBLL hocKyBLL = new HocKyBLL();
     private String filterMaHS = null;
 
     public FormDiem() {
@@ -43,6 +47,9 @@ public class FormDiem extends JPanel {
 
         add(createMainPanel(), "grow, wrap");
         add(createButtonPanel(), "dock south");
+        // Load hoc ky combo and all active students' diem on open
+        loadHocKyCombo();
+        loadAllActiveDiem();
     }
 
     private JPanel createMainPanel() {
@@ -74,6 +81,10 @@ public class FormDiem extends JPanel {
         panel.add(new JLabel("Môn học (maChiTiet):"));
         txtMon = new JTextField();
         panel.add(txtMon, "growx, wrap");
+
+        panel.add(new JLabel("Học kỳ:"));
+        cboHocKy = new JComboBox<>();
+        panel.add(cboHocKy, "growx, wrap");
 
         panel.add(new JLabel("Điểm thường xuyên:"));
         txtDiemTX = new JTextField();
@@ -125,17 +136,24 @@ public class FormDiem extends JPanel {
         return new JScrollPane(table);
     }
 
+    private void loadHocKyCombo() {
+        cboHocKy.removeAllItems();
+        java.util.List<HocKy> list = hocKyBLL.getAllActive();
+        if (list == null) return;
+        for (HocKy hk : list) {
+            cboHocKy.addItem(hk.getMaHK());
+        }
+    }
+
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new MigLayout("center", "[]15[]15[]15[]15[]", "[]"));
 
-        JButton btnLoad = createButton("Tải");
         JButton btnThem = createButton("Thêm");
         JButton btnSua = createButton("Sửa");
         JButton btnXoa = createButton("Xóa");
         JButton btnLuu = createButton("Lưu");
         JButton btnClear = createButton("Làm mới");
 
-        panel.add(btnLoad);
         panel.add(btnThem);
         panel.add(btnSua);
         panel.add(btnXoa);
@@ -143,14 +161,26 @@ public class FormDiem extends JPanel {
         panel.add(btnClear);
 
         // Events
-        btnLoad.addActionListener(e -> loadByMaHS());
         btnThem.addActionListener(e -> themDiem());
         btnSua.addActionListener(e -> suaDiem());
         btnXoa.addActionListener(e -> xoaDiem());
         btnLuu.addActionListener(e -> luuDiem());
-        btnClear.addActionListener(e -> clearForm());
+        btnClear.addActionListener(e -> { clearForm(); loadAllActiveDiem(); });
 
         return panel;
+    }
+
+    private void loadAllActiveDiem() {
+        model.setRowCount(0);
+        java.util.List<HocSinh> students = hocSinhBLL.getAllActive();
+        if (students == null) return;
+        for (HocSinh hs : students) {
+            java.util.List<Diem> ds = diemBLL.getByMaHS(hs.getMaHS());
+            if (ds == null) continue;
+            for (Diem d : ds) {
+                model.addRow(new Object[]{d.getMaHS(), hs.getHoTen(), hs.getMaLop(), d.getMaChiTiet(), d.getDiemThuongXuyen(), d.getDiemGiuaKy(), d.getDiemCuoiKy(), d.getDiemTBMonHocKy()});
+            }
+        }
     }
 
     private JButton createButton(String text) {
@@ -195,7 +225,13 @@ public class FormDiem extends JPanel {
         d.setMaDiem("D_" + maHS + "_" + maMon);
         d.setMaHS(maHS);
         d.setMaChiTiet(maMon);
-        d.setMaHocKy("HK1");
+        // use selected hoc ky from combo
+        String selectedHK = (cboHocKy.getSelectedItem() != null) ? cboHocKy.getSelectedItem().toString() : "";
+        if (selectedHK.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn Học kỳ trước khi nhập điểm.", "Thiếu dữ liệu", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        d.setMaHocKy(selectedHK);
         d.setDiemThuongXuyen(valTX);
         d.setDiemGiuaKy(valGK);
         d.setDiemCuoiKy(valCK);
@@ -203,7 +239,7 @@ public class FormDiem extends JPanel {
 
         String res = diemBLL.them(d);
         JOptionPane.showMessageDialog(this, res);
-        loadByMaHS();
+        loadAllActiveDiem();
     }
 
     private double parseOrZero(String s) {

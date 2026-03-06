@@ -88,7 +88,8 @@ public class FormGiaoVien extends JPanel {
 
         tblGiaoVien = new JTable(modelGiaoVien);
         styleTable(tblGiaoVien);
-        tblGiaoVien.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        // Allow columns to resize when parent is resized
+        tblGiaoVien.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tblGiaoVien.setPreferredScrollableViewportSize(new Dimension(600, 300));
         tblGiaoVien.setFillsViewportHeight(true);
 

@@ -89,7 +89,8 @@ public class FormChiTietMon extends JPanel {
 
         tblChiTietMon = new JTable(modelChiTietMon);
         styleTable(tblChiTietMon);
-        tblChiTietMon.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        // Cho phép các cột co giãn theo kích thước viewport khi thay đổi kích thước frame
+        tblChiTietMon.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tblChiTietMon.setPreferredScrollableViewportSize(new Dimension(600, 300));
         tblChiTietMon.setFillsViewportHeight(true);
 

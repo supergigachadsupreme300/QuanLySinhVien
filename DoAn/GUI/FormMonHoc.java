@@ -88,7 +88,8 @@ public class FormMonHoc extends JPanel {
 
         tblMonHoc = new JTable(modelMonHoc);
         styleTable(tblMonHoc);
-        tblMonHoc.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        // Allow columns to resize to fill available width when frame changes size
+        tblMonHoc.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tblMonHoc.setPreferredScrollableViewportSize(new Dimension(600, 300));
         tblMonHoc.setFillsViewportHeight(true);
 

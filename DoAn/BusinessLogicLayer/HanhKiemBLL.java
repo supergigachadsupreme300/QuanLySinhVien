@@ -33,6 +33,19 @@ public class HanhKiemBLL {
     public boolean add(HanhKiem hk) {
         if (!kiemTraHopLe(hk)) return false;
 
+        // Kiểm tra tồn tại học sinh và học kỳ để tránh lỗi FK
+        DAO.HocSinhDAO hsDao = new DAO.HocSinhDAO();
+        if (hsDao.getById(hk.getMaHS()) == null) {
+            System.err.println("Học sinh không tồn tại: " + hk.getMaHS());
+            return false;
+        }
+
+        DAO.HocKyDAL hkDao = new DAO.HocKyDAL();
+        if (hkDao.findByMaHK(hk.getMaHocKy()) == null) {
+            System.err.println("Học kỳ không tồn tại: " + hk.getMaHocKy());
+            return false;
+        }
+
         // Không cho trùng mã
         if (hanhKiemDAL.getById(hk.getMaHanhKiem()) != null) {
             return false;
