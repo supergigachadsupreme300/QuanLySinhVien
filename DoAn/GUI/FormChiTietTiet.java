@@ -266,13 +266,24 @@ public class FormChiTietTiet extends JPanel {
         }
         String thuCode = thu.replace(" ", "").replace("ứ", "");
         String baseCode = maTKB + "_" + thuCode + "_T" + tiet;
-        String newCode = baseCode;
+        // Ensure result fits DB VARCHAR(20)
+        String newCode = applySuffixLimited(baseCode, "", 20);
         int counter = 1;
         while (used.contains(newCode)) {
-            newCode = baseCode + "_" + counter;
+            String suffix = "_" + counter;
+            newCode = applySuffixLimited(baseCode, suffix, 20);
             counter++;
         }
         return newCode;
+    }
+
+    private String applySuffixLimited(String base, String suffix, int maxLen) {
+        if (base == null) base = "";
+        if (suffix == null) suffix = "";
+        if (base.length() + suffix.length() <= maxLen) return base + suffix;
+        int keep = Math.max(0, maxLen - suffix.length());
+        if (keep > base.length()) keep = base.length();
+        return base.substring(0, keep) + suffix;
     }
 
     private boolean isCellSelected() {
@@ -324,6 +335,14 @@ public class FormChiTietTiet extends JPanel {
         }
 
         String maCTMoi = txtMaCT.getText().trim();
+        // Validate length against DB schema (VARCHAR(20))
+        if (maCTMoi.length() > 20) {
+            JOptionPane.showMessageDialog(this,
+                "Mã chi tiết quá dài (tối đa 20 ký tự). Vui lòng chỉnh lại.",
+                "Lỗi dữ liệu",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         // Kiểm tra trùng trong buffer (ADD)
         for (Change change : bufferChanges) {
             if (change.action.equals("ADD") && change.ct.getMaChiTiet().equals(maCTMoi)) {

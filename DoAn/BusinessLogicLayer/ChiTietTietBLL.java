@@ -28,26 +28,23 @@ public class ChiTietTietBLL {
     
 
     // ===== THÊM =====
-    public String themChiTietTiet(ChiTietTiet ct) {
-        if (ct == null) return "Dữ liệu chi tiết tiết không hợp lệ!";
+    public Boolean themChiTietTiet(ChiTietTiet ct) {
+        if (ct == null) return false;
         if (ctDAL.findByMaChiTiet(ct.getMaChiTiet()) != null) {
-            return "Mã chi tiết tiết đã tồn tại!";
+            return false;
         }
-        return ctDAL.insert(ct) ? "Thêm chi tiết tiết thành công!" 
-                                : "Thêm chi tiết tiết thất bại!";
+        return ctDAL.insert(ct);
     }
 
     // ===== SỬA =====
-    public String suaChiTietTiet(ChiTietTiet ct) {
-        if (ct == null) return "Dữ liệu chi tiết tiết không hợp lệ!";
-        return ctDAL.update(ct) ? "Sửa chi tiết tiết thành công!" 
-                                : "Sửa chi tiết tiết thất bại!";
+    public Boolean suaChiTietTiet(ChiTietTiet ct) {
+        if (ct == null) return false;
+        return ctDAL.update(ct);
     }
 
     // ===== XÓA =====
-    public String xoaChiTietTiet(String maChiTiet) {
-        return ctDAL.delete(maChiTiet) ? "Xóa chi tiết tiết thành công!" 
-                                       : "Xóa chi tiết tiết thất bại!";
+    public Boolean xoaChiTietTiet(String maChiTiet) {
+        return ctDAL.delete(maChiTiet);
     }
 
     // ===== TÌM THEO MÃ =====

@@ -73,7 +73,13 @@ public class ChiTietTietDAL {
     public boolean insert(ChiTietTiet ct) {
         String sql = "INSERT INTO CHITIETTIET(maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, ct.getMaChiTiet());
+            // Ensure maChiTiet length fits DB (VARCHAR(20) in schema). Truncate if necessary to avoid SQL exception.
+            String ma = ct.getMaChiTiet() != null ? ct.getMaChiTiet() : "";
+            if (ma.length() > 20) {
+                System.err.println("[Warning] maChiTiet too long, truncating to 20 chars: " + ma);
+                ma = ma.substring(0, 20);
+            }
+            ps.setString(1, ma);
             ps.setString(2, ct.getMaTKB());
             ps.setString(3, ct.getMaMon());
             ps.setString(4, ct.getThu());
@@ -84,7 +90,7 @@ public class ChiTietTietDAL {
             ps.setInt(9, ct.getTrangThai());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("[ChiTietTietDAL.insert] SQLException: " + e.getMessage());
             return false;
         }
     }
