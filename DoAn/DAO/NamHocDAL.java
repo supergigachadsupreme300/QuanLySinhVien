@@ -20,7 +20,7 @@ public class NamHocDAL {
     // Lấy tất cả năm học (chỉ lấy đang hoạt động)
     public List<NamHoc> getAll() {
         List<NamHoc> list = new ArrayList<>();
-        String sql = "SELECT maNam, tenNam, trangThai FROM NAMHOC WHERE trangThai = 1";
+        String sql = "SELECT maNam, tenNam, trangThai FROM NAM WHERE trangThai = 1";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -40,7 +40,7 @@ public class NamHocDAL {
     // ===== GET ALL ACTIVE =====
     public List<NamHoc> getAllActive() {
         List<NamHoc> list = new ArrayList<>();
-        String sql = "SELECT maNam, tenNam, trangThai FROM NAMHOC WHERE trangThai = 1";
+        String sql = "SELECT maNam, tenNam, trangThai FROM NAM WHERE trangThai = 1";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -66,7 +66,7 @@ public class NamHocDAL {
     
     // Thêm năm học
     public boolean insert(NamHoc nh) {
-        String sql = "INSERT INTO NAMHOC(maNam, tenNam, trangThai) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO NAM(maNam, tenNam, trangThai) VALUES (?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, nh.getMaNH());
             ps.setString(2, nh.getTenNH());
@@ -80,7 +80,7 @@ public class NamHocDAL {
 
     // Cập nhật năm học
     public boolean update(NamHoc nh) {
-        String sql = "UPDATE NAMHOC SET tenNam=?, trangThai=? WHERE maNam=?";
+        String sql = "UPDATE NAM SET tenNam=?, trangThai=? WHERE maNam=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, nh.getTenNH());
             ps.setInt(2, nh.getTrangThai());
@@ -94,7 +94,7 @@ public class NamHocDAL {
 
     // Soft delete: chỉ đổi trạng thái = 0
     public boolean delete(String maNH) {
-        String sql = "UPDATE NAMHOC SET trangThai = 0 WHERE maNam=?";
+        String sql = "UPDATE NAM SET trangThai = 0 WHERE maNam=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maNH);
             return ps.executeUpdate() > 0;
@@ -106,7 +106,7 @@ public class NamHocDAL {
 
     // Tìm năm học theo mã (chỉ lấy đang hoạt động)
     public NamHoc findByMaNH(String maNH) {
-        String sql = "SELECT maNam, tenNam, trangThai FROM NAMHOC WHERE maNam=? AND trangThai = 1";
+        String sql = "SELECT maNam, tenNam, trangThai FROM NAM WHERE maNam=? AND trangThai = 1";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maNH);
             ResultSet rs = ps.executeQuery();
