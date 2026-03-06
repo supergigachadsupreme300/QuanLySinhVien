@@ -222,7 +222,7 @@ public class FormDiem extends JPanel {
         if (Double.isNaN(tb)) tb = 0;
 
         Diem d = new Diem();
-        d.setMaDiem("D_" + maHS + "_" + maMon);
+        d.setMaDiem("D" + maHS);
         d.setMaHS(maHS);
         d.setMaChiTiet(maMon);
         // use selected hoc ky from combo
