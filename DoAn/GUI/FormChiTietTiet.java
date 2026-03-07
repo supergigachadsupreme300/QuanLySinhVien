@@ -343,28 +343,33 @@ public class FormChiTietTiet extends JPanel {
                 JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        // Kiểm tra trùng trong buffer (ADD)
-        for (Change change : bufferChanges) {
-            if (change.action.equals("ADD") && change.ct.getMaChiTiet().equals(maCTMoi)) {
-                JOptionPane.showMessageDialog(this,
-                    "Mã chi tiết đã tồn tại trong danh sách chờ lưu!",
-                    "Lỗi trùng mã",
-                    JOptionPane.ERROR_MESSAGE);
-                return false;
-            }
-        }
 
-        // Kiểm tra trong database (kể cả đã xóa mềm)
-        List<ChiTietTiet> dsDB = ctBLL.getAll();
-        for (ChiTietTiet ct : dsDB) {
-            if (ct.getMaChiTiet().equals(maCTMoi)) {
-                JOptionPane.showMessageDialog(this,
-                    "Mã chi tiết đã tồn tại trong hệ thống!",
-                    "Lỗi trùng mã",
-                    JOptionPane.ERROR_MESSAGE);
-                return false;
+        // Chỉ kiểm tra trùng mã khi đang ở chế độ thêm mới (txtMaCT được enable)
+        if (txtMaCT.isEnabled()) {
+            // Kiểm tra trùng trong buffer (ADD)
+            for (Change change : bufferChanges) {
+                if (change.action.equals("ADD") && change.ct.getMaChiTiet().equals(maCTMoi)) {
+                    JOptionPane.showMessageDialog(this,
+                        "Mã chi tiết đã tồn tại trong danh sách chờ lưu!",
+                        "Lỗi trùng mã",
+                        JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+
+            // Kiểm tra trong database (kể cả đã xóa mềm)
+            List<ChiTietTiet> dsDB = ctBLL.getAll();
+            for (ChiTietTiet ct : dsDB) {
+                if (ct.getMaChiTiet().equals(maCTMoi)) {
+                    JOptionPane.showMessageDialog(this,
+                        "Mã chi tiết đã tồn tại trong hệ thống!",
+                        "Lỗi trùng mã",
+                        JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
             }
         }
+        // Nếu txtMaCT bị disable (đang sửa) thì bỏ qua kiểm tra trùng, cho phép sửa
 
         return true;
     }
