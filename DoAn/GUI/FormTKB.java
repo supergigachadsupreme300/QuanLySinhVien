@@ -486,7 +486,7 @@ public class FormTKB extends JPanel {
         java.util.Date dateKT = dateChooserKT.getDate(); 
         LocalDate ngayBD = dateBD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(); 
         LocalDate ngayKT = dateKT.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        
+
         Lop lop = (Lop) cboLop.getSelectedItem();
         HocKy hk = (HocKy) cboHocKy.getSelectedItem();
 
@@ -506,12 +506,15 @@ public class FormTKB extends JPanel {
             tkb.getNgayBatDau(), 
             tkb.getNgayKetThuc() 
         }); 
-        
+
+        // Xóa change cũ cùng mã nếu có (tránh trùng lặp)
+        bufferChanges.removeIf(c -> c.tkb.getMaTKB().equals(tkb.getMaTKB()));
+
         bufferChanges.add(new Change(tkb, "ADD")); 
         resetInputForm(); 
         dataChanged = true; 
         updateSaveButtonState();
-        
+
         JOptionPane.showMessageDialog(this, 
             "Đã thêm TKB thành công! Nhấn 'Lưu' để lưu vào CSDL.",
             "Thông báo",
@@ -524,50 +527,47 @@ public class FormTKB extends JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn TKB cần sửa!");
             return;
         }
-        
+
         if (!validateForm()) return;
-        
-        int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Bạn có chắc muốn sửa TKB này?",
-            "Xác nhận sửa",
-            JOptionPane.YES_NO_OPTION
-        );
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn sửa TKB này?", "Xác nhận sửa", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) return;
 
         String maTKBCu = modelTKBList.getValueAt(row, 0).toString();
-        
+
         java.util.Date dateBD = dateChooserBD.getDate(); 
         java.util.Date dateKT = dateChooserKT.getDate(); 
         LocalDate ngayBD = dateBD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(); 
         LocalDate ngayKT = dateKT.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        
+
         Lop lop = (Lop) cboLop.getSelectedItem();
         HocKy hk = (HocKy) cboHocKy.getSelectedItem();
 
         ThoiKhoaBieu tkb = new ThoiKhoaBieu(
-            txtMaTKB.getText(),
+            txtMaTKB.getText(),        // mã giữ nguyên
             lop.getMaLop(),
             hk.getMaHK(),
-            1,
+            1,                         // giữ active
             ngayBD,
             ngayKT
         );
 
-        modelTKBList.setValueAt(tkb.getMaLop(), row, 1); 
-        modelTKBList.setValueAt(tkb.getMaHK(), row, 2); 
-        modelTKBList.setValueAt(tkb.getNgayBatDau(), row, 3); 
-        modelTKBList.setValueAt(tkb.getNgayKetThuc(), row, 4); 
-        
-        // Xóa change cũ nếu có
-        bufferChanges.removeIf(c -> c.tkb.getMaTKB().equals(maTKBCu) && c.action.equals("UPDATE"));
-        
-        bufferChanges.add(new Change(tkb, "UPDATE")); 
-        
-        resetInputForm(); 
-        dataChanged = true; 
+        // Cập nhật bảng hiển thị
+        modelTKBList.setValueAt(tkb.getMaLop(), row, 1);
+        modelTKBList.setValueAt(tkb.getMaHK(), row, 2);
+        modelTKBList.setValueAt(tkb.getNgayBatDau(), row, 3);
+        modelTKBList.setValueAt(tkb.getNgayKetThuc(), row, 4);
+
+        // Xóa tất cả các change cũ liên quan đến mã này (ADD, UPDATE, DELETE)
+        bufferChanges.removeIf(c -> c.tkb.getMaTKB().equals(maTKBCu));
+
+        // Thêm change mới
+        bufferChanges.add(new Change(tkb, "UPDATE"));
+
+        resetInputForm();
+        dataChanged = true;
         updateSaveButtonState();
-        
+
         JOptionPane.showMessageDialog(this, 
             "Đã sửa TKB thành công! Nhấn 'Lưu' để lưu vào CSDL.",
             "Thông báo",
@@ -580,30 +580,25 @@ public class FormTKB extends JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn TKB cần xóa!");
             return;
         }
-        
-        int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Bạn có chắc muốn xóa TKB này?",
-            "Xác nhận xóa",
-            JOptionPane.YES_NO_OPTION
-        );
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa TKB này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) return;
-        
+
         String maTKB = modelTKBList.getValueAt(row, 0).toString(); 
         modelTKBList.removeRow(row); 
-        
+
         ThoiKhoaBieu tkb = new ThoiKhoaBieu(); 
         tkb.setMaTKB(maTKB); 
-        
-        // KHÔNG xóa change cũ - giữ nguyên vì soft delete không tái sử dụng mã
-        // bufferChanges.removeIf(c -> c.tkb.getMaTKB().equals(maTKB));
-        
+
+        // Xóa tất cả change cũ của mã này
+        bufferChanges.removeIf(c -> c.tkb.getMaTKB().equals(maTKB));
+
         bufferChanges.add(new Change(tkb, "DELETE")); 
-        
+
         resetInputForm(); 
         dataChanged = true; 
         updateSaveButtonState();
-        
+
         JOptionPane.showMessageDialog(this, 
             "Đã xóa TKB thành công! Nhấn 'Lưu' để lưu vào CSDL.",
             "Thông báo",
@@ -612,8 +607,10 @@ public class FormTKB extends JPanel {
 
     // ================= UI FLOW ================
     private void fillFormFromTable(int row) {
-        txtMaTKB.setText(modelTKBList.getValueAt(row, 0).toString());
-        
+        // Lấy mã từ bảng
+        String maTKBCu = modelTKBList.getValueAt(row, 0).toString();
+        txtMaTKB.setText(maTKBCu);  // set lần 1
+
         String maLop = modelTKBList.getValueAt(row, 1).toString();
         for (int i = 0; i < cboLop.getItemCount(); i++) {
             if (cboLop.getItemAt(i).getMaLop().equals(maLop)) {
@@ -621,7 +618,7 @@ public class FormTKB extends JPanel {
                 break;
             }
         }
-        
+
         String maHK = modelTKBList.getValueAt(row, 2).toString();
         for (int i = 0; i < cboHocKy.getItemCount(); i++) {
             if (cboHocKy.getItemAt(i).getMaHK().equals(maHK)) {
@@ -629,17 +626,20 @@ public class FormTKB extends JPanel {
                 break;
             }
         }
-        
+
+        // Set lại mã sau khi combobox đã được chọn (vì listener có thể thay đổi nó)
+        txtMaTKB.setText(maTKBCu);
+
         Object ngayBDObj = modelTKBList.getValueAt(row, 3);
         Object ngayKTObj = modelTKBList.getValueAt(row, 4);
-        
-        if (ngayBDObj != null && ngayBDObj instanceof LocalDate) { 
-            dateChooserBD.setDate(java.sql.Date.valueOf((LocalDate) ngayBDObj)); 
-        } 
-        if (ngayKTObj != null && ngayKTObj instanceof LocalDate) { 
-            dateChooserKT.setDate(java.sql.Date.valueOf((LocalDate) ngayKTObj)); 
+
+        if (ngayBDObj != null && ngayBDObj instanceof LocalDate) {
+            dateChooserBD.setDate(java.sql.Date.valueOf((LocalDate) ngayBDObj));
         }
-        
+        if (ngayKTObj != null && ngayKTObj instanceof LocalDate) {
+            dateChooserKT.setDate(java.sql.Date.valueOf((LocalDate) ngayKTObj));
+        }
+
         txtMaTKB.setEnabled(false);
         cboLop.setEnabled(false);
         cboHocKy.setEnabled(false);
@@ -716,6 +716,7 @@ public class FormTKB extends JPanel {
         boolean dangChon = tblTKBList.getSelectedRow() >= 0;
         btnSua.setEnabled(dangChon);
         btnXoa.setEnabled(dangChon);
+        btnThem.setEnabled(!dangChon); 
     }
     
     private void updateSaveButtonState() {
@@ -743,9 +744,21 @@ public class FormTKB extends JPanel {
     
     private void loadComboLop() {
         cboLop.removeAllItems();
-        for (Lop l : new LopBLL().getAllActive()) {
+        List<Lop> dsLop = new LopBLL().getAllActive();
+        for (Lop l : dsLop) {
             cboLop.addItem(l);
         }
+        // Chỉ hiển thị tên lớp
+        cboLop.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Lop) {
+                    setText(((Lop) value).getTenLop());  // hiển thị tenLop
+                }
+                return this;
+            }
+        });
     }
 
     private void loadComboHocKy() {
