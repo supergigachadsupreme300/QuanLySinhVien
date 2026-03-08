@@ -11,8 +11,12 @@ public class parent_GUI extends JPanel {
     private JTextField txtSdt;
     private JTextField txtNgheNghiep;
     private JTextField txtQuanHe;
+    private JButton btnHocSinh;
+    private JButton btnEdit;
+    private JButton btnXoa;
     // reference to BLL for operations
     private BusinessLogicLayer.ParentBLL parentBLLRef;
+    private boolean isEditing = false;
 
     // Constructor mặc định (tạo đối tượng rỗng để test)
     public parent_GUI() {
@@ -51,9 +55,9 @@ public class parent_GUI extends JPanel {
         txtQuanHe.setEditable(false);
         add(txtQuanHe, "growx");
 
-        JButton btnHocSinh = new JButton("Học sinh");
-        JButton btnEdit = new JButton("Sửa");
-        JButton btnXoa = new JButton("Xóa");
+         btnHocSinh = new JButton("Học sinh");
+         btnEdit = new JButton("Sửa");
+         btnXoa = new JButton("Xóa");
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
         btnRow.add(btnEdit);
         btnRow.add(btnXoa);
@@ -83,15 +87,27 @@ public class parent_GUI extends JPanel {
         // edit and delete actions
         btnEdit.addActionListener(e -> {
             if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh để sửa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             if (parentBLLRef == null) {
                 JOptionPane.showMessageDialog(this, "Không có BLL.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int confirm = JOptionPane.showConfirmDialog(this, "Sửa thông tin phụ huynh này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
+            if (!isEditing) {
+                // Enter edit mode
+                txtTenPhH.setEditable(true);
+                txtSdt.setEditable(true);
+                txtNgheNghiep.setEditable(true);
+                txtQuanHe.setEditable(true);
+                btnEdit.setText("Lưu");
+                isEditing = true;
+            } else {
+                // Save changes
+                parent.setTenPhH(txtTenPhH.getText());
+                parent.setSdt(txtSdt.getText());
+                parent.setNgheNghiep(txtNgheNghiep.getText());
+                parent.setQuanHe(txtQuanHe.getText());
                 if (parentBLLRef.suaParent(parent)) {
                     JOptionPane.showMessageDialog(this, "Cập nhật thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                     FormPhuHuynh owner = (FormPhuHuynh) SwingUtilities.getAncestorOfClass(FormPhuHuynh.class, this);
@@ -99,6 +115,13 @@ public class parent_GUI extends JPanel {
                 } else {
                     JOptionPane.showMessageDialog(this, "Cập nhật thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
+                // Exit edit mode
+                txtTenPhH.setEditable(false);
+                txtSdt.setEditable(false);
+                txtNgheNghiep.setEditable(false);
+                txtQuanHe.setEditable(false);
+                btnEdit.setText("Sửa");
+                isEditing = false;
             }
         });
         btnXoa.addActionListener(e -> {
@@ -140,6 +163,15 @@ public class parent_GUI extends JPanel {
     // Phương thức cập nhật đối tượng Parent
     public void setParent(Parent p) {
         this.parent = p;
+        if (isEditing) {
+            // Exit edit mode
+            txtTenPhH.setEditable(false);
+            txtSdt.setEditable(false);
+            txtNgheNghiep.setEditable(false);
+            txtQuanHe.setEditable(false);
+            btnEdit.setText("Sửa");
+            isEditing = false;
+        }
         updateDisplay();
     }
     // provide BLL reference for edit/delete operations

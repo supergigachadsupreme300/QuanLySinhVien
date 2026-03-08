@@ -4,9 +4,6 @@ import DAO.MonHocDAO;
 import DataObject.Mon;
 import java.util.List;
 
-/**
- * Lớp xử lý logic nghiệp vụ cho Môn Học
- */
 public class MonHocBLL {
 
     private final MonHocDAO dao;
@@ -15,24 +12,15 @@ public class MonHocBLL {
         this.dao = new MonHocDAO();
     }
 
-    /**
-     * Lấy toàn bộ danh sách môn học
-     */
     public List<Mon> getAll() {
         return dao.getAll();
     }
 
-    /**
-     * Thêm mới một môn học
-     * @param mh đối tượng Mon cần thêm
-     * @return true nếu thành công, false nếu thất bại hoặc vi phạm ràng buộc
-     */
     public boolean themMonHoc(Mon mh) {
         if (mh == null) {
             return false;
         }
 
-        // Validate dữ liệu
         String error = validate(mh);
         if (error != null) {
             System.err.println("Validate lỗi: " + error);
@@ -48,11 +36,7 @@ public class MonHocBLL {
         return dao.insert(mh);
     }
 
-    /**
-     * Sửa thông tin môn học
-     * @param mh đối tượng đã cập nhật (phải có mã môn)
-     * @return true nếu sửa thành công
-     */
+
     public boolean suaMonHoc(Mon mh) {
         if (mh == null || mh.getMaMon() == null || mh.getMaMon().trim().isEmpty()) {
             return false;

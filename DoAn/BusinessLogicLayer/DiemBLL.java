@@ -52,7 +52,6 @@ public class DiemBLL {
     public String sua(Diem d) {
         if (d == null) return "Dữ liệu điểm không hợp lệ.";
 
-        // Validate related entities
         HocSinhDAO hsDao = new HocSinhDAO(con);
         if (hsDao.getById(d.getMaHS()) == null) {
             return "Không tìm thấy Học sinh với mã: " + d.getMaHS();

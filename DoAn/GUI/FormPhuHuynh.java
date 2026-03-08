@@ -203,7 +203,7 @@ public class FormPhuHuynh extends JPanel {
         if (p != null) parentPanel.setParent(p);
     }
 
-    private void clearForm() { txtMa.setText(""); txtTen.setText(""); txtSdt.setText(""); txtNghe.setText(""); txtQuanHe.setText(""); tblParent.clearSelection(); pnlParent.setVisible(false); }
+    private void clearForm() { txtMa.setText(""); txtTen.setText(""); txtSdt.setText(""); txtNghe.setText(""); txtQuanHe.setText(""); tblParent.clearSelection(); pnlParent.setVisible(false); filterMaHS = ""; loadTable(); }
 
     private Parent getEntityFromForm() {
         Parent p = new Parent();
@@ -224,9 +224,7 @@ public class FormPhuHuynh extends JPanel {
             JOptionPane.showMessageDialog(this, "Thêm thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
-    private void sua() { int r = tblParent.getSelectedRow(); if (r<0) { JOptionPane.showMessageDialog(this, "Chọn 1 phụ huynh"); return;} if (parentBLL.suaParent(getEntityFromForm())) { JOptionPane.showMessageDialog(this, "Sửa thành công"); loadTable(); clearForm(); } }
-    private void xoa() { int r = tblParent.getSelectedRow(); if (r<0) { JOptionPane.showMessageDialog(this, "Chọn 1 phụ huynh"); return;} String ma = modelParent.getValueAt(r,0).toString(); if (parentBLL.xoaParent(ma)) { JOptionPane.showMessageDialog(this, "Xóa thành công"); loadTable(); clearForm(); } }
-
+    
     /* helpers */
     private JButton createButton(String text, Color color) { JButton btn = new JButton(text); btn.setBackground(color); btn.setForeground(Color.WHITE); btn.setFocusPainted(false); return btn; }
     private void styleTable(JTable t) { t.getTableHeader().setReorderingAllowed(false); t.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); }

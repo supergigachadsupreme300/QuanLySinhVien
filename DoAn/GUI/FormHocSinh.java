@@ -192,7 +192,7 @@ public class FormHocSinh extends JPanel {
 
     public void loadTable() {
         modelHocSinh.setRowCount(0);
-        for (HocSinh hs : hocSinhBLL.getAll()) {
+        for (HocSinh hs : hocSinhBLL.getAllActive()) {
             modelHocSinh.addRow(new Object[]{
                     hs.getMaHS(), hs.getHoTen(),
                     hs.getNgaySinh() == null ? "" : hs.getNgaySinh().format(fmt),
@@ -214,7 +214,7 @@ public class FormHocSinh extends JPanel {
             return;
         }
         modelHocSinh.setRowCount(0);
-        for (HocSinh hs : hocSinhBLL.getAll()) {
+        for (HocSinh hs : hocSinhBLL.getAllActive()) {
             if (hs.getHoTen().toLowerCase().contains(key)) {
                 modelHocSinh.addRow(new Object[]{
                         hs.getMaHS(), hs.getHoTen(),
@@ -245,7 +245,7 @@ public class FormHocSinh extends JPanel {
         btnOk.addActionListener(ev -> {
             // lọc theo các điều kiện
             modelHocSinh.setRowCount(0);
-            for (HocSinh hs : hocSinhBLL.getAll()) {
+            for (HocSinh hs : hocSinhBLL.getAllActive()) {
                 if (!fMa.getText().trim().isEmpty() && !hs.getMaHS().equals(fMa.getText().trim())) continue;
                 if (!fHoTen.getText().trim().isEmpty() && !hs.getHoTen().toLowerCase()
                         .contains(fHoTen.getText().trim().toLowerCase())) continue;
@@ -280,6 +280,7 @@ public class FormHocSinh extends JPanel {
         txtMaLop.setText("");
         tblHocSinh.clearSelection();
         pnlStudent.setVisible(false);
+        loadTable();
     }
 
     private boolean validateForm() {

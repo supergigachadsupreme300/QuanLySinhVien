@@ -63,35 +63,9 @@ public class HocSinhDAO {
         return hs;
     }
 
-    // ===== FIND BY MAHS =====
-    public HocSinh findByMaHS(String maHS) {
-        String sql = "SELECT * FROM HOCSINH WHERE maHS = ?";
-        HocSinh hs = null;
-
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, maHS);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    hs = new HocSinh();
-                    hs.setMaHS(rs.getString("maHS"));
-                    hs.setHoTen(rs.getNString("hoTen"));
-                    Date ns = rs.getDate("ngaySinh");
-                    hs.setNgaySinh(ns != null ? ns.toLocalDate() : null);
-                    hs.setGioiTinh(rs.getNString("gioiTinh"));
-                    hs.setDiaChi(rs.getNString("diaChi"));
-                    hs.setMaLop(rs.getString("maLop"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return hs;
-    }
-
     public List<HocSinh> getAll() {
         List<HocSinh> list = new ArrayList<>();
-        String sql = "SELECT * FROM HOCSINH WHERE trangThai = 1 ORDER BY maHS";
+        String sql = "SELECT * FROM HOCSINH ORDER BY maHS";
 
         try (Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -197,5 +171,4 @@ public class HocSinhDAO {
         }
     }
 
-    // NOTE: removed alias methods `insert` and `getByClass` to keep canonical names `add` and `getByMaLop`.
 }

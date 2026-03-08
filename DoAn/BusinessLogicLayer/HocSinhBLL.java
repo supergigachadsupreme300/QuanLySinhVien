@@ -34,7 +34,7 @@ public class HocSinhBLL {
     // ===== THÊM =====
     public boolean themHocSinh(HocSinh hs) {
         if (hs == null) return false;
-        if (hsDAL.findByMaHS(hs.getMaHS()) != null) {
+        if (hsDAL.getById(hs.getMaHS()) != null) {
             return false;
         }
         boolean ok = hsDAL.add(hs);
@@ -59,7 +59,7 @@ public class HocSinhBLL {
 
     // ===== XÓA =====
     public boolean xoaHocSinh(String maHS) {
-        HocSinh hs = hsDAL.findByMaHS(maHS);
+        HocSinh hs = hsDAL.getById(maHS);
         boolean ok = hsDAL.delete(maHS);
         return ok && hs != null;
     }

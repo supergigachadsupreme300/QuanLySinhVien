@@ -10,9 +10,6 @@ import java.awt.event.FocusEvent;
 import java.util.List;
 import net.miginfocom.swing.MigLayout;
 
-/**
- * FORM QUẢN LÝ CHI TIẾT MÔN HỌC
- */
 public class FormChiTietMon extends JPanel {
 
     private final ChiTietMonBLL chiTietMonBLL = new ChiTietMonBLL();

@@ -4,9 +4,7 @@ import DAO.GiaoVienDAO;
 import DataObject.GiaoVien;
 import java.util.List;
 
-/**
- * Lớp xử lý logic nghiệp vụ cho Giáo Viên
- */
+
 public class GiaoVienBLL {
 
     private final GiaoVienDAO dao;
@@ -30,7 +28,6 @@ public class GiaoVienBLL {
             return false;
         }
 
-        // Kiểm tra trùng mã giáo viên
         if (getByMa(gv.getMaGV()) != null) {
             System.err.println("Mã giáo viên đã tồn tại: " + gv.getMaGV());
             return false;
