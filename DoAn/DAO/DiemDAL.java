@@ -30,7 +30,7 @@ public class DiemDAL {
                     d = new Diem();
                     d.setMaDiem(rs.getString("maDiem"));
                     d.setMaHS(rs.getString("maHS"));
-                    d.setMaChiTiet(rs.getString("maChiTiet"));
+                    d.setMaMon(rs.getString("maMon"));
                     d.setMaHocKy(rs.getString("maHocKy"));
                     d.setDiemThuongXuyen(rs.getDouble("diemThuongXuyen"));
                     d.setDiemGiuaKy(rs.getDouble("diemGiuaKy"));
@@ -42,6 +42,38 @@ public class DiemDAL {
             e.printStackTrace();
         }
         return d;
+    }
+    
+    public Diem getDiem(String maHS, String maMon, String maHK){
+
+        String sql = "SELECT * FROM DIEM WHERE maHS=? AND maMon=? AND maHocKy=?";
+
+        try{
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, maHS);
+            ps.setString(2, maMon);
+            ps.setString(3, maHK);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+                Diem d = new Diem();
+                d.setMaDiem(rs.getString("maDiem"));
+                d.setMaHS(rs.getString("maHS"));
+                d.setMaMon(rs.getString("maMon"));
+                d.setMaHocKy(rs.getString("maHocKy"));
+                d.setDiemThuongXuyen(rs.getDouble("diemThuongXuyen"));
+                d.setDiemGiuaKy(rs.getDouble("diemGiuaKy"));
+                d.setDiemCuoiKy(rs.getDouble("diemCuoiKy"));
+                d.setDiemTBMonHocKy(rs.getDouble("diemTBMonHocKy"));
+                return d;
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     // ===== GET ALL =====
@@ -56,7 +88,7 @@ public class DiemDAL {
                 Diem d = new Diem();
                 d.setMaDiem(rs.getString("maDiem"));
                 d.setMaHS(rs.getString("maHS"));
-                d.setMaChiTiet(rs.getString("maChiTiet"));
+                d.setMaMon(rs.getString("maMon"));
                 d.setMaHocKy(rs.getString("maHocKy"));
                 d.setDiemThuongXuyen(rs.getDouble("diemThuongXuyen"));
                 d.setDiemGiuaKy(rs.getDouble("diemGiuaKy"));
@@ -83,7 +115,7 @@ public class DiemDAL {
                     Diem d = new Diem();
                     d.setMaDiem(rs.getString("maDiem"));
                     d.setMaHS(rs.getString("maHS"));
-                    d.setMaChiTiet(rs.getString("maChiTiet"));
+                    d.setMaMon(rs.getString("maMon"));
                     d.setMaHocKy(rs.getString("maHocKy"));
                     d.setDiemThuongXuyen(rs.getDouble("diemThuongXuyen"));
                     d.setDiemGiuaKy(rs.getDouble("diemGiuaKy"));
@@ -109,7 +141,7 @@ public class DiemDAL {
 
             ps.setString(1, d.getMaDiem());
             ps.setString(2, d.getMaHS());
-            ps.setString(3, d.getMaChiTiet());
+            ps.setString(3, d.getMaMon());
             ps.setString(4, d.getMaHocKy());
             ps.setDouble(5, d.getDiemThuongXuyen());
             ps.setDouble(6, d.getDiemGiuaKy());
@@ -125,14 +157,14 @@ public class DiemDAL {
 
     // ===== UPDATE =====
     public boolean update(Diem d) {
-        String sql = "UPDATE DIEM SET maHS=?, maChiTiet=?, maHocKy=?, "
+        String sql = "UPDATE DIEM SET maHS=?, maMon=?, maHocKy=?, "
                    + "diemThuongXuyen=?, diemGiuaKy=?, diemCuoiKy=?, diemTBMonHocKy=? "
                    + "WHERE maDiem=?";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, d.getMaHS());
-            ps.setString(2, d.getMaChiTiet());
+            ps.setString(2, d.getMaMon());
             ps.setString(3, d.getMaHocKy());
             ps.setDouble(4, d.getDiemThuongXuyen());
             ps.setDouble(5, d.getDiemGiuaKy());
