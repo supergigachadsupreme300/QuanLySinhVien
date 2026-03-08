@@ -171,6 +171,10 @@ public class student_GUI extends JPanel {
                     JOptionPane.showMessageDialog(this, "Xóa thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                     FormHocSinh owner = (FormHocSinh) SwingUtilities.getAncestorOfClass(FormHocSinh.class, this);
                     if (owner != null) owner.refreshTableAfterChange();
+                    Window w = SwingUtilities.getWindowAncestor(this);
+                    if (w instanceof MainMenu) {
+                        ((MainMenu) w).refreshLop();
+                    }
                 } else {
                     JOptionPane.showMessageDialog(this, "Xóa thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
@@ -277,4 +281,5 @@ public class student_GUI extends JPanel {
             frame.setVisible(true);
         });
     }
+
 }
