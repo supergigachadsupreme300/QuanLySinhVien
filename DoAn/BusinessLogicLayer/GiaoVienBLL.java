@@ -95,4 +95,9 @@ public class GiaoVienBLL {
 
         return null; // hợp lệ
     }
+
+    public GiaoVien getByMaFull(String maGV) {
+        if (maGV == null || maGV.trim().isEmpty()) return null;
+        return dao.getByMaFull(maGV);
+    }
 }

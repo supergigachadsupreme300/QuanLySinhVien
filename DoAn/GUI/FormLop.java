@@ -387,15 +387,16 @@ public class FormLop extends JPanel {
             JOptionPane.INFORMATION_MESSAGE);
     }
 
+    // Trong FormLop.java - sửa phương thức suaLop()
     private void suaLop() {
         int row = tblLop.getSelectedRow();
         if (row < 0) { 
             JOptionPane.showMessageDialog(this, "Vui lòng chọn lớp cần sửa!"); 
             return; 
         }
-        
+
         if (!validateForm()) return;
-        
+
         int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Bạn có chắc muốn sửa lớp này?",
@@ -403,23 +404,25 @@ public class FormLop extends JPanel {
                 JOptionPane.YES_NO_OPTION
         );
         if (confirm != JOptionPane.YES_OPTION) return;
-        
+
         String maLopCu = modelLop.getValueAt(row, 0).toString();
         Lop lop = getLopFromForm();
-        
+
         // Cập nhật trên table
         modelLop.setValueAt(lop.getTenLop(), row, 1); 
         modelLop.setValueAt(lop.getSiSo(), row, 2); 
         modelLop.setValueAt(lop.getMaNH(), row, 3); 
-        modelLop.setValueAt(lop.getMaGVCN(), row, 4); 
-        
+        // Hiển thị tên GVCN thay vì mã
+        String tenGVCN = getTenGVFromMa(lop.getMaGVCN());
+        modelLop.setValueAt(tenGVCN, row, 4); 
+
         // Xóa change cũ nếu có (đối với lớp này)
         bufferChanges.removeIf(c -> c.lop.getMaLop().equals(maLopCu) && c.action.equals("UPDATE"));
-        
+
         bufferChanges.add(new Change(lop, "UPDATE"));
         dataChanged = true;
         updateSaveButtonState();
-        
+
         JOptionPane.showMessageDialog(this, 
             "Đã sửa lớp thành công! Nhấn 'Lưu' để lưu vào CSDL.",
             "Thông báo",
@@ -483,6 +486,9 @@ public class FormLop extends JPanel {
                 // Bỏ qua nếu không lấy được khối
             }
         }
+
+        // *** QUAN TRỌNG: Set lại mã sau khi chọn khối (vì listener có thể thay đổi nó) ***
+        txtMaLop.setText(maLop);
         
         String maNH = modelLop.getValueAt(row, 3).toString();
         for (int i = 0; i < cboNamHoc.getItemCount(); i++) {
@@ -564,6 +570,16 @@ public class FormLop extends JPanel {
         for (NamHoc nh : namHocBLL.getAllActive()) {
             cboNamHoc.addItem(nh);
         }
+        cboNamHoc.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof NamHoc) {
+                    setText(((NamHoc) value).getTenNH());
+                }
+                return this;
+            }
+        });
     }
 
     private void loadComboGiaoVien() {
@@ -571,12 +587,24 @@ public class FormLop extends JPanel {
         for (GiaoVien gv : giaoVienBLL.getAll()) {
             cboGVCN.addItem(gv);
         }
+        // Hiển thị tên giáo viên thay vì toString()
+        cboGVCN.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof GiaoVien) {
+                    setText(((GiaoVien) value).getHoTen());
+                }
+                return this;
+            }
+        });
     }
 
     private void updateButtonState() {
         boolean selected = tblLop.getSelectedRow() >= 0;
         btnSua.setEnabled(selected);
         btnXoa.setEnabled(selected);
+        btnThem.setEnabled(!selected);
     }
     
     private void updateSaveButtonState() {
@@ -600,32 +628,33 @@ public class FormLop extends JPanel {
     
     private void luuLop() {
         try {
-            for (Change change : bufferChanges) { 
-                switch (change.action) { 
-                    case "ADD": 
-                        lopBLL.themLop(change.lop); 
-                        break; 
-                    case "UPDATE": 
-                        lopBLL.suaLop(change.lop); 
-                        break; 
-                    case "DELETE": 
-                        lopBLL.xoaLop(change.lop.getMaLop()); // Soft delete
-                        break; 
-                } 
-            } 
+            for (Change change : bufferChanges) {
+                String result = "";
+                switch (change.action) {
+                    case "ADD":
+                        result = lopBLL.themLop(change.lop);
+                        break;
+                    case "UPDATE":
+                        result = lopBLL.suaLop(change.lop);
+                        break;
+                    case "DELETE":
+                        result = lopBLL.xoaLop(change.lop.getMaLop());
+                        break;
+                }
+                // Kiểm tra kết quả (các phương thức BLL trả về chuỗi thông báo)
+                if (!result.toLowerCase().contains("thành công")) {
+                    JOptionPane.showMessageDialog(this, "Lỗi: " + result, "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return; // Dừng lại, không xóa buffer
+                }
+            }
             bufferChanges.clear();
             JOptionPane.showMessageDialog(this, "Đã lưu thay đổi thành công!");
             dataChanged = false;
             updateSaveButtonState();
-            loadTableLop(); // Load lại chỉ các active
+            loadTableLop();
             resetInputForm();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Lỗi khi lưu dữ liệu: " + ex.getMessage(),
-                    "Lỗi",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Lỗi khi lưu: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -651,13 +680,16 @@ public class FormLop extends JPanel {
     }
     
     private String getTenGVFromMa(String maGV) {
+        // Tìm trong combo trước (nhanh)
         for (int i = 0; i < cboGVCN.getItemCount(); i++) {
             GiaoVien gv = cboGVCN.getItemAt(i);
             if (gv.getMaGV().equals(maGV)) {
                 return gv.getHoTen();
             }
         }
-        return maGV;
+        // Nếu không có trong combo (có thể GV đã bị xóa mềm), gọi BLL lấy từ DB
+        GiaoVien gv = giaoVienBLL.getByMaFull(maGV);
+        return gv != null ? gv.getHoTen() : maGV;
     }
 
     //================= UI UTILS ======================//
@@ -670,6 +702,8 @@ public class FormLop extends JPanel {
         btn.setPreferredSize(new Dimension(100, 35));
         return btn;
     }
+    
+    
 
     private void styleTable(JTable tbl) {
         tbl.setRowHeight(25);
