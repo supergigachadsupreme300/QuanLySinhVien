@@ -801,6 +801,41 @@ BEGIN
 END;
 GO
 
+CREATE TRIGGER trg_UpdateSiSo
+ON HOCSINH
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Cập nhật sĩ số cho các lớp bị ảnh hưởng bởi inserted (thêm/sửa)
+    UPDATE LOP
+    SET siSo = (
+        SELECT COUNT(*)
+        FROM HOCSINH
+        WHERE maLop = LOP.maLop AND trangThai = 1
+    )
+    WHERE maLop IN (
+        SELECT DISTINCT maLop FROM inserted WHERE maLop IS NOT NULL
+    );
+    
+    -- Cập nhật sĩ số cho các lớp bị ảnh hưởng bởi deleted (xóa/sửa)
+    UPDATE LOP
+    SET siSo = (
+        SELECT COUNT(*)
+        FROM HOCSINH
+        WHERE maLop = LOP.maLop AND trangThai = 1
+    )
+    WHERE maLop IN (
+        SELECT DISTINCT maLop FROM deleted WHERE maLop IS NOT NULL
+    );
+END;
+
+
+UPDATE LOP
+SET siSo = (SELECT COUNT(*) FROM HOCSINH WHERE maLop = LOP.maLop AND trangThai = 1);
+
+	
 -- Combo môn (có thể dùng sp_getAllActiveMon)
 
 PRINT N'✅ Đã tạo xong database với dữ liệu mẫu!';
@@ -818,4 +853,5 @@ PRINT N'📝 GHI CHÚ:';
 PRINT N'- Các lớp 7A, 8A, 9A chỉ có 10 HS mẫu (còn 30 HS nữa cần thêm)';
 PRINT N'- Dữ liệu điểm, hạnh kiểm, xếp loại cho 5 HS đầu lớp 6A';
 PRINT N'- Thời khóa biểu mẫu cho lớp 6A (Thứ 2)';
+
 PRINT N'- Nhóm có thể dễ dàng thêm dữ liệu bằng INSERT';
