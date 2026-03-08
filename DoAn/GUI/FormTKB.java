@@ -397,6 +397,14 @@ public class FormTKB extends JPanel {
         tbl.getTableHeader().setBackground(new Color(0, 102, 204));
         tbl.getTableHeader().setForeground(Color.WHITE);
     }
+
+    public void refreshCurrentLuoi() {
+        int row = tblTKBList.getSelectedRow();
+        if (row >= 0) {
+            String maTKB = modelTKBList.getValueAt(row, 0).toString();
+            loadLuoiTKB(maTKB); // tải lại lưới cho TKB đang chọn
+        }
+    }
     
     // ================= CLASS CHANGE =================
     private static class Change {
@@ -704,6 +712,11 @@ public class FormTKB extends JPanel {
             updateSaveButtonState();
             loadTableFromList(); // Load lại chỉ các active
             resetInputForm();
+            
+            // Cập nhật combobox bên ChiTietTiet, giữ nguyên lựa chọn hiện tại (nếu có)
+            if (mainFrame != null) {
+                mainFrame.refreshChiTietTietTKB(null); // null để giữ nguyên lựa chọn
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                 "Lỗi khi lưu dữ liệu: " + ex.getMessage(),
