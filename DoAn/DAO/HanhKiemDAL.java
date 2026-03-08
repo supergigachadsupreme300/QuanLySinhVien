@@ -1,5 +1,6 @@
 package DAO;
 
+import DAO.DatabaseConnect;
 import DataObject.HanhKiem;
 import java.sql.*;
 import java.util.ArrayList;
@@ -91,6 +92,39 @@ public class HanhKiemDAL {
             e.printStackTrace();
         }
         return list;
+    }
+    
+    public HanhKiem getHanhKiem(String maHS, String maHK){
+
+        String sql = "SELECT * FROM HANHKIEM WHERE maHS=? AND maHocKy=?";
+
+        try{
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, maHS);
+            ps.setString(2, maHK);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+
+                HanhKiem hk = new HanhKiem();
+
+                hk.setMaHanhKiem(rs.getString("maHanhKiem"));
+                hk.setMaHS(rs.getString("maHS"));
+                hk.setMaHocKy(rs.getString("maHocKy"));
+                hk.setXepLoai(rs.getString("xepLoai"));
+                hk.setNhanXet(rs.getString("nhanXet"));
+                hk.setSoLanViPham(rs.getInt("soLanViPham"));
+
+                return hk;
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     // ===== ADD =====
