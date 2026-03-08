@@ -153,6 +153,7 @@ public class FormTKB extends JPanel {
         modelTKBList = new DefaultTableModel(
             new String[]{"Mã TKB", "Lớp", "Học kỳ", "Ngày bắt đầu", "Ngày kết thúc"}, 0
         ) {
+            @Override
             public boolean isCellEditable(int r, int c) { 
                 return false; 
             }
@@ -170,6 +171,7 @@ public class FormTKB extends JPanel {
         modelTKBLuoi = new DefaultTableModel(
             new String[]{"Tiết", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"}, 0
         ) {
+            @Override
             public boolean isCellEditable(int r, int c) { 
                 return false; 
             }
