@@ -28,6 +28,10 @@ public class HanhKiemBLL {
         if (maHS == null || maHS.trim().isEmpty()) return null;
         return hanhKiemDAL.getByMaHS(maHS);
     }
+    
+    public HanhKiem getHanhKiem(String maHS, String maHK){
+        return hanhKiemDAL.getHanhKiem(maHS, maHK);
+    }
 
     // ===== THÊM =====
     public boolean add(HanhKiem hk) {
@@ -89,5 +93,16 @@ public class HanhKiemBLL {
             return false;
 
         return true;
+    }
+    
+    public boolean addOrUpdate(HanhKiem h) {
+
+        HanhKiem exist = hanhKiemDAL.getById(h.getMaHanhKiem());
+
+        if (exist == null) {
+            return hanhKiemDAL.add(h);
+        } else {
+            return hanhKiemDAL.update(h);
+        }
     }
 }
