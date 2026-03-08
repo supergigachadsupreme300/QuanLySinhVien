@@ -13,7 +13,7 @@ public class MainMenu extends JFrame {
     public static final String CHITIETTIET = "CHITIETTIET";
     public static final String CHITIETHMON = "CHITIETHMON";
     public static final String DIEM = "DIEM";
-    public static final String GIAOVIER = "GIAOVIER";
+    public static final String GIAOVIEN = "GIAOVIEN";
     public static final String HANHKIEM = "HANHKIEM";
     public static final String HOCKY = "HOCKY";
     public static final String HOCSINH = "HOCSINH";
@@ -23,6 +23,7 @@ public class MainMenu extends JFrame {
     public static final String REPORT = "REPORT";
     public static final String VIPHAM = "VIPHAM";
     public static final String XEPLOAI = "XEPLOAI";
+    public static final String EXCEL = "EXCEL";
    // public static final String TestTKB = "TestTKB";
    // public static final String TestLOP = "TestLOP";
     private CardLayout cardLayout;
@@ -64,7 +65,7 @@ public class MainMenu extends JFrame {
         mainPanel.add(new FormChiTietTiet(this), CHITIETTIET);
         mainPanel.add(new FormChiTietMon(), CHITIETHMON);
         mainPanel.add(new FormDiem(), DIEM);
-        mainPanel.add(new FormGiaoVien(), GIAOVIER);
+        mainPanel.add(new FormGiaoVien(), GIAOVIEN);
         mainPanel.add(new FormHanhKiem(), HANHKIEM);
         mainPanel.add(new FormHocKy(), HOCKY);
         mainPanel.add(new FormHocSinh(), HOCSINH);
@@ -74,6 +75,7 @@ public class MainMenu extends JFrame {
         mainPanel.add(new FormReport(), REPORT);
         mainPanel.add(new FormViPham(), VIPHAM);
         mainPanel.add(new FormXepLoai(), XEPLOAI);
+        mainPanel.add(new FormExcel(), EXCEL);
     //    mainPanel.add(new TestFormTKB(this), TestTKB);
     //    mainPanel.add(new TestFormLop(this), TestLOP);
         add(sidebar, BorderLayout.WEST);
@@ -90,32 +92,20 @@ public class MainMenu extends JFrame {
     /**
      * Called by other forms to notify the ChiTietTiet form to refresh its TKB list.
      */
-    public void refreshChiTietTietTKB(String maTKBToSelect) {
+    public void refreshChiTietTietTKB() {
         for (Component comp : mainPanel.getComponents()) {
             if (comp instanceof FormChiTietTiet) {
-                ((FormChiTietTiet) comp).refreshTKBList(maTKBToSelect);
+                FormChiTietTiet f = (FormChiTietTiet) comp;
+                try {
+                    f.refreshTKBList();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
                 return;
             }
         }
     }
 
-    public void refreshTKBLuoi() {
-        for (Component comp : mainPanel.getComponents()) {
-            if (comp instanceof FormTKB) {
-                ((FormTKB) comp).refreshCurrentLuoi();
-                return;
-            }
-        }
-    }
-
-    public void refreshLop() {
-        for (Component comp : mainPanel.getComponents()) {
-            if (comp instanceof FormLop) {
-                ((FormLop) comp).refreshTableAfterChange();
-                return;
-            }
-        }
-    }
     /**
      * Open PhuHuynh form and filter by a specific student (maHS).
      */
@@ -185,5 +175,3 @@ public class MainMenu extends JFrame {
         SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
     }
 }
-
-
