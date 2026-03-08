@@ -107,6 +107,15 @@ public class MainMenu extends JFrame {
             }
         }
     }
+
+    public void refreshLop() {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormLop) {
+                ((FormLop) comp).refreshTableAfterChange();
+                return;
+            }
+        }
+    }
     /**
      * Open PhuHuynh form and filter by a specific student (maHS).
      */
@@ -176,4 +185,5 @@ public class MainMenu extends JFrame {
         SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
     }
 }
+
 
