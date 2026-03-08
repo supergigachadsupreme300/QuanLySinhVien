@@ -1,6 +1,6 @@
 package BusinessLogicLayer;
 
-import DAO.ChiTietMonDAO;
+import DAO.MonHocDAO;
 import DAO.DiemDAL;
 import DAO.HocKyDAL;
 import DAO.HocSinhDAO;
@@ -11,6 +11,7 @@ import java.util.List;
 public class DiemBLL {
     private DiemDAL dao;
     private Connection con;
+    
 
     public DiemBLL(Connection con) {
         this.con = con;
@@ -19,6 +20,10 @@ public class DiemBLL {
 
     public List<Diem> getByMaHS(String maHS) {
         return dao.getByMaHS(maHS);
+    }
+    
+    public Diem getDiem(String maHS, String maMon, String maHK){
+        return dao.getDiem(maHS, maMon, maHK);
     }
 
     public String them(Diem d) {
@@ -30,11 +35,10 @@ public class DiemBLL {
             return "Không tìm thấy Học sinh với mã: " + d.getMaHS();
         }
 
-        ChiTietMonDAO ctDao = new ChiTietMonDAO(con);
-        if (ctDao.getByMa(d.getMaChiTiet()) == null) {
-            return "Không tìm thấy Chi tiết môn với mã: " + d.getMaChiTiet();
+        MonHocDAO monDao = new MonHocDAO(con);
+        if (monDao.findByMaMon(d.getMaMon()) == null) {
+            return "Không tìm thấy môn với mã: " + d.getMaMon();
         }
-
         HocKyDAL hkDao = new HocKyDAL(con);
         if (hkDao.findByMaHK(d.getMaHocKy()) == null) {
             return "Không tìm thấy Học kỳ với mã: " + d.getMaHocKy();
@@ -52,14 +56,15 @@ public class DiemBLL {
     public String sua(Diem d) {
         if (d == null) return "Dữ liệu điểm không hợp lệ.";
 
+        // Validate related entities
         HocSinhDAO hsDao = new HocSinhDAO(con);
         if (hsDao.getById(d.getMaHS()) == null) {
             return "Không tìm thấy Học sinh với mã: " + d.getMaHS();
         }
 
-        ChiTietMonDAO ctDao = new ChiTietMonDAO(con);
-        if (ctDao.getByMa(d.getMaChiTiet()) == null) {
-            return "Không tìm thấy Chi tiết môn với mã: " + d.getMaChiTiet();
+        MonHocDAO monDao = new MonHocDAO(con);
+        if (monDao.findByMaMon(d.getMaMon()) == null) {
+            return "Không tìm thấy môn với mã: " + d.getMaMon();
         }
 
         HocKyDAL hkDao = new HocKyDAL(con);
