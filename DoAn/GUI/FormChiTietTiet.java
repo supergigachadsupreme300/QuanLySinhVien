@@ -92,7 +92,8 @@ public class FormChiTietTiet extends JPanel {
             loadComboTKB();
             loadDefaultLuoi();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Lỗi khi làm mới danh sách TKB: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            // swallow to avoid crashing callers
+            ex.printStackTrace();
         }
     }
 
@@ -570,9 +571,6 @@ public class FormChiTietTiet extends JPanel {
         bufferChanges.clear();
         dataChanged = false;
         updateSaveButtonState();
-        // Refresh combo boxes to load latest data from DB
-        loadComboTKB();
-        loadComboMon();
         reloadGrid();
     }
 
@@ -596,11 +594,9 @@ public class FormChiTietTiet extends JPanel {
         int row = tblLuoi.getSelectedRow();
         int col = tblLuoi.getSelectedColumn();
 
-        if (cboTKB.getSelectedItem() == null) return;
-
         if (row >= 0 && col > 0) {
             String maTKB = ((ThoiKhoaBieu) cboTKB.getSelectedItem()).getMaTKB();
-            List<ChiTietTiet> ds = getMergedCTList(maTKB);
+            List<ChiTietTiet> ds = ctBLL.getByMaTKB(maTKB);
             String thu = tblLuoi.getColumnName(col);
             boolean found = false;
 
@@ -649,23 +645,6 @@ public class FormChiTietTiet extends JPanel {
         txtMaCT.setEnabled(true);
     }
 
-    private List<ChiTietTiet> getMergedCTList(String maTKB) {
-        List<ChiTietTiet> merged = new ArrayList<>(ctBLL.getByMaTKB(maTKB));
-        for (Change change : bufferChanges) {
-            if (change.ct.getMaTKB().equals(maTKB)) {
-                if (change.action.equals("ADD")) {
-                    merged.add(change.ct);
-                } else if (change.action.equals("UPDATE")) {
-                    merged.removeIf(ct -> ct.getMaChiTiet().equals(change.ct.getMaChiTiet()));
-                    merged.add(change.ct);
-                } else if (change.action.equals("DELETE")) {
-                    merged.removeIf(ct -> ct.getMaChiTiet().equals(change.ct.getMaChiTiet()));
-                }
-            }
-        }
-        return merged;
-    }
-
     private void loadComboMon() {
         cboMon.removeAllItems();
         for (Mon m : monBLL.getAllActiveProc()) {
@@ -689,7 +668,7 @@ public class FormChiTietTiet extends JPanel {
             modelLuoi.addRow(new Object[]{tietLabel, "", "", "", "", "", ""});
         }
 
-        List<ChiTietTiet> ds = getMergedCTList(maTKB);
+        List<ChiTietTiet> ds = ctBLL.getByMaTKB(maTKB);
         for (ChiTietTiet ct : ds) {
             int colIndex = switch (ct.getThu()) {
                 case "Thứ 2" -> 1;

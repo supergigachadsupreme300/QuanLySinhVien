@@ -90,20 +90,23 @@ public class MainMenu extends JFrame {
     /**
      * Called by other forms to notify the ChiTietTiet form to refresh its TKB list.
      */
-    public void refreshChiTietTietTKB() {
+    public void refreshChiTietTietTKB(String maTKBToSelect) {
         for (Component comp : mainPanel.getComponents()) {
             if (comp instanceof FormChiTietTiet) {
-                FormChiTietTiet f = (FormChiTietTiet) comp;
-                try {
-                    f.refreshTKBList();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                ((FormChiTietTiet) comp).refreshTKBList(maTKBToSelect);
                 return;
             }
         }
     }
 
+    public void refreshTKBLuoi() {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormTKB) {
+                ((FormTKB) comp).refreshCurrentLuoi();
+                return;
+            }
+        }
+    }
     /**
      * Open PhuHuynh form and filter by a specific student (maHS).
      */
@@ -173,3 +176,4 @@ public class MainMenu extends JFrame {
         SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
     }
 }
+
