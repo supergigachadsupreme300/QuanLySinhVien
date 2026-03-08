@@ -87,13 +87,52 @@ public class FormChiTietTiet extends JPanel {
     /**
      * Public helper to refresh/load TKB combo and grid from outside (used by MainMenu).
      */
-    public void refreshTKBList() {
-        try {
-            loadComboTKB();
-            loadDefaultLuoi();
-        } catch (Exception ex) {
-            // swallow to avoid crashing callers
-            ex.printStackTrace();
+    public void refreshTKBList(String maTKBToSelect) {
+    try {
+        // Lưu lại mã TKB đang chọn (nếu có)
+        String currentMaTKB = null;
+        ThoiKhoaBieu selected = (ThoiKhoaBieu) cboTKB.getSelectedItem();
+        if (selected != null) {
+            currentMaTKB = selected.getMaTKB();
+        }
+
+        // Load lại combobox
+        loadComboTKB();
+
+        // Nếu có maTKBToSelect (từ form TKB), ưu tiên chọn nó
+        if (maTKBToSelect != null) {
+            selectTKBByMa(maTKBToSelect);
+        } else if (currentMaTKB != null) {
+            // Nếu không, chọn lại TKB cũ (nếu còn)
+            selectTKBByMa(currentMaTKB);
+        } else {
+            // Mặc định chọn TKB đầu tiên
+            if (cboTKB.getItemCount() > 0) {
+                cboTKB.setSelectedIndex(0);
+                loadLuoi(((ThoiKhoaBieu) cboTKB.getSelectedItem()).getMaTKB());
+            }
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+}
+
+    private void selectTKBByMa(String maTKB) {
+        for (int i = 0; i < cboTKB.getItemCount(); i++) {
+            ThoiKhoaBieu tkb = cboTKB.getItemAt(i);
+            if (tkb.getMaTKB().equals(maTKB)) {
+                cboTKB.setSelectedIndex(i);
+                loadLuoi(maTKB);
+                return;
+            }
+        }
+        // Nếu không tìm thấy (có thể bị xóa), chọn TKB đầu tiên
+        if (cboTKB.getItemCount() > 0) {
+            cboTKB.setSelectedIndex(0);
+            loadLuoi(((ThoiKhoaBieu) cboTKB.getSelectedItem()).getMaTKB());
+        } else {
+            // Không còn TKB nào
+            modelLuoi.setRowCount(0);
         }
     }
 
@@ -532,6 +571,11 @@ public class FormChiTietTiet extends JPanel {
             updateSaveButtonState();
             reloadGrid();
             resetInputForm();
+            
+            // 🔁 Gọi MainMenu để cập nhật lưới bên FormTKB
+            if (mainFrame != null) {
+                mainFrame.refreshTKBLuoi();
+            }
         }
     }
 
