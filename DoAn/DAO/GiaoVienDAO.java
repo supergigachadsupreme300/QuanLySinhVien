@@ -125,4 +125,20 @@ public class GiaoVienDAO {
             return false;
         }
     }
+    public GiaoVien getByMaFull(String maGV) {
+        String sql = "SELECT maGV, hoTen FROM GIAOVIEN WHERE maGV = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maGV);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                GiaoVien gv = new GiaoVien();
+                gv.setMaGV(rs.getString("maGV"));
+                gv.setHoTen(rs.getNString("hoTen"));
+                return gv;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
