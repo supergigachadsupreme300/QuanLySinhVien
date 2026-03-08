@@ -281,6 +281,7 @@ public class FormMonHoc extends JPanel {
         boolean selected = tblMonHoc.getSelectedRow() >= 0;
         btnSua.setEnabled(selected);
         btnXoa.setEnabled(selected);
+        btnThem.setEnabled(!selected);
     }
 
     private void loadTableMonHoc() {
