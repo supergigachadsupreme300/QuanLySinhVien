@@ -399,6 +399,11 @@ public class FormHocSinh extends JPanel {
         }
     }
 
+    public void resetFilter() {
+        this.filterMaHS = null;
+        loadTable();
+    }
+    
     /* helper */
     private JButton createButton(String text, Color color) {
         JButton btn = new JButton(text);
