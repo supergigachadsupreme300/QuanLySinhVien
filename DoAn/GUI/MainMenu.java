@@ -85,7 +85,23 @@ public class MainMenu extends JFrame {
     }
 
     
-    public void showForm(String name){
+    public void showForm(String name) {
+        // Reset filter trước khi show form tương ứng
+        if (name.equals(PHUHUYNH)) {
+            for (Component comp : mainPanel.getComponents()) {
+                if (comp instanceof FormPhuHuynh) {
+                    ((FormPhuHuynh) comp).resetFilter();
+                    break;
+                }
+            }
+        } else if (name.equals(HOCSINH)) {
+            for (Component comp : mainPanel.getComponents()) {
+                if (comp instanceof FormHocSinh) {
+                    ((FormHocSinh) comp).resetFilter();
+                    break;
+                }
+            }
+        }
         cardLayout.show(mainPanel, name);
     }
 
@@ -141,33 +157,31 @@ public class MainMenu extends JFrame {
             if (comp instanceof FormHocSinh) {
                 FormHocSinh fh = (FormHocSinh) comp;
                 fh.loadStudentsByParent(maPH);
-                showForm(HOCSINH);
+                cardLayout.show(mainPanel, HOCSINH);
                 return;
             }
         }
         // fallback
-        showForm(HOCSINH);
+        cardLayout.show(mainPanel, HOCSINH);
     }
 
-    /**
-     * Open PhuHuynh form and filter by a specific student (maHS).
-     */
     public void openPhuHuynhForStudent(String maHS) {
         for (Component comp : mainPanel.getComponents()) {
             if (comp instanceof FormPhuHuynh) {
                 FormPhuHuynh fp = (FormPhuHuynh) comp;
                 fp.setFilterMaHS(maHS);
                 fp.loadTable();
-                showForm(PHUHUYNH);
+                cardLayout.show(mainPanel, PHUHUYNH);
                 return;
             }
         }
         // fallback
-        showForm(PHUHUYNH);
+        cardLayout.show(mainPanel, PHUHUYNH);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
     }
 }
+
 
