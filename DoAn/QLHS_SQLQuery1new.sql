@@ -655,6 +655,21 @@ INSERT INTO PHUHUYNH (maPH, hoTen, soDienThoai, email, ngheNghiep, trangThai) VA
 ('PH099', N'Đỗ Văn Cường', '0901000099', 'dovancuong.ph099@example.com', N'Bác sĩ', 1),
 ('PH100', N'Hồ Thị Dung', '0901000100', 'hothidung.ph100@example.com', N'Nông dân', 1);
 
+--lệnh giúp sửa lại cái table diem (đang có machitiet như sau)
+SELECT name 
+FROM sys.foreign_keys 
+WHERE parent_object_id = OBJECT_ID('DIEM');
+--tìm xem các khóa ngoại
+--xóa cái fk machitiet đã tìm được vd như bên dưới
+ALTER TABLE DIEM DROP CONSTRAINT FK__DIEM__maChiTiet__74AE54BC;
+--bỏ cột machitiet 
+ALTER TABLE DIEM DROP COLUMN maChiTiet;
+--thêm vào cột mã môn
+ALTER TABLE DIEM ADD maMon VARCHAR(50);
+--thêm kháo ngoại vào
+ALTER TABLE DIEM ADD CONSTRAINT FK_DIEM_MON FOREIGN KEY (maMon) REFERENCES MON(maMon);
+--chỉnh lại phần insert dữ liêu ở trên trên là maMon thay vì machitiet để đảm bảo nhất quán
+
 UPDATE LOP
 SET trangThai = 1
 WHERE maLop = '6A1';  -- hoặc điều kiện phù hợp
@@ -855,4 +870,5 @@ PRINT N'- Dữ liệu điểm, hạnh kiểm, xếp loại cho 5 HS đầu lớp
 PRINT N'- Thời khóa biểu mẫu cho lớp 6A (Thứ 2)';
 
 PRINT N'- Nhóm có thể dễ dàng thêm dữ liệu bằng INSERT';
+
 
