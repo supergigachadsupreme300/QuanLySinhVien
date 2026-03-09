@@ -105,6 +105,32 @@ public class MainMenu extends JFrame {
             }
         }
     }
+    public void refreshChiTietTietTKB(String maTKBToSelect) {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormChiTietTiet) {
+                ((FormChiTietTiet) comp).refreshTKBList(maTKBToSelect);
+                return;
+            }
+        }
+    }
+     
+    public void refreshTKBLuoi() {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormTKB) {
+                ((FormTKB) comp).refreshCurrentLuoi();
+                return;
+            }
+        }
+    }
+    
+    public void refreshLop() {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp instanceof FormLop) {
+                ((FormLop) comp).refreshTableAfterChange();
+                return;
+            }
+        }
+    }
 
     /**
      * Open PhuHuynh form and filter by a specific student (maHS).
@@ -175,3 +201,4 @@ public class MainMenu extends JFrame {
         SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
     }
 }
+
