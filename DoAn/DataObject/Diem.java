@@ -3,7 +3,7 @@ package DataObject;
 public class Diem {
     private String maDiem;
     private String maHS;
-    private String maChiTiet;
+    private String maMon;
     private String maHocKy;
     private double diemThuongXuyen;
     private double diemGiuaKy;
@@ -13,7 +13,7 @@ public class Diem {
     public Diem() {
         maDiem = "";
         maHS = "";
-        maChiTiet = "";
+        maMon = "";
         maHocKy = "";
         diemThuongXuyen = 0;
         diemGiuaKy = 0;
@@ -21,11 +21,11 @@ public class Diem {
         diemTBMonHocKy = 0;
     }
 
-    public Diem(String maDiem, String maHS, String maChiTiet, String maHocKy,
+    public Diem(String maDiem, String maHS, String maMon, String maHocKy,
                  double diemThuongXuyen, double diemGiuaKy, double diemCuoiKy, double diemTBMonHocKy) {
         this.maDiem = maDiem;
         this.maHS = maHS;
-        this.maChiTiet = maChiTiet;
+        this.maMon = maMon;
         this.maHocKy = maHocKy;
         this.diemThuongXuyen = diemThuongXuyen;
         this.diemGiuaKy = diemGiuaKy;
@@ -39,8 +39,8 @@ public class Diem {
     public String getMaHS() { return maHS; }
     public void setMaHS(String maHS) { this.maHS = maHS; }
 
-    public String getMaChiTiet() { return maChiTiet; }
-    public void setMaChiTiet(String maChiTiet) { this.maChiTiet = maChiTiet; }
+    public String getMaMon() { return maMon; }
+    public void setMaMon(String maMon) { this.maMon = maMon; }
 
     public String getMaHocKy() { return maHocKy; }
     public void setMaHocKy(String maHocKy) { this.maHocKy = maHocKy; }
