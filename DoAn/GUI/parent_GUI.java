@@ -1,4 +1,5 @@
 package GUI;
+
 import javax.swing.*;
 import java.awt.*;
 import net.miginfocom.swing.MigLayout;
@@ -10,61 +11,61 @@ public class parent_GUI extends JPanel {
     private JTextField txtTenPhH;
     private JTextField txtSdt;
     private JTextField txtNgheNghiep;
-    private JTextField txtQuanHe;
     private JButton btnHocSinh;
     private JButton btnEdit;
     private JButton btnXoa;
-    // reference to BLL for operations
+    private JButton btnQuanLyHS;
     private BusinessLogicLayer.ParentBLL parentBLLRef;
     private boolean isEditing = false;
 
-    // Constructor mặc định (tạo đối tượng rỗng để test)
     public parent_GUI() {
         this(new Parent());
     }
 
-    // Constructor nhận đối tượng Parent
     public parent_GUI(Parent p) {
         this.parent = p != null ? p : new Parent();
         setLayout(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]"));
         setBackground(Color.CYAN);
-        setPreferredSize(new Dimension(360, 220));
+        setPreferredSize(new Dimension(360, 180)); // Giảm chiều cao
 
+        // Mã phụ huynh
         add(new JLabel("Mã phụ huynh:"));
         txtMaPhH = new JTextField(20);
         txtMaPhH.setEditable(false);
         add(txtMaPhH, "growx");
 
+        // Tên
         add(new JLabel("Tên phụ huynh:"));
         txtTenPhH = new JTextField(20);
         txtTenPhH.setEditable(false);
         add(txtTenPhH, "growx");
 
+        // SĐT
         add(new JLabel("Số điện thoại:"));
         txtSdt = new JTextField(20);
         txtSdt.setEditable(false);
         add(txtSdt, "growx");
 
+        // Nghề nghiệp
         add(new JLabel("Nghề nghiệp:"));
         txtNgheNghiep = new JTextField(20);
         txtNgheNghiep.setEditable(false);
         add(txtNgheNghiep, "growx");
 
-        add(new JLabel("Quan hệ với học sinh:"));
-        txtQuanHe = new JTextField(20);
-        txtQuanHe.setEditable(false);
-        add(txtQuanHe, "growx");
+        // Các nút
+        btnHocSinh = new JButton("Học sinh");
+        btnEdit = new JButton("Sửa");
+        btnXoa = new JButton("Xóa");
+        btnQuanLyHS = new JButton("Quản lý HS");
 
-         btnHocSinh = new JButton("Học sinh");
-         btnEdit = new JButton("Sửa");
-         btnXoa = new JButton("Xóa");
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
         btnRow.add(btnEdit);
         btnRow.add(btnXoa);
         btnRow.add(btnHocSinh);
+        btnRow.add(btnQuanLyHS);
         add(btnRow, "span, center");
 
-        // Gắn sự kiện mở panel FormHocSinh lọc theo phụ huynh
+        // Sự kiện Học sinh
         btnHocSinh.addActionListener(e -> {
             if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -84,7 +85,17 @@ public class parent_GUI extends JPanel {
                 f.setVisible(true);
             }
         });
-        // edit and delete actions
+
+        // Sự kiện Quản lý HS
+        btnQuanLyHS.addActionListener(e -> {
+            if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            openQuanLyHocSinhDialog(parent.getMaPhH());
+        });
+
+        // Sự kiện Sửa
         btnEdit.addActionListener(e -> {
             if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -95,19 +106,17 @@ public class parent_GUI extends JPanel {
                 return;
             }
             if (!isEditing) {
-                // Enter edit mode
+                // Bật chế độ sửa
                 txtTenPhH.setEditable(true);
                 txtSdt.setEditable(true);
                 txtNgheNghiep.setEditable(true);
-                txtQuanHe.setEditable(true);
                 btnEdit.setText("Lưu");
                 isEditing = true;
             } else {
-                // Save changes
+                // Lưu thay đổi
                 parent.setTenPhH(txtTenPhH.getText());
                 parent.setSdt(txtSdt.getText());
                 parent.setNgheNghiep(txtNgheNghiep.getText());
-                parent.setQuanHe(txtQuanHe.getText());
                 if (parentBLLRef.suaParent(parent)) {
                     JOptionPane.showMessageDialog(this, "Cập nhật thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                     FormPhuHuynh owner = (FormPhuHuynh) SwingUtilities.getAncestorOfClass(FormPhuHuynh.class, this);
@@ -115,15 +124,16 @@ public class parent_GUI extends JPanel {
                 } else {
                     JOptionPane.showMessageDialog(this, "Cập nhật thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
-                // Exit edit mode
+                // Thoát chế độ sửa
                 txtTenPhH.setEditable(false);
                 txtSdt.setEditable(false);
                 txtNgheNghiep.setEditable(false);
-                txtQuanHe.setEditable(false);
                 btnEdit.setText("Sửa");
                 isEditing = false;
             }
         });
+
+        // Sự kiện Xóa
         btnXoa.addActionListener(e -> {
             if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -145,43 +155,42 @@ public class parent_GUI extends JPanel {
             }
         });
 
-        // Cập nhật dữ liệu từ đối tượng
         updateDisplay();
     }
 
-    // Phương thức cập nhật hiển thị từ đối tượng Parent
     public void updateDisplay() {
         if (parent != null) {
             txtMaPhH.setText(parent.getMaPhH());
             txtTenPhH.setText(parent.getTenPhH());
             txtSdt.setText(parent.getSdt());
             txtNgheNghiep.setText(parent.getNgheNghiep());
-            txtQuanHe.setText(parent.getQuanHe());
         }
     }
 
-    // Phương thức cập nhật đối tượng Parent
     public void setParent(Parent p) {
         this.parent = p;
         if (isEditing) {
-            // Exit edit mode
             txtTenPhH.setEditable(false);
             txtSdt.setEditable(false);
             txtNgheNghiep.setEditable(false);
-            txtQuanHe.setEditable(false);
             btnEdit.setText("Sửa");
             isEditing = false;
         }
         updateDisplay();
     }
-    // provide BLL reference for edit/delete operations
-    public void setParentBLL( BusinessLogicLayer.ParentBLL bll ) {
+
+    public void setParentBLL(BusinessLogicLayer.ParentBLL bll) {
         this.parentBLLRef = bll;
     }
 
-    // Phương thức lấy đối tượng Parent hiện tại
     public Parent getParentEntity() {
         return parent;
+    }
+
+    private void openQuanLyHocSinhDialog(String maPH) {
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        QuanLyHocSinhDialog dlg = new QuanLyHocSinhDialog(frame, maPH);
+        dlg.setVisible(true);
     }
 
     public static void main(String[] args) {
