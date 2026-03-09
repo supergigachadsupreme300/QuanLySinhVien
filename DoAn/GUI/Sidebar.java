@@ -47,6 +47,7 @@ public class Sidebar extends JPanel {
         add(createTabButton("Báo cáo", e -> mainFrame.showForm(MainMenu.REPORT)), "growx, wrap");
         add(createTabButton("Quản lý Vi phạm", e -> mainFrame.showForm(MainMenu.VIPHAM)), "growx, wrap");
         add(createTabButton("Quản lý Xếp loại", e -> mainFrame.showForm(MainMenu.XEPLOAI)), "growx, wrap");
+        add(createTabButton("Import/Export Excel", e -> mainFrame.showForm(MainMenu.EXCEL)), "growx, wrap");
     //    add(createTabButton("Quản lý Lớp Test", e -> mainFrame.showForm(MainMenu.TestLOP)), "growx, wrap");
     //    add(createTabButton("Quản lí Thời khóa biểu Test", e -> mainFrame.showForm(MainMenu.TestTKB)), "growx, wrap");
         add(createTabButton("Thoát", e -> System.exit(0)), "growx");
@@ -80,3 +81,4 @@ public class Sidebar extends JPanel {
     }
     
 }
+
