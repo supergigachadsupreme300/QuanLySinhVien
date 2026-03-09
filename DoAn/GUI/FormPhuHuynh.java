@@ -303,6 +303,11 @@ public class FormPhuHuynh extends JPanel {
         }
     }
 
+    public void resetFilter() {
+        this.filterMaHS = null;
+        loadTable();
+    }
+
     // Các helper
     private JButton createButton(String text, Color color) {
         JButton btn = new JButton(text);
