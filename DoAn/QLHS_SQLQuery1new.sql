@@ -107,14 +107,14 @@ CREATE TABLE CHITIETMON (
 CREATE TABLE DIEM (
     maDiem VARCHAR(50) PRIMARY KEY,
     maHS VARCHAR(50) NOT NULL,
-    maChiTiet VARCHAR(50) NOT NULL,
+    maMon VARCHAR(50) NOT NULL,
     maHocKy VARCHAR(50) NOT NULL,
     diemThuongXuyen FLOAT,
     diemGiuaKy FLOAT,
     diemCuoiKy FLOAT,
     diemTBMonHocKy FLOAT,
     FOREIGN KEY (maHS) REFERENCES HOCSINH(maHS) ON DELETE CASCADE,
-    FOREIGN KEY (maChiTiet) REFERENCES CHITIETMON(maChiTiet) ON DELETE NO ACTION,
+    FOREIGN KEY (maMon) REFERENCES MON(maMon) ON DELETE NO ACTION,
     FOREIGN KEY (maHocKy) REFERENCES HOCKY(maHK) ON DELETE CASCADE
 );
 
@@ -855,3 +855,4 @@ PRINT N'- Dữ liệu điểm, hạnh kiểm, xếp loại cho 5 HS đầu lớp
 PRINT N'- Thời khóa biểu mẫu cho lớp 6A (Thứ 2)';
 
 PRINT N'- Nhóm có thể dễ dàng thêm dữ liệu bằng INSERT';
+
