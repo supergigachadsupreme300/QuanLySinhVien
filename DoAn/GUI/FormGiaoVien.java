@@ -266,6 +266,7 @@ public class FormGiaoVien extends JPanel {
         boolean selected = tblGiaoVien.getSelectedRow() >= 0;
         btnSua.setEnabled(selected);
         btnXoa.setEnabled(selected);
+        btnThem.setEnabled(!selected);
     }
 
     private void loadTableGiaoVien() {
