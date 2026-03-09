@@ -123,4 +123,20 @@ public class MonHocDAO {
         return null;
     }
     // compatibility wrapper removed; use `findByMaMon` directly
+    
+    //=== lấy mã môn ===
+    public List<String> getAllMaMon(){
+        List<String> list = new ArrayList<>();
+        try{
+            String sql = "SELECT MaMon FROM MON";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                list.add(rs.getString("MaMon"));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
