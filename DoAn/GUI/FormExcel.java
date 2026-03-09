@@ -2,54 +2,115 @@ package GUI;
 
 import javax.swing.*;
 import net.miginfocom.swing.MigLayout;
-import java.awt.CardLayout;
-import java.awt.Font;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class FormExcel extends JPanel {
 
-    private JButton btnImport;
-    private JButton btnExport;
+    private JButton tabImport;
+    private JButton tabExport;
 
     private JPanel panelContent;
-
     private CardLayout card;
+
+    private Color activeColor = new Color(255,255,255);
+    private Color inactiveColor = new Color(235,235,235);
+    private Color hoverColor = new Color(245,245,245);
 
     public FormExcel() {
 
-        setLayout(new MigLayout("fill","[grow]","[][grow]"));
+        setLayout(new MigLayout("fill, insets 20","[grow]","[][grow]"));
+        setBackground(new Color(245,246,250));
 
-        JLabel title = new JLabel("QUẢN LÝ IMPORT / EXPORT EXCEL");
-        title.setFont(new Font("Segoe UI",Font.BOLD,20));
+        JLabel lblTitle = new JLabel("QUẢN LÝ IMPORT / EXPORT EXCEL", JLabel.CENTER);
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
+        lblTitle.setForeground(new Color(0,102,204));
+        add(lblTitle, "grow, wrap");
 
-        add(title,"center,wrap");
+        // ===== TAB BAR =====
+        JPanel tabBar = new JPanel(new MigLayout("insets 0","[]0[]",""));
+        tabBar.setOpaque(false);
 
-        // ===== BUTTON MENU =====
+        tabImport = createTab("Import Excel");
+        tabExport = createTab("Export Excel");
 
-        JPanel menu = new JPanel(new MigLayout("insets 0"));
+        tabBar.add(tabImport);
+        tabBar.add(tabExport);
 
-        btnImport = new JButton("Import Excel");
-        btnExport = new JButton("Export Excel");
-
-        menu.add(btnImport,"gapright 10");
-        menu.add(btnExport);
-
-        add(menu,"center,wrap");
+        add(tabBar,"center,wrap");
 
         // ===== CONTENT =====
-
         card = new CardLayout();
         panelContent = new JPanel(card);
-
+        panelContent.setBorder(
+                BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220,220,220)),
+                BorderFactory.createEmptyBorder(10,10,10,10)
+            )
+        );     
         panelContent.add(new PanelImportExcel(),"IMPORT");
         panelContent.add(new PanelExportExcel(),"EXPORT");
 
         add(panelContent,"grow");
+        setBackground(new Color(245,246,250));
 
-        // mặc định mở IMPORT
+        showImport();
+
+        tabImport.addActionListener(e -> showImport());
+        tabExport.addActionListener(e -> showExport());
+    }
+
+    private JButton createTab(String text){
+
+        JButton btn = new JButton(text);
+
+        btn.setFocusPainted(false);
+        btn.setFont(new Font("Segoe UI",Font.BOLD,14));
+
+        btn.setBackground(inactiveColor);
+        btn.setBorder(BorderFactory.createEmptyBorder(10,25,10,25));
+
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Hover effect
+        btn.addMouseListener(new MouseAdapter(){
+
+            public void mouseEntered(MouseEvent e){
+
+                if(btn.getBackground() != activeColor){
+                    btn.setBackground(hoverColor);
+                }
+
+            }
+
+            public void mouseExited(MouseEvent e){
+
+                if(btn.getBackground() != activeColor){
+                    btn.setBackground(inactiveColor);
+                }
+
+            }
+
+        });
+
+        return btn;
+    }
+
+    private void showImport(){
+
         card.show(panelContent,"IMPORT");
 
-        // EVENT
-        btnImport.addActionListener(e -> card.show(panelContent,"IMPORT"));
-        btnExport.addActionListener(e -> card.show(panelContent,"EXPORT"));
+        tabImport.setBackground(activeColor);
+        tabExport.setBackground(inactiveColor);
     }
+
+    private void showExport(){
+
+        card.show(panelContent,"EXPORT");
+
+        tabExport.setBackground(activeColor);
+        tabImport.setBackground(inactiveColor);
+    }
+
 }
