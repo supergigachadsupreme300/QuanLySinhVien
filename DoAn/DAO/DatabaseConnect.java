@@ -19,7 +19,9 @@ public class DatabaseConnect {
         "jdbc:sqlserver://localhost:1433;" +
         "databaseName=QuanLyHocSinh;" +
         "trustServerCertificate=true;" +
-        "encrypt=true";
+        "encrypt=true;" +
+        "useUnicode=true;" +
+        "characterEncoding=UTF-8";
     
     private static final String USER = "sa";
     private static final String PASS = "123456";

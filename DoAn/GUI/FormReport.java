@@ -6,6 +6,10 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPCell;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +22,7 @@ import java.util.stream.Collectors;
 import net.miginfocom.swing.MigLayout;
 
 import BusinessLogicLayer.NamHocBLL;
+import BusinessLogicLayer.PhuHuynhHocSinhBLL;
 
 public class FormReport extends JPanel {
     private JButton btnExport;
@@ -33,31 +38,31 @@ public class FormReport extends JPanel {
         setLayout(new MigLayout("fill, insets 20", "[grow]", "[]20[]20[]20[]"));
         setBorder(BorderFactory.createTitledBorder("Bao cao he thong"));
 
-        JLabel lblTitle = new JLabel("QUAN LY BAO CAO", JLabel.CENTER);
+        JLabel lblTitle = new JLabel("QUẢN LÝ BÁO CÁO", JLabel.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
         lblTitle.setForeground(new Color(0, 102, 204));
         add(lblTitle, "growx, wrap");
 
         JPanel pnlOptions = new JPanel(new MigLayout("insets 10", "[]15[grow]", "[]10[]"));
-        pnlOptions.setBorder(BorderFactory.createTitledBorder("Tuy chon bao cao"));
+        pnlOptions.setBorder(BorderFactory.createTitledBorder("Tùy chọn báo cáo"));
 
-        pnlOptions.add(new JLabel("Loai bao cao:"));
-        cboReportType = new JComboBox<>(new String[]{"Tom tat", "Chi tiet", "Theo lop", "Theo nam"});
+        pnlOptions.add(new JLabel("Loại báo cáo:"));
+        cboReportType = new JComboBox<>(new String[]{"Chi tiết", "Tổng quan"});
         pnlOptions.add(cboReportType, "growx, wrap");
 
-        pnlOptions.add(new JLabel("Ten file:"));
+        pnlOptions.add(new JLabel("Tên file:"));
         txtFileName = new JTextField("report.pdf");
         pnlOptions.add(txtFileName, "growx");
 
         add(pnlOptions, "growx, wrap");
 
         JPanel pnlButtons = new JPanel();
-        btnExport = createStyledButton("Xuat PDF", new Color(34, 139, 34));
+        btnExport = createStyledButton("Xuất PDF", new Color(34, 139, 34));
         pnlButtons.add(btnExport);
 
         add(pnlButtons, "growx, wrap");
 
-        lblStatus = new JLabel("San sang xuat bao cao.", JLabel.CENTER);
+        lblStatus = new JLabel("ẵn sàng xuất báo cáo.", JLabel.CENTER);
         lblStatus.setForeground(Color.BLUE);
         add(lblStatus, "growx");
 
@@ -119,15 +124,20 @@ public class FormReport extends JPanel {
         PdfWriter.getInstance(doc, new FileOutputStream(dest));
         doc.open();
 
-        com.itextpdf.text.Font titleFont =
-                new com.itextpdf.text.Font(
-                        com.itextpdf.text.Font.FontFamily.HELVETICA,
-                        18,
-                        com.itextpdf.text.Font.BOLD
-                );
+        com.itextpdf.text.Font titleFont;
+        com.itextpdf.text.Font defaultFont;
+        try {
+            BaseFont bf = BaseFont.createFont("lib/arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            titleFont = new com.itextpdf.text.Font(bf, 18, com.itextpdf.text.Font.BOLD);
+            defaultFont = new com.itextpdf.text.Font(bf, 12, com.itextpdf.text.Font.NORMAL);
+        } catch (Exception e) {
+            // Fallback to Tahoma if Arial.ttf not found
+            titleFont = FontFactory.getFont("Tahoma", BaseFont.IDENTITY_H, true, 18, com.itextpdf.text.Font.BOLD);
+            defaultFont = FontFactory.getFont("Tahoma", BaseFont.IDENTITY_H, true, 12, com.itextpdf.text.Font.NORMAL);
+        }
 
-        doc.add(new Paragraph("BAO CAO HE THONG QUAN LY HOC SINH", titleFont));
-        doc.add(new Paragraph("Loai bao cao: " + reportType));
+        doc.add(new Paragraph("BAO CAO CHI TIET HE THONG QUAN LY HOC SINH", titleFont));
+        doc.add(new Paragraph("Loai bao cao: Chi tiet", defaultFont));
         doc.add(Chunk.NEWLINE);
 
         GiaoVienDAO gvDao = new GiaoVienDAO();
@@ -141,127 +151,129 @@ public class FormReport extends JPanel {
         ViPhamDAO vpDao = new ViPhamDAO();
         XepLoaiDAO xlDao = new XepLoaiDAO();
 
+        PhuHuynhHocSinhBLL phhsBLL = new PhuHuynhHocSinhBLL();
+
         List<GiaoVien> teachers = gvDao.getAll();
         List<HocSinh> students = hsDao.getAll();
         List<Lop> classes = lopDao.getAll();
 
-        if ("Tom tat".equals(reportType)) {
+        // TONG QUAN
+        doc.add(new Paragraph("TONG QUAN", defaultFont));
+        doc.add(new Paragraph("Tong so giao vien " + teachers.size(), defaultFont));
+        doc.add(new Paragraph("Tong so hoc sinh " + students.size(), defaultFont));
+        doc.add(new Paragraph("Tong so lop " + classes.size(), defaultFont));
+        doc.add(Chunk.NEWLINE);
 
-            doc.add(new Paragraph("TONG QUAN"));
-            doc.add(new Paragraph("Tong so giao vien " + teachers.size()));
-            doc.add(new Paragraph("Tong so hoc sinh " + students.size()));
-            doc.add(new Paragraph("Tong so lop " + classes.size()));
+        // CHI TIET THEO LOP
+        doc.add(new Paragraph("CHI TIET THEO LOP", defaultFont));
 
-        } else if ("Chi tiet".equals(reportType)) {
+        for (Lop lop : classes) {
 
-            doc.add(new Paragraph("CHI TIET THEO LOP"));
+            doc.add(new Paragraph("Lop " + lop.getTenLop() + " (" + lop.getMaLop() + ")", defaultFont));
 
-            for (Lop lop : classes) {
+            GiaoVien gv = gvDao.getByMa(lop.getMaGVCN());
 
-                doc.add(new Paragraph("Lop " + lop.getTenLop() + " (" + lop.getMaLop() + ")"));
+            doc.add(new Paragraph("GVCN " + (gv == null ? "<khong>" : gv.getHoTen()), defaultFont));
 
-                GiaoVien gv = gvDao.getByMa(lop.getMaGVCN());
+            List<HocSinh> hsInLop =
+                    students.stream()
+                            .filter(h -> lop.getMaLop().equals(h.getMaLop()))
+                            .collect(Collectors.toList());
 
-                doc.add(new Paragraph("GVCN " + (gv == null ? "<khong>" : gv.getHoTen())));
+            doc.add(new Paragraph("Si so " + hsInLop.size(), defaultFont));
 
-                List<HocSinh> hsInLop =
-                        students.stream()
-                                .filter(h -> lop.getMaLop().equals(h.getMaLop()))
-                                .collect(Collectors.toList());
+            for (HocSinh hs : hsInLop) {
 
-                doc.add(new Paragraph("Si so " + hsInLop.size()));
-                doc.add(Chunk.NEWLINE);
-            }
+                doc.add(new Paragraph("Hoc sinh " + hs.getHoTen() + " (" + hs.getMaHS() + ")", defaultFont));
 
-        } else if ("Theo lop".equals(reportType)) {
+                List<Diem> diems = diemDao.getByMaHS(hs.getMaHS());
 
-            for (Lop lop : classes) {
+                if (!diems.isEmpty()) {
 
-                doc.add(new Paragraph("Lop " + lop.getTenLop() + " (" + lop.getMaLop() + ")"));
+                    PdfPTable table = new PdfPTable(2);
 
-                GiaoVien gv = gvDao.getByMa(lop.getMaGVCN());
-                doc.add(new Paragraph("GVCN " + (gv == null ? "<khong>" : gv.getHoTen())));
+                    table.addCell(new PdfPCell(new Paragraph("Mon", defaultFont)));
 
-                List<HocSinh> hsInLop =
-                        students.stream()
-                                .filter(h -> lop.getMaLop().equals(h.getMaLop()))
-                                .collect(Collectors.toList());
-
-                doc.add(new Paragraph("Si so " + hsInLop.size()));
-
-                for (HocSinh hs : hsInLop) {
-
-                    doc.add(new Paragraph("Hoc sinh " + hs.getHoTen() + " (" + hs.getMaHS() + ")"));
-
-                    List<Diem> diems = diemDao.getByMaHS(hs.getMaHS());
+                    table.addCell(new PdfPCell(new Paragraph("Diem TB", defaultFont)));
 
                     for (Diem d : diems) {
 
                         DataObject.Mon m = new MonHocDAO().findByMaMon(d.getMaMon());
 
-                        // use average score since Diem does not expose a generic getDiem()
-                        double score = d.getDiemTBMonHocKy();
+                        table.addCell(new PdfPCell(new Paragraph(m == null ? "<khong>" : m.getTenMon(), defaultFont)));
 
-                        doc.add(new Paragraph(
-                                "Diem mon " +
-                                        (m == null ? "<khong>" : m.getTenMon()) +
-                                        " " +
-                                        score
-                        ));
+                        table.addCell(new PdfPCell(new Paragraph(String.valueOf(d.getDiemTBMonHocKy()), defaultFont)));
+
                     }
 
-                    List<HanhKiem> hks = hkDao.getByMaHS(hs.getMaHS());
+                    doc.add(table);
 
-                    for (HanhKiem hk : hks) {
-
-                        doc.add(new Paragraph(
-                                "Hanh kiem " +
-                                        hk.getXepLoai() +
-                                        " " +
-                                        hk.getNhanXet()
-                        ));
-                    }
                 }
 
-                doc.add(Chunk.NEWLINE);
-            }
+                List<HanhKiem> hks = hkDao.getByMaHS(hs.getMaHS());
 
-            doc.add(new Paragraph("DANH SACH GIAO VIEN VA BO MON"));
-
-            for (GiaoVien gv : teachers) {
-
-                doc.add(new Paragraph("Giao vien " + gv.getHoTen() + " (" + gv.getMaGV() + ")"));
-
-                // filter list of assignments manually since DAL lacks convenience method
-                List<PhanCong> allPcs = pcDao.getAll();
-                List<PhanCong> pcs = allPcs.stream()
-                        .filter(pc -> gv.getMaGV().equals(pc.getMaGV()))
-                        .collect(Collectors.toList());
-
-                for (PhanCong pc : pcs) {
-
-                    DataObject.Mon m = new MonHocDAO().findByMaMon(pc.getMaMon());
+                for (HanhKiem hk : hks) {
 
                     doc.add(new Paragraph(
-                            "Bo mon " +
-                                    (m == null ? "<khong>" : m.getTenMon())
+                            "Hanh kiem " +
+                                    hk.getXepLoai() +
+                                    " " +
+                                    hk.getNhanXet(), defaultFont
                     ));
                 }
 
-                doc.add(Chunk.NEWLINE);
+                List<DataObject.PhuHuynhHocSinh> phhsList = phhsBLL.layTheoHS(hs.getMaHS());
+
+                for (DataObject.PhuHuynhHocSinh phhs : phhsList) {
+
+                    DataObject.Parent p = phDao.getById(phhs.getMaPH());
+
+                    if (p != null) {
+
+                        doc.add(new Paragraph("Phu huynh: " + p.getTenPhH() + " (" + p.getMaPhH() + "), Quan he: " + phhs.getQuanHe(), defaultFont));
+
+                    }
+                }
             }
 
-        } else if ("Theo nam".equals(reportType)) {
+            doc.add(Chunk.NEWLINE);
+        }
 
-            NamHocBLL namBLL = new NamHocBLL();
+        // DANH SACH GIAO VIEN VA BO MON
+        doc.add(new Paragraph("DANH SACH GIAO VIEN VA BO MON", defaultFont));
 
-            List<DataObject.NamHoc> years = namBLL.getAllActive();
+        for (GiaoVien gv : teachers) {
 
-            for (DataObject.NamHoc nh : years) {
+            doc.add(new Paragraph("Giao vien " + gv.getHoTen() + " (" + gv.getMaGV() + ")", defaultFont));
 
-                doc.add(new Paragraph("Nam hoc: " + nh.getTenNH()));
+            // filter list of assignments manually since DAL lacks convenience method
+            List<PhanCong> allPcs = pcDao.getAll();
+            List<PhanCong> pcs = allPcs.stream()
+                    .filter(pc -> gv.getMaGV().equals(pc.getMaGV()))
+                    .collect(Collectors.toList());
 
+            for (PhanCong pc : pcs) {
+
+                DataObject.Mon m = new MonHocDAO().findByMaMon(pc.getMaMon());
+
+                doc.add(new Paragraph(
+                        "Bo mon " +
+                                (m == null ? "<khong>" : m.getTenMon()), defaultFont
+                ));
             }
+
+            doc.add(Chunk.NEWLINE);
+        }
+
+        // THEO NAM
+        NamHocBLL namBLL = new NamHocBLL();
+
+        List<DataObject.NamHoc> years = namBLL.getAllActive();
+
+        for (DataObject.NamHoc nh : years) {
+
+            doc.add(new Paragraph("Nam hoc: " + nh.getTenNH(), defaultFont));
+
         }
 
         doc.close();
