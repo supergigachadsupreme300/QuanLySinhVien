@@ -30,25 +30,19 @@ public class ExcelDAL {
         hocSinhDAO = new HocSinhDAO();
         diemDAL = new DiemDAL();
         DatabaseConnect db = new DatabaseConnect();
-        this.conn = db.openConnection();
-        
-
+        this.conn = db.openConnection();      
     }
-
     // ================= PREVIEW HỌC SINH =================
     public void previewHocSinh(String path, DefaultTableModel model) {
-
         try {
-
             FileInputStream fis = new FileInputStream(path);
             Workbook wb = new XSSFWorkbook(fis);
 
             Sheet sheet = wb.getSheetAt(0);
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-
                 Row row = sheet.getRow(i);
-
+                
                 String maHS = row.getCell(0).getStringCellValue();
                 String hoTen = row.getCell(1).getStringCellValue();
                 String maLop = row.getCell(2).getStringCellValue();
@@ -112,23 +106,15 @@ public class ExcelDAL {
             }
 
             wb.close();
-
             return true;
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
-
         return false;
     }
-
     // ================= PREVIEW ĐIỂM =================
     public void previewDiem(String path, DefaultTableModel model) {
-
         try {
-
             FileInputStream fis = new FileInputStream(path);
             Workbook wb = new XSSFWorkbook(fis);
 
@@ -150,21 +136,14 @@ public class ExcelDAL {
                         maHS, maMon, hocKy, tx, gk, ck
                 });
             }
-
             wb.close();
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
     }
-
     // ================= IMPORT ĐIỂM =================
     public boolean importDiem(File file) {
-
         try {
-
             FileInputStream fis = new FileInputStream(file);
             Workbook wb = new XSSFWorkbook(fis);
 
@@ -196,24 +175,16 @@ public class ExcelDAL {
 
                 diemDAL.add(d);
             }
-
             wb.close();
-
             return true;
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
-
         return false;
     }
     // ================= EXPORT EXCEL =================
     public void previewExport(String maLop, DefaultTableModel model) {
-
         try {
-
             String sql = """
             SELECT hs.MaHS, hs.HoTen, hs.MaLop,
                    d.MaMon, d.DiemThuongXuyen, d.DiemGiuaKy, d.DiemCuoiKy
@@ -238,21 +209,14 @@ public class ExcelDAL {
                         rs.getDouble("DiemGiuaKy"),
                         rs.getDouble("DiemCuoiKy")
                 });
-
             }
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
-
     }
-    
+
     public void previewDiemTheoLopMon(String maLop,String maMon,DefaultTableModel model){
-
         try{
-
             String sql = """
             SELECT hs.MaHS,hs.HoTen,
                    d.DiemThuongXuyen,
@@ -281,31 +245,27 @@ public class ExcelDAL {
                         rs.getDouble("DiemCuoiKy"),
                         rs.getDouble("DiemTBMonHocKy")
                 });
-
             }
-
         }catch(Exception e){
             e.printStackTrace();
         }
-
     }
     
     public boolean exportDiemTheoLopMon(String maLop, String maMon, File file) {
-
         try {
-
             Workbook wb = new XSSFWorkbook();
             Sheet sheet = wb.createSheet("BangDiem");
 
             // Header
             Row header = sheet.createRow(0);
 
-            header.createCell(0).setCellValue("MaHS");
-            header.createCell(1).setCellValue("HoTen");
-            header.createCell(2).setCellValue("DiemThuongXuyen");
-            header.createCell(3).setCellValue("DiemGiuaKy");
-            header.createCell(4).setCellValue("DiemCuoiKy");
-            header.createCell(5).setCellValue("DiemTB");
+            header.createCell(0).setCellValue("STT");
+            header.createCell(1).setCellValue("MaHS");
+            header.createCell(2).setCellValue("HoTen");
+            header.createCell(3).setCellValue("DiemThuongXuyen");
+            header.createCell(4).setCellValue("DiemGiuaKy");
+            header.createCell(5).setCellValue("DiemCuoiKy");
+            header.createCell(6).setCellValue("DiemTB");
 
             String sql = """
             SELECT hs.MaHS, hs.HoTen,
@@ -329,37 +289,156 @@ public class ExcelDAL {
 
             while (rs.next()) {
 
+                int stt = 1;
                 Row row = sheet.createRow(rowIndex++);
-
-                row.createCell(0).setCellValue(rs.getString("MaHS"));
-                row.createCell(1).setCellValue(rs.getString("HoTen"));
-                row.createCell(2).setCellValue(rs.getDouble("DiemThuongXuyen"));
-                row.createCell(3).setCellValue(rs.getDouble("DiemGiuaKy"));
-                row.createCell(4).setCellValue(rs.getDouble("DiemCuoiKy"));
-                row.createCell(5).setCellValue(rs.getDouble("DiemTBMonHocKy"));
+                row.createCell(0).setCellValue(stt++);
+                row.createCell(1).setCellValue(rs.getString("MaHS"));
+                row.createCell(2).setCellValue(rs.getString("HoTen"));
+                row.createCell(3).setCellValue(rs.getDouble("DiemThuongXuyen"));
+                row.createCell(4).setCellValue(rs.getDouble("DiemGiuaKy"));
+                row.createCell(5).setCellValue(rs.getDouble("DiemCuoiKy"));
+                row.createCell(6).setCellValue(rs.getDouble("DiemTBMonHocKy"));
 
             }
-
             // Auto resize
             for (int i = 0; i <= 5; i++) {
                 sheet.autoSizeColumn(i);
             }
-
             FileOutputStream fos = new FileOutputStream(file);
-
             wb.write(fos);
-
             fos.close();
             wb.close();
-
             return true;
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
+        return false;
+    }
 
+    //==== BẢNG ĐIỂM TẤT CẢ MÔN ====
+    public void previewBangDiemTatCaMon(String maLop, String maHK, DefaultTableModel model){
+        try{
+            MonHocDAO monDAO = new MonHocDAO();
+            DiemDAL diemDAL = new DiemDAL();
+            List<String> listMon = monDAO.getAllMaMon();
+            // XÓA CỘT CŨ
+            model.setColumnCount(0);
+            model.setRowCount(0);
+            // HEADER
+            model.addColumn("MaHS");
+            model.addColumn("HoTen");
+
+            for(String mon : listMon){
+                model.addColumn(mon);
+            }
+            // QUERY HỌC SINH
+            String sql = """
+            SELECT MaHS, HoTen
+            FROM HocSinh
+            WHERE MaLop = ?
+            """;
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, maLop);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+
+                String maHS = rs.getString("MaHS");
+
+                Object[] row = new Object[listMon.size() + 2];
+
+                row[0] = maHS;
+                row[1] = rs.getString("HoTen");
+
+                for(int i = 0; i < listMon.size(); i++){
+
+                    String maMon = listMon.get(i);
+
+                    Diem d = diemDAL.getDiem(maHS, maMon, maHK);
+
+                    if(d != null){
+                        row[i + 2] = d.getDiemTBMonHocKy();
+                    }else{
+                        row[i + 2] = "";
+                    }
+                }
+                model.addRow(row);
+
+            }
+            rs.close();
+            ps.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public boolean exportBangDiemTatCaMon(String maLop, String maHK, File file){
+        try{
+            Workbook wb = new XSSFWorkbook();
+            Sheet sheet = wb.createSheet("BangDiem");
+
+            MonHocDAO monDAO = new MonHocDAO();
+            DiemDAL diemDAL = new DiemDAL();
+            List<String> listMon = monDAO.getAllMaMon();
+            // HEADER
+            Row header = sheet.createRow(0);
+
+            header.createCell(0).setCellValue("MaHS");
+            header.createCell(1).setCellValue("HoTen");
+
+            for(int i=0;i<listMon.size();i++){
+                header.createCell(i+2).setCellValue(listMon.get(i));
+            }
+            // QUERY HỌC SINH
+            String sql = """
+            SELECT MaHS, HoTen
+            FROM HocSinh
+            WHERE MaLop = ?
+            """;
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, maLop);
+
+            ResultSet rs = ps.executeQuery();
+
+            int rowIndex = 1;
+
+            while(rs.next()){
+                String maHS = rs.getString("MaHS");
+
+                Row row = sheet.createRow(rowIndex++);
+
+                row.createCell(0).setCellValue(maHS);
+                row.createCell(1).setCellValue(rs.getString("HoTen"));
+
+                for(int i=0;i<listMon.size();i++){
+
+                    String maMon = listMon.get(i);
+
+                    Diem d = diemDAL.getDiem(maHS, maMon, maHK);
+
+                    if(d == null){
+                        row.createCell(i+2).setCellValue("");
+                    }else{
+                        row.createCell(i+2).setCellValue(d.getDiemTBMonHocKy());
+                    }
+                }
+            }
+            for(int i=0;i<listMon.size()+2;i++){
+                sheet.autoSizeColumn(i);
+            }
+            FileOutputStream fos = new FileOutputStream(file);
+            wb.write(fos);
+            fos.close();
+            wb.close();
+            rs.close();
+            ps.close();
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return false;
     }
 }
