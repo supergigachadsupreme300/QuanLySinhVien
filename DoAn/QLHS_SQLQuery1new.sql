@@ -520,17 +520,32 @@ INSERT INTO CHITIETTIET (maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau
 ('TKB6A1_T2_5', 'TKB_6A1_HK1', 'ANH', N'Thứ 2', 5, 'P101', '10:35', '11:20', 1);
 
 -- 11. ĐIỂM MẪU (5 HS đầu lớp 6A)
-INSERT INTO DIEM (maDiem, maHS, maChiTiet, maHocKy, diemThuongXuyen, diemGiuaKy, diemCuoiKy, diemTBMonHocKy) VALUES
-('D6A01_TOAN_HK1', '6A01', 'TOAN_TX', 'HK1_2425', 7.5, 8.0, 8.5, 8.08),
-('D6A01_VAN_HK1', '6A01', 'VAN_TX', 'HK1_2425', 7.0, 7.5, 8.0, 7.58),
-('D6A02_TOAN_HK1', '6A02', 'TOAN_TX', 'HK1_2425', 8.0, 8.5, 9.0, 8.58),
-('D6A02_VAN_HK1', '6A02', 'VAN_TX', 'HK1_2425', 7.5, 8.0, 8.5, 8.08),
-('D6A03_TOAN_HK1', '6A03', 'TOAN_TX', 'HK1_2425', 6.5, 7.0, 7.5, 7.08),
-('D6A03_VAN_HK1', '6A03', 'VAN_TX', 'HK1_2425', 6.0, 6.5, 7.0, 6.58),
-('D6A04_TOAN_HK1', '6A04', 'TOAN_TX', 'HK1_2425', 9.0, 9.5, 10.0, 9.58),
-('D6A04_VAN_HK1', '6A04', 'VAN_TX', 'HK1_2425', 8.5, 9.0, 9.5, 9.08),
-('D6A05_TOAN_HK1', '6A05', 'TOAN_TX', 'HK1_2425', 7.0, 7.5, 8.0, 7.58),
-('D6A05_VAN_HK1', '6A05', 'VAN_TX', 'HK1_2425', 7.5, 8.0, 8.5, 8.08);
+INSERT INTO DIEM (maDiem, maHS, maMon, maHocKy, diemThuongXuyen, diemGiuaKy, diemCuoiKy, diemTBMonHocKy)
+VALUES
+-- HS 6A1252601
+('D_6A1252601_TOAN', '6A1252601', 'TOAN', 'HK1_2526', 7.5, 8.0, 8.5, 8.08),
+('D_6A1252601_VAN',  '6A1252601', 'VAN',  'HK1_2526', 7.0, 7.5, 8.0, 7.58),
+('D_6A1252601_ANH',  '6A1252601', 'ANH',  'HK1_2526', 8.0, 8.0, 8.5, 8.17),
+
+-- HS 6A1252602
+('D_6A1252602_TOAN', '6A1252602', 'TOAN', 'HK1_2526', 8.0, 8.5, 9.0, 8.58),
+('D_6A1252602_VAN',  '6A1252602', 'VAN',  'HK1_2526', 7.5, 8.0, 8.5, 8.08),
+('D_6A1252602_ANH',  '6A1252602', 'ANH',  'HK1_2526', 8.5, 9.0, 9.0, 8.83),
+
+-- HS 6A1252603
+('D_6A1252603_TOAN', '6A1252603', 'TOAN', 'HK1_2526', 6.5, 7.0, 7.5, 7.08),
+('D_6A1252603_VAN',  '6A1252603', 'VAN',  'HK1_2526', 6.0, 6.5, 7.0, 6.58),
+('D_6A1252603_ANH',  '6A1252603', 'ANH',  'HK1_2526', 7.0, 7.0, 7.5, 7.17),
+
+-- HS 6A1252604
+('D_6A1252604_TOAN', '6A1252604', 'TOAN', 'HK1_2526', 9.0, 9.5, 10.0, 9.58),
+('D_6A1252604_VAN',  '6A1252604', 'VAN',  'HK1_2526', 8.5, 9.0, 9.5, 9.08),
+('D_6A1252604_ANH',  '6A1252604', 'ANH',  'HK1_2526', 9.0, 9.5, 10.0, 9.58),
+
+-- HS 6A1252605
+('D_6A1252605_TOAN', '6A1252605', 'TOAN', 'HK1_2526', 7.0, 7.5, 8.0, 7.58),
+('D_6A1252605_VAN',  '6A1252605', 'VAN',  'HK1_2526', 7.5, 8.0, 8.5, 8.08),
+('D_6A1252605_ANH',  '6A1252605', 'ANH',  'HK1_2526', 7.0, 7.5, 8.0, 7.58);
 
 -- 12. HẠNH KIỂM
 INSERT INTO HANHKIEM (maHanhKiem, maHS, maHocKy, xepLoai, soLanViPham, nhanXet) VALUES
@@ -666,8 +681,8 @@ ALTER TABLE DIEM DROP CONSTRAINT FK__DIEM__maChiTiet__74AE54BC;
 ALTER TABLE DIEM DROP COLUMN maChiTiet;
 --thêm vào cột mã môn
 ALTER TABLE DIEM ADD maMon VARCHAR(50);
---thêm kháo ngoại vào
-ALTER TABLE DIEM ADD CONSTRAINT FK_DIEM_MON FOREIGN KEY (maMon) REFERENCES MON(maMon);
+--thêm kháo ngoại vào 
+ALTER TABLE DIEM ADD CONSTRAINT FK_DIEM_MON FOREIGN KEY (maMon) REFERENCES MON(maMon) on delete no action;
 --chỉnh lại phần insert dữ liêu ở trên trên là maMon thay vì machitiet để đảm bảo nhất quán
 
 UPDATE LOP
@@ -870,5 +885,6 @@ PRINT N'- Dữ liệu điểm, hạnh kiểm, xếp loại cho 5 HS đầu lớp
 PRINT N'- Thời khóa biểu mẫu cho lớp 6A (Thứ 2)';
 
 PRINT N'- Nhóm có thể dễ dàng thêm dữ liệu bằng INSERT';
+
 
 
