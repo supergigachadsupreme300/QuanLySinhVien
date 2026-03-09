@@ -97,7 +97,7 @@ public class MainMenu extends JFrame {
             if (comp instanceof FormChiTietTiet) {
                 FormChiTietTiet f = (FormChiTietTiet) comp;
                 try {
-                    f.refreshTKBList();
+                    // f.refreshTKBList();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -132,22 +132,6 @@ public class MainMenu extends JFrame {
         }
     }
 
-    /**
-     * Open PhuHuynh form and filter by a specific student (maHS).
-     */
-    public void openPhuHuynhForStudent(String maHS) {
-        for (Component comp : mainPanel.getComponents()) {
-            if (comp instanceof FormPhuHuynh) {
-                FormPhuHuynh fp = (FormPhuHuynh) comp;
-                fp.setFilterMaHS(maHS);
-                fp.loadTable();
-                showForm(PHUHUYNH);
-                return;
-            }
-        }
-        // fallback
-        showForm(PHUHUYNH);
-    }
 
     /**
      * Open HocSinh form and filter by a specific parent (maPH).
@@ -166,35 +150,20 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * Open Diem form and filter by student
+     * Open PhuHuynh form and filter by a specific student (maHS).
      */
-    public void openDiemForStudent(String maHS) {
+    public void openPhuHuynhForStudent(String maHS) {
         for (Component comp : mainPanel.getComponents()) {
-            if (comp instanceof FormDiem) {
-                FormDiem fd = (FormDiem) comp;
-                fd.setFilterMaHS(maHS);
-                fd.loadByMaHS();
-                showForm(DIEM);
+            if (comp instanceof FormPhuHuynh) {
+                FormPhuHuynh fp = (FormPhuHuynh) comp;
+                fp.setFilterMaHS(maHS);
+                fp.loadTable();
+                showForm(PHUHUYNH);
                 return;
             }
         }
-        showForm(DIEM);
-    }
-
-    /**
-     * Open HanhKiem form and filter by student
-     */
-    public void openHanhKiemForStudent(String maHS) {
-        for (Component comp : mainPanel.getComponents()) {
-            if (comp instanceof FormHanhKiem) {
-                FormHanhKiem fh = (FormHanhKiem) comp;
-                fh.setFilterMaHS(maHS);
-                fh.loadByMaHS();
-                showForm(HANHKIEM);
-                return;
-            }
-        }
-        showForm(HANHKIEM);
+        // fallback
+        showForm(PHUHUYNH);
     }
 
     public static void main(String[] args) {

@@ -226,24 +226,31 @@ public class FormHocSinh extends JPanel {
     }
 
     private void showAdvancedSearch() {
-        // dialog chứa các tiêu chí tìm kiếm
+        // dialog chứa các tiêu chí tìm kiếm nâng cao
         JDialog dlg = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Tìm kiếm nâng cao", true);
-        dlg.setLayout(new MigLayout("fill", "[][grow]", "[]10[]10[]10[]10[]15[]"));
+        dlg.setLayout(new MigLayout("fill", "[][grow]", "[]10[]10[]10[]10[]10[]10[]15[]"));
         JTextField fMa = new JTextField();
         JTextField fHoTen = new JTextField();
         JTextField fMaLop = new JTextField();
         JComboBox<String> fGioiTinh = new JComboBox<>(new String[]{"", "Nam", "Nữ"});
+        JTextField fDiaChi = new JTextField();
+        JTextField fNgaySinhTu = new JTextField();
+        JTextField fNgaySinhDen = new JTextField();
         JButton btnOk = new JButton("Tìm");
         JButton btnCancel = new JButton("Hủy");
+        JButton btnReset = new JButton("Đặt lại");
 
         dlg.add(new JLabel("Mã HS:")); dlg.add(fMa, "growx, wrap");
         dlg.add(new JLabel("Họ tên chứa:")); dlg.add(fHoTen, "growx, wrap");
         dlg.add(new JLabel("Mã lớp:")); dlg.add(fMaLop, "growx, wrap");
         dlg.add(new JLabel("Giới tính:")); dlg.add(fGioiTinh, "growx, wrap");
-        dlg.add(btnOk, "split 2"); dlg.add(btnCancel, "wrap");
+        dlg.add(new JLabel("Địa chỉ chứa:")); dlg.add(fDiaChi, "growx, wrap");
+        dlg.add(new JLabel("Ngày sinh từ (yyyy-MM-dd):")); dlg.add(fNgaySinhTu, "growx, wrap");
+        dlg.add(new JLabel("Ngày sinh đến (yyyy-MM-dd):")); dlg.add(fNgaySinhDen, "growx, wrap");
+        dlg.add(btnOk, "split 3"); dlg.add(btnReset); dlg.add(btnCancel, "wrap");
 
         btnOk.addActionListener(ev -> {
-            // lọc theo các điều kiện
+            // lọc theo các điều kiện nâng cao
             modelHocSinh.setRowCount(0);
             for (HocSinh hs : hocSinhBLL.getAllActive()) {
                 if (!fMa.getText().trim().isEmpty() && !hs.getMaHS().equals(fMa.getText().trim())) continue;
@@ -251,6 +258,25 @@ public class FormHocSinh extends JPanel {
                         .contains(fHoTen.getText().trim().toLowerCase())) continue;
                 if (!fMaLop.getText().trim().isEmpty() && !hs.getMaLop().equals(fMaLop.getText().trim())) continue;
                 if (!fGioiTinh.getSelectedItem().toString().isEmpty() && !hs.getGioiTinh().equals(fGioiTinh.getSelectedItem().toString())) continue;
+                if (!fDiaChi.getText().trim().isEmpty() && !hs.getDiaChi().toLowerCase()
+                        .contains(fDiaChi.getText().trim().toLowerCase())) continue;
+                // Kiểm tra ngày sinh
+                if (hs.getNgaySinh() != null) {
+                    if (!fNgaySinhTu.getText().trim().isEmpty()) {
+                        try {
+                            LocalDate tu = LocalDate.parse(fNgaySinhTu.getText().trim(), fmt);
+                            if (hs.getNgaySinh().isBefore(tu)) continue;
+                        } catch (Exception e) { /* ignore */ }
+                    }
+                    if (!fNgaySinhDen.getText().trim().isEmpty()) {
+                        try {
+                            LocalDate den = LocalDate.parse(fNgaySinhDen.getText().trim(), fmt);
+                            if (hs.getNgaySinh().isAfter(den)) continue;
+                        } catch (Exception e) { /* ignore */ }
+                    }
+                } else {
+                    if (!fNgaySinhTu.getText().trim().isEmpty() || !fNgaySinhDen.getText().trim().isEmpty()) continue;
+                }
                 modelHocSinh.addRow(new Object[]{
                         hs.getMaHS(), hs.getHoTen(),
                         hs.getNgaySinh() == null ? "" : hs.getNgaySinh().format(fmt),
@@ -258,6 +284,15 @@ public class FormHocSinh extends JPanel {
                 });
             }
             dlg.dispose();
+        });
+        btnReset.addActionListener(ev -> {
+            fMa.setText("");
+            fHoTen.setText("");
+            fMaLop.setText("");
+            fGioiTinh.setSelectedIndex(0);
+            fDiaChi.setText("");
+            fNgaySinhTu.setText("");
+            fNgaySinhDen.setText("");
         });
         btnCancel.addActionListener(ev -> dlg.dispose());
         dlg.pack();
