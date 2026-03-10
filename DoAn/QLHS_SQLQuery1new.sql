@@ -1,8 +1,9 @@
-﻿CREATE DATABASE QuanLyHocSinh;
+﻿DROP DATABASE IF EXISTS QuanLyHocSinh;
+GO
+CREATE DATABASE QuanLyHocSinh;
 GO
 USE QuanLyHocSinh;
 GO
-DROP DATABASE IF EXISTS QuanLyHocSinh;
 -- ==================== TẠO CÁC BẢNG ====================
 CREATE TABLE NAM (
     maNam VARCHAR(50) PRIMARY KEY,
@@ -721,19 +722,22 @@ select * from CHITIETMON;
 select * from PHUHUYNH;
 select * from HOCSINH_PHUHUYNH;
 select * from PHANCONG;
+GO
+
 -- Lấy thời khóa biểu lớp 6A1 học kỳ 1
-SELECT * FROM THOIKHOABIEU WHERE maLop = '6A1' AND maHocKy = 'HK1_2526';
+-- SELECT * FROM THOIKHOABIEU WHERE maLop = '6A1' AND maHocKy = 'HK1_2526';
 
 -- Lấy chi tiết tiết học lớp 6A1
-SELECT CT.maChiTiet, CT.thu, CT.tiet, CT.phongHoc, CT.gioBatDau, CT.gioKetThuc,
-       MON.tenMon, GV.hoTen AS giaoVien
-FROM CHITIETTIET CT
-JOIN THOIKHOABIEU TKB ON CT.maTKB = TKB.maTKB
-JOIN MON ON CT.maMon = MON.maMon
-JOIN PHANCONG PC ON PC.maMon = CT.maMon AND PC.maLop = TKB.maLop
-JOIN GIAOVIEN GV ON PC.maGV = GV.maGV
-WHERE TKB.maLop = '6A1' AND TKB.maHocKy = 'HK1_2526';
+-- SELECT CT.maChiTiet, CT.thu, CT.tiet, CT.phongHoc, CT.gioBatDau, CT.gioKetThuc,
+--        MON.tenMon, GV.hoTen AS giaoVien
+-- FROM CHITIETTIET CT
+-- JOIN THOIKHOABIEU TKB ON CT.maTKB = TKB.maTKB
+-- JOIN MON ON CT.maMon = MON.maMon
+-- JOIN PHANCONG PC ON PC.maMon = CT.maMon AND PC.maLop = TKB.maLop
+-- JOIN GIAOVIEN GV ON PC.maGV = GV.maGV
+-- WHERE TKB.maLop = '6A1' AND TKB.maHocKy = 'HK1_2526';
 
+GO
 
 -- Năm học
 CREATE PROCEDURE sp_getAllActiveNamHoc
@@ -860,12 +864,12 @@ BEGIN
         SELECT DISTINCT maLop FROM deleted WHERE maLop IS NOT NULL
     );
 END;
-
+GO
 
 UPDATE LOP
 SET siSo = (SELECT COUNT(*) FROM HOCSINH WHERE maLop = LOP.maLop AND trangThai = 1);
+GO
 
-	
 -- Combo môn (có thể dùng sp_getAllActiveMon)
 
 PRINT N'✅ Đã tạo xong database với dữ liệu mẫu!';

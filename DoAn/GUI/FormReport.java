@@ -180,11 +180,11 @@ public class FormReport extends JPanel {
                             .filter(h -> lop.getMaLop().equals(h.getMaLop()))
                             .collect(Collectors.toList());
 
-            doc.add(new Paragraph("Si so " + hsInLop.size(), defaultFont));
+            doc.add(new Paragraph("Sĩ số " + hsInLop.size(), defaultFont));
 
             for (HocSinh hs : hsInLop) {
 
-                doc.add(new Paragraph("Hoc sinh " + hs.getHoTen() + " (" + hs.getMaHS() + ")", defaultFont));
+                doc.add(new Paragraph("Học sinh " + hs.getHoTen() + " (" + hs.getMaHS() + ")", defaultFont));
 
                 List<Diem> diems = diemDao.getByMaHS(hs.getMaHS());
 
@@ -192,9 +192,9 @@ public class FormReport extends JPanel {
 
                     PdfPTable table = new PdfPTable(2);
 
-                    table.addCell(new PdfPCell(new Paragraph("Mon", defaultFont)));
+                    table.addCell(new PdfPCell(new Paragraph("Môn", defaultFont)));
 
-                    table.addCell(new PdfPCell(new Paragraph("Diem TB", defaultFont)));
+                    table.addCell(new PdfPCell(new Paragraph("Điểm TB", defaultFont)));
 
                     for (Diem d : diems) {
 

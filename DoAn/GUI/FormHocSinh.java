@@ -36,6 +36,8 @@ public class FormHocSinh extends JPanel {
 
     private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    private Object filterMaHS;
+
     public FormHocSinh() {
         initUI();
     }
