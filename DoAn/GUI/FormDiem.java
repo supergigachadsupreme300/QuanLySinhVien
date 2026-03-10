@@ -16,6 +16,7 @@ import DataObject.Lop;
 import DataObject.Mon;
 import DataObject.HocKy;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.event.ListSelectionListener;
 import java.awt.Component;
@@ -60,18 +61,36 @@ public class FormDiem extends JPanel {
         add(createInputPanel(), "growx, wrap");
         add(createButtonPanel(), "growx, wrap");
         add(createTablePanel(), "grow");
-        // Load hoc ky combo and all active students' diem on open
+
         loadLopCombo();
         loadMonCombo();
         loadHocKyCombo();
 
-        cboLop.addActionListener(e -> loadHocSinhTheoLop());
-        cboMon.addActionListener(e -> loadHocSinhTheoLop());
-        cboHocKy.addActionListener(e -> loadHocSinhTheoLop());
+        // Chọn phần tử đầu tiên nếu có
+        if (cboLop.getItemCount() > 0) cboLop.setSelectedIndex(0);
+        if (cboMon.getItemCount() > 0) cboMon.setSelectedIndex(0);
+        if (cboHocKy.getItemCount() > 0) cboHocKy.setSelectedIndex(0);
 
-        loadAllActiveDiem();
+        // Sử dụng ItemListener thay ActionListener
+        cboLop.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                loadHocSinhTheoLop();
+            }
+        });
+        cboMon.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                loadHocSinhTheoLop();
+            }
+        });
+        cboHocKy.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                loadHocSinhTheoLop();
+            }
+        });
+
+        // Load học sinh lần đầu
+        loadHocSinhTheoLop();
     }
-
 
     private JPanel createInputPanel() {
         JPanel panel = new JPanel(new MigLayout(
@@ -80,16 +99,6 @@ public class FormDiem extends JPanel {
             "[]10[]10[]"));
 
         panel.setBorder(BorderFactory.createTitledBorder("Thông tin điểm"));
-
-//        panel.add(new JLabel("Mã HS:"));
-//        txtMaHS = new JTextField();
-//        txtMaHS.setEditable(false);
-//        panel.add(txtMaHS, "growx, wrap");
-//
-//        panel.add(new JLabel("Tên HS:"));
-//        txtTenHS = new JTextField();
-//        txtTenHS.setEditable(false);
-//        panel.add(txtTenHS, "growx, wrap");
 
         panel.add(new JLabel("Lớp:"));
         cboLop = new JComboBox<>();
@@ -106,19 +115,6 @@ public class FormDiem extends JPanel {
         panel.add(new JLabel(""));
         panel.add(new JLabel(""), "wrap");
 
-
-//        panel.add(new JLabel("Điểm thường xuyên:"));
-//        txtDiemTX = new JTextField();
-//        panel.add(txtDiemTX, "growx, wrap");
-//
-//        panel.add(new JLabel("Điểm giữa kỳ:"));
-//        txtDiemGK = new JTextField();
-//        panel.add(txtDiemGK, "growx, wrap");
-//
-//        panel.add(new JLabel("Điểm cuối kỳ:"));
-//        txtDiemCK = new JTextField();
-//        panel.add(txtDiemCK, "growx, wrap");
-
         return panel;
     }
 
@@ -134,57 +130,36 @@ public class FormDiem extends JPanel {
 
             @Override
             public void setValueAt(Object aValue, int row, int column){
-
-                // kiểm tra điểm
                 if(column == 4 || column == 5 || column == 6){
-
                     if(aValue != null && !aValue.toString().trim().isEmpty()){
-
                         try{
-
                             double diem = Double.parseDouble(aValue.toString());
-
                             if(diem < 0 || diem > 10){
                                 JOptionPane.showMessageDialog(null,"Điểm phải từ 0 đến 10");
                                 return;
                             }
-
                         }catch(Exception ex){
                             JOptionPane.showMessageDialog(null,"Điểm phải là số");
                             return;
                         }
                     }
                 }
-
                 super.setValueAt(aValue,row,column);
-
-                // tính TB
                 if(column == 4 || column == 5 || column == 6){
-
                     try{
-
-                        double tx = 0;
-                        double gk = 0;
-                        double ck = 0;
-
+                        double tx = 0, gk = 0, ck = 0;
                         Object oTX = getValueAt(row,4);
                         Object oGK = getValueAt(row,5);
                         Object oCK = getValueAt(row,6);
-
                         if(oTX != null && !oTX.toString().isEmpty())
                             tx = Double.parseDouble(oTX.toString());
-
                         if(oGK != null && !oGK.toString().isEmpty())
                             gk = Double.parseDouble(oGK.toString());
-
                         if(oCK != null && !oCK.toString().isEmpty())
                             ck = Double.parseDouble(oCK.toString());
-
                         double tb = (tx + gk*2 + ck*3)/6;
                         tb = Math.round(tb*100.0)/100.0;
-
                         super.setValueAt(tb,row,7);
-
                     }catch(Exception ignored){}
                 }
             }
@@ -195,32 +170,22 @@ public class FormDiem extends JPanel {
         table.getActionMap().put("selectNextRowCell", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 int row = table.getSelectedRow();
                 int col = table.getSelectedColumn();
-
                 if (table.isEditing()) {
                     table.getCellEditor().stopCellEditing();
                 }
-
                 row++;
-
                 if (row < table.getRowCount()) {
-
                     table.changeSelection(row, col, false, false);
-
                     int finalRow = row;
                     int finalCol = col;
-
                     SwingUtilities.invokeLater(() -> {
-
                         table.editCellAt(finalRow, finalCol);
-
                         Component comp = table.getEditorComponent();
                         if (comp != null) {
                             comp.requestFocusInWindow();
                         }
-
                     });
                 }
             }
@@ -236,32 +201,23 @@ public class FormDiem extends JPanel {
         table.getTableHeader().setForeground(Color.WHITE);
         table.setFillsViewportHeight(true);
         
-        // Auto edit khi di chuyển bằng Enter / Tab
         ListSelectionListener autoEdit = e -> {
-
             if(e.getValueIsAdjusting()) return;
-
             int row = table.getSelectedRow();
             int col = table.getSelectedColumn();
-
             if(row >= 0 && col >= 0 && table.isCellEditable(row,col)){
-
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
                         table.editCellAt(row,col);
-                        
                         Component editor = table.getEditorComponent();
                         if(editor != null){
                             editor.requestFocusInWindow();
                         }
                     }
                 });
-
             }
         };
-
-        // bắt cả thay đổi dòng và cột
         table.getSelectionModel().addListSelectionListener(autoEdit);
         table.getColumnModel().getSelectionModel().addListSelectionListener(autoEdit);
 
@@ -269,21 +225,15 @@ public class FormDiem extends JPanel {
     }
 
     private void loadLopCombo(){
-
         cboLop.removeAllItems();
-
         java.util.List<Lop> list = lopBLL.getAllActive();
-
         for(Lop lop : list){
             cboLop.addItem(lop.getMaLop());
         }
     }
     private void loadMonCombo(){
-
         cboMon.removeAllItems();
-
         java.util.List<Mon> list = monBLL.getAllActive();
-
         for(Mon m : list){
             cboMon.addItem(m.getMaMon());
         }
@@ -297,27 +247,19 @@ public class FormDiem extends JPanel {
         }
     }
     private void loadHocSinhTheoLop(){
-
         model.setRowCount(0);
-
         Object lop = cboLop.getSelectedItem();
         Object mon = cboMon.getSelectedItem();
         Object hk = cboHocKy.getSelectedItem();
-
         if(lop == null || mon == null || hk == null){
             return;
         }
-
         String maLop = lop.toString();
         String maMon = mon.toString();
         String maHK = hk.toString();
-
         java.util.List<HocSinh> list = hocSinhBLL.getByMaLop(maLop);
-
         for(HocSinh hs : list){
-
             Diem d = diemBLL.getDiem(hs.getMaHS(), maMon, maHK);
-
             if(d != null){
                 model.addRow(new Object[]{
                     hs.getMaHS(),
@@ -346,14 +288,11 @@ public class FormDiem extends JPanel {
 
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new MigLayout("center", "[]15[]15[]15[]15[]", "[]"));
-
         JButton btnCapNhat = createButton("Cập nhật");
         JButton btnLuu = createButton("Lưu");
-
         panel.add(btnCapNhat);
         panel.add(btnLuu);
 
-        // Events
         btnCapNhat.addActionListener(e -> {
             choPhepNhap = true;
             JOptionPane.showMessageDialog(this,
@@ -371,19 +310,6 @@ public class FormDiem extends JPanel {
         });
        
         return panel;
-    }
-
-    private void loadAllActiveDiem() {
-        model.setRowCount(0);
-        java.util.List<HocSinh> students = hocSinhBLL.getAllActive();
-        if (students == null) return;
-        for (HocSinh hs : students) {
-            java.util.List<Diem> ds = diemBLL.getByMaHS(hs.getMaHS());
-            if (ds == null) continue;
-            for (Diem d : ds) {
-                model.addRow(new Object[]{d.getMaHS(), hs.getHoTen(), hs.getMaLop(), d.getMaMon(), d.getDiemThuongXuyen(), d.getDiemGiuaKy(), d.getDiemCuoiKy(), d.getDiemTBMonHocKy()});
-            }
-        }
     }
 
     private JButton createButton(String text) {
@@ -408,11 +334,8 @@ public class FormDiem extends JPanel {
         }
     }
 
-
     public void setFilterMaHS(String maHS) { this.filterMaHS = maHS; }
 
-
-    
     private void luuTatCaDiem(){
         if (table.isEditing()) {
             table.getCellEditor().stopCellEditing();
@@ -422,73 +345,51 @@ public class FormDiem extends JPanel {
         String maHK = cboHocKy.getSelectedItem().toString();
 
         for(int i=0;i<model.getRowCount();i++){
-
             String maHS = model.getValueAt(i,0).toString();
-
             try{
-
                 Object oTX = model.getValueAt(i,4);
                 Object oGK = model.getValueAt(i,5);
                 Object oCK = model.getValueAt(i,6);
-
-                double tx = 0;
-                double gk = 0;
-                double ck = 0;
-
+                double tx = 0, gk = 0, ck = 0;
                 if(oTX != null && !oTX.toString().trim().isEmpty()){
                     tx = Double.parseDouble(oTX.toString());
                 }
-
                 if(oGK != null && !oGK.toString().trim().isEmpty()){
                     gk = Double.parseDouble(oGK.toString());
                 }
-
                 if(oCK != null && !oCK.toString().trim().isEmpty()){
                     ck = Double.parseDouble(oCK.toString());
                 }
-
                 double tb = (tx + gk*2 + ck*3)/6;
                 tb = Math.round(tb*100.0)/100.0;
                 model.setValueAt(tb, i, 7);
 
                 Diem d = diemBLL.getDiem(maHS,maMon,maHK);
-
                 if(d == null){
-
                     d = new Diem();
-
                     d.setMaDiem("D"+maHS+maMon+maHK);
                     d.setMaHS(maHS);
                     d.setMaMon(maMon);
                     d.setMaHocKy(maHK);
-
                     d.setDiemThuongXuyen(tx);
                     d.setDiemGiuaKy(gk);
                     d.setDiemCuoiKy(ck);
                     d.setDiemTBMonHocKy(tb);
-
                     diemBLL.them(d);
-
                 }else{
-
                     d.setDiemThuongXuyen(tx);
                     d.setDiemGiuaKy(gk);
                     d.setDiemCuoiKy(ck);
                     d.setDiemTBMonHocKy(tb);
-
                     diemBLL.sua(d);
                 }
-
             }catch(Exception ex){
                 System.out.println("Lỗi dòng " + i);
                 ex.printStackTrace();
             }
         }
-
         JOptionPane.showMessageDialog(this,"Lưu điểm thành công!");
-
         choPhepNhap = false;
-
         loadHocSinhTheoLop();
         table.repaint();
     }
