@@ -23,7 +23,6 @@ public class PanelImportDiem extends JPanel {
         setLayout(new MigLayout("fill, insets 15","[grow]","[]10[grow]"));
         setBackground(Color.WHITE);
 
-        // ===== TOP PANEL =====
         JPanel top = new JPanel(new MigLayout("fillx","[grow][110][110][110]"));
         top.setBorder(BorderFactory.createTitledBorder("Chọn file Excel"));
 
@@ -45,7 +44,6 @@ public class PanelImportDiem extends JPanel {
 
         add(top,"growx,wrap");
 
-        // ===== TABLE =====
         model = new DefaultTableModel();
 
         model.setColumnIdentifiers(new String[]{
@@ -63,7 +61,6 @@ public class PanelImportDiem extends JPanel {
 
         add(scroll,"grow");
 
-        // ===== EVENT =====
         btnChoose.addActionListener(e->chooseFile());
         btnPreview.addActionListener(e->preview());
         btnImport.addActionListener(e->importExcel());

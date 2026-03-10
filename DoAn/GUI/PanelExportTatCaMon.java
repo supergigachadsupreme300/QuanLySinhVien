@@ -28,7 +28,6 @@ public class PanelExportTatCaMon extends JPanel {
 
         setLayout(new MigLayout("fill","[grow]","[][grow]"));
 
-        // ===== TOP PANEL =====
         JPanel top = new JPanel(new MigLayout("fillx","[][120][][120][grow][100][120][120]"));
 
         cboLop = new JComboBox<>();
@@ -55,15 +54,12 @@ public class PanelExportTatCaMon extends JPanel {
 
         add(top,"growx,wrap");
 
-        // ===== TABLE =====
         model = new DefaultTableModel();
 
 
         table = new JTable(model);
 
         add(new JScrollPane(table),"grow");
-
-        // ===== EVENTS =====
         loadLopCombo();
         loadHocKyCombo();
         

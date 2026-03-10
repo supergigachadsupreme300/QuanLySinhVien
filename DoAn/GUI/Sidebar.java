@@ -1,13 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package GUI;
-
-/**
- *
- * @author admin
- */
 import javax.swing.*;
 import java.awt.*;
 import net.miginfocom.swing.MigLayout;
@@ -23,7 +14,6 @@ public class Sidebar extends JScrollPane {
     }
     
     private void initUI(){
-        // Tạo panel chứa nội dung
         contentPanel = new JPanel();
         contentPanel.setBackground(new Color(45, 62, 80));
         contentPanel.setLayout(new MigLayout("fillx, insets 15", "[grow]", "[]20[]10[]10[]"));
@@ -51,11 +41,8 @@ public class Sidebar extends JScrollPane {
         contentPanel.add(createTabButton("Quản lý Vi phạm", e -> mainFrame.showForm(MainMenu.VIPHAM)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Xếp loại", e -> mainFrame.showForm(MainMenu.XEPLOAI)), "growx, wrap");
         contentPanel.add(createTabButton("Import/Export Excel", e -> mainFrame.showForm(MainMenu.EXCEL)), "growx, wrap");
-    //    contentPanel.add(createTabButton("Quản lý Lớp Test", e -> mainFrame.showForm(MainMenu.TestLOP)), "growx, wrap");
-    //    contentPanel.add(createTabButton("Quản lí Thời khóa biểu Test", e -> mainFrame.showForm(MainMenu.TestTKB)), "growx, wrap");
         contentPanel.add(createTabButton("Thoát", e -> System.exit(0)), "growx");
         
-        // Cấu hình JScrollPane
         setViewportView(contentPanel);
         setPreferredSize(new Dimension(220, 0));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

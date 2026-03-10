@@ -16,7 +16,7 @@ import java.util.List;
 public class FormPhuHuynh extends JPanel {
 
     private final ParentBLL parentBLL = new ParentBLL();
-    private final HocSinhBLL hocSinhBLL = new HocSinhBLL(); // Để kiểm tra tồn tại học sinh
+    private final HocSinhBLL hocSinhBLL = new HocSinhBLL(); 
 
     private JTable tblParent;
     private DefaultTableModel modelParent;
@@ -28,7 +28,7 @@ public class FormPhuHuynh extends JPanel {
     private JButton btnCloseParent;
     private parent_GUI parentPanel;
 
-    private JTextField txtMa, txtTen, txtSdt, txtNghe, txtMaHS; // Bỏ txtQuanHe
+    private JTextField txtMa, txtTen, txtSdt, txtNghe, txtMaHS;
     private JButton btnThem, btnClear;
 
     private String filterMaHS = null;
@@ -45,13 +45,13 @@ public class FormPhuHuynh extends JPanel {
     private void initUI() {
         setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[grow]15[]15[]"));
 
-        // Tiêu đề
+
         JLabel lblTitle = new JLabel("QUẢN LÝ PHỤ HUYNH", JLabel.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
         lblTitle.setForeground(new Color(0, 102, 204));
         add(lblTitle, "growx, wrap");
 
-        // Tìm kiếm
+
         JPanel pnlSearch = new JPanel(new MigLayout("insets 0", "[][grow]10[][]", "[]"));
         pnlSearch.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
         txtSearchName = new JTextField();
@@ -63,7 +63,7 @@ public class FormPhuHuynh extends JPanel {
         pnlSearch.add(btnNangCao);
         add(pnlSearch, "growx, wrap");
 
-        // Bảng danh sách phụ huynh (không có cột quan hệ)
+
         modelParent = new DefaultTableModel(new String[]{"Mã PH", "Họ tên", "SDT", "Nghề nghiệp"}, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
@@ -83,9 +83,8 @@ public class FormPhuHuynh extends JPanel {
         JScrollPane sp = new JScrollPane(tblParent);
         sp.setBorder(BorderFactory.createTitledBorder("Danh sách phụ huynh"));
 
-        // Panel chi tiết phụ huynh (parent_GUI đã sửa)
         parentPanel = new parent_GUI();
-        parentPanel.setPreferredSize(new Dimension(360, 180)); // Chiều cao mới
+        parentPanel.setPreferredSize(new Dimension(360, 180)); 
         pnlParent = new JPanel(new MigLayout("fill", "[grow]", "[][grow]"));
         JPanel hdr = new JPanel(new MigLayout("fill", "[grow][]", "[]"));
         hdr.add(new JLabel("Thông tin phụ huynh"), "growx");
@@ -98,13 +97,12 @@ public class FormPhuHuynh extends JPanel {
         pnlParent.add(parentPanel, "grow");
         pnlParent.setVisible(false);
 
-        // Split
+
         JPanel split = new JPanel(new MigLayout("fill", "[65%][35%]", "[grow]"));
         split.add(sp, "grow");
         split.add(pnlParent, "grow");
         add(split, "grow, wrap");
 
-        // Form nhập liệu (bỏ quan hệ)
         JPanel pnlForm = new JPanel(new MigLayout("insets 15", "[]15[grow]30[]15[grow]", "[]10[]10[]"));
         pnlForm.setBorder(BorderFactory.createTitledBorder("Nhập thông tin phụ huynh"));
         txtMa = new JTextField();
@@ -120,7 +118,6 @@ public class FormPhuHuynh extends JPanel {
         pnlForm.add(new JLabel("Mã học sinh (liên kết):")); pnlForm.add(txtMaHS, "growx, wrap");
         add(pnlForm, "growx, wrap");
 
-        // Nút Thêm / Làm mới
         JPanel pnlBtn = new JPanel();
         btnThem = createButton("Thêm", new Color(34, 139, 34));
         btnClear = createButton("Làm mới", new Color(70, 130, 180));
@@ -128,7 +125,6 @@ public class FormPhuHuynh extends JPanel {
         pnlBtn.add(btnClear);
         add(pnlBtn, "growx, wrap");
 
-        // Sự kiện
         btnTim.addActionListener(e -> searchByName());
         btnNangCao.addActionListener(e -> showAdvancedSearch());
         btnThem.addActionListener(e -> them());
@@ -159,11 +155,9 @@ public class FormPhuHuynh extends JPanel {
         loadTable();
     }
 
-    // Tải dữ liệu lên bảng
     public void loadTable() {
         modelParent.setRowCount(0);
         if (filterMaHS != null && !filterMaHS.isEmpty()) {
-            // Lấy phụ huynh theo học sinh (đã có quan hệ)
             for (Parent p : parentBLL.getParentsByHocSinh(filterMaHS)) {
                 modelParent.addRow(new Object[]{
                         p.getMaPhH(),
@@ -276,7 +270,6 @@ public class FormPhuHuynh extends JPanel {
     private void them() {
         Parent p = getEntityFromForm();
 
-        // Kiểm tra mã phụ huynh đã tồn tại?
         if (parentBLL.getByMa(p.getMaPhH()) != null) {
             JOptionPane.showMessageDialog(this, "Mã phụ huynh đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -285,13 +278,11 @@ public class FormPhuHuynh extends JPanel {
         if (parentBLL.themParent(p)) {
             String maHS = txtMaHS.getText().trim();
             if (!maHS.isEmpty()) {
-                // Kiểm tra học sinh tồn tại trước khi thêm quan hệ
                 if (hocSinhBLL.getByMa(maHS) == null) {
                     JOptionPane.showMessageDialog(this,
                             "Mã học sinh không tồn tại! Không thể tạo quan hệ.",
                             "Cảnh báo", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    // Thêm quan hệ với quan hệ mặc định (có thể thêm ô nhập nếu cần)
                     parentBLL.addRelation(maHS, p.getMaPhH(), "");
                 }
             }
@@ -308,7 +299,6 @@ public class FormPhuHuynh extends JPanel {
         loadTable();
     }
 
-    // Các helper
     private JButton createButton(String text, Color color) {
         JButton btn = new JButton(text);
         btn.setBackground(color);

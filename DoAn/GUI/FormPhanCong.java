@@ -30,17 +30,14 @@ public class FormPhanCong extends JPanel {
     private boolean dataChanged = false;
     private List<Change> bufferChanges = new ArrayList<>();
 
-    // FORM
     private JTextField txtMaPC, txtGhiChu;
     private JComboBox<Lop> cboLop;
     private JComboBox<Mon> cboMon;
     private JComboBox<GiaoVien> cboGV;
     private JComboBox<NamHoc> cboNamHoc;
 
-    // BUTTON
     private JButton btnThem, btnSua, btnXoa, btnClear, btnLuu;
 
-    // TABLE
     private JTable tblPhanCong;
     private DefaultTableModel modelPhanCong;
 
@@ -69,7 +66,6 @@ public class FormPhanCong extends JPanel {
         pnlForm.setBorder(BorderFactory.createTitledBorder("Thông tin phân công"));
 
         txtMaPC = new JTextField();
-        // Cho phép sửa mã PC nếu cần
         txtMaPC.setEditable(true);
         
         cboLop = new JComboBox<>();
@@ -123,8 +119,6 @@ public class FormPhanCong extends JPanel {
         spPC.setBorder(BorderFactory.createTitledBorder("Danh sách phân công"));
         add(spPC, "grow");
 
-        // EVENTS
-        // Sự kiện khi thay đổi các combo box - tự động tạo gợi ý mã mới
         cboLop.addActionListener(e -> suggestMaPC());
         cboMon.addActionListener(e -> suggestMaPC());
         cboGV.addActionListener(e -> suggestMaPC());
@@ -149,11 +143,7 @@ public class FormPhanCong extends JPanel {
         addFocusEffect(txtGhiChu);
     }
 
-    /**
-     * HÀM RIÊNG: Thiết lập tự động tạo mã phân công
-     */
     private void setupAutoGenerateMaPC() {
-        // Tạo mã tự động khi form được hiển thị
         SwingUtilities.invokeLater(() -> {
             if (cboLop.getItemCount() > 0 && cboMon.getItemCount() > 0 
                 && cboGV.getItemCount() > 0 && cboNamHoc.getItemCount() > 0) {
@@ -166,9 +156,6 @@ public class FormPhanCong extends JPanel {
         });
     }
 
-    /**
-     * HÀM RIÊNG: Gợi ý mã phân công (không tự động set, chỉ gợi ý)
-     */
     private void suggestMaPC() {
         Lop lop = (Lop) cboLop.getSelectedItem();
         Mon mon = (Mon) cboMon.getSelectedItem();
@@ -177,42 +164,32 @@ public class FormPhanCong extends JPanel {
         
         if (lop != null && mon != null && gv != null && nh != null) {
             String maPCSuggest = suggestMaPC(lop.getMaLop(), mon.getMaMon(), gv.getMaGV(), nh.getMaNH());
-            // Chỉ gợi ý nếu text field đang trống
             if (txtMaPC.getText().trim().isEmpty()) {
                 txtMaPC.setText(maPCSuggest);
             }
         }
     }
 
-    /**
-     * HÀM RIÊNG CẢI TIẾN: Tạo gợi ý mã phân công
-     * - Xét TẤT CẢ dữ liệu trong DB (kể cả đã xóa mềm)
-     */
     public String suggestMaPC(String maLop, String maMon, String maGV, String maNH) {
         Set<String> used = new HashSet<>();
         
-        // 1. Lấy TẤT CẢ dữ liệu từ database (kể cả đã xóa mềm)
-        List<PhanCong> dsDB = pcBLL.getAll(); // Cần thêm method getAll() ở BLL
+        List<PhanCong> dsDB = pcBLL.getAll(); 
         for (PhanCong pc : dsDB) {
             if (pc.getMaPC() != null) {
                 used.add(pc.getMaPC());
             }
         }
         
-        // 2. Xét dữ liệu từ buffer
+
         for (Change change : bufferChanges) {
             PhanCong pc = change.pc;
             if (pc.getMaPC() != null) {
                 if (change.action.equals("ADD") || change.action.equals("UPDATE")) {
                     used.add(pc.getMaPC());
-                } else if (change.action.equals("DELETE")) {
-                    // Nếu là DELETE, KHÔNG xóa khỏi used vì soft delete vẫn giữ mã
-                    // used.remove(pc.getMaPC()); // Bỏ dòng này
                 }
             }
         }
         
-        // 3. Tìm số nhỏ nhất còn trống
         int counter = 1;
         while (true) {
             String newCode = String.format("PC%03d", counter);
@@ -223,18 +200,13 @@ public class FormPhanCong extends JPanel {
         }
     }
 
-    /**
-     * HÀM RIÊNG: Kiểm tra phân công đã tồn tại chưa (kể cả đã xóa mềm)
-     */
     private boolean isPhanCongExist(String maLop, String maMon, String maGV, String maNH, String currentMaPC) {
-        // 1. Kiểm tra trong database (kể cả đã xóa mềm)
-        List<PhanCong> dsDB = pcBLL.getAll(); // Cần thêm method getAll() ở BLL
+        List<PhanCong> dsDB = pcBLL.getAll(); 
         for (PhanCong pc : dsDB) {
             if (pc.getMaLop().equals(maLop) 
                 && pc.getMaMon().equals(maMon) 
                 && pc.getMaGV().equals(maGV) 
                 && pc.getMaNam().equals(maNH)) {
-                // Nếu đang sửa và là chính nó thì bỏ qua
                 if (currentMaPC != null && pc.getMaPC().equals(currentMaPC)) {
                     continue;
                 }
@@ -242,7 +214,6 @@ public class FormPhanCong extends JPanel {
             }
         }
         
-        // 2. Kiểm tra trong buffer
         for (Change change : bufferChanges) {
             PhanCong pc = change.pc;
             if (change.action.equals("ADD") || change.action.equals("UPDATE")) {
@@ -250,7 +221,6 @@ public class FormPhanCong extends JPanel {
                     && pc.getMaMon().equals(maMon) 
                     && pc.getMaGV().equals(maGV) 
                     && pc.getMaNam().equals(maNH)) {
-                    // Nếu đang sửa và là chính nó thì bỏ qua
                     if (currentMaPC != null && pc.getMaPC().equals(currentMaPC)) {
                         continue;
                     }
@@ -262,7 +232,6 @@ public class FormPhanCong extends JPanel {
         return false;
     }
 
-    // CRUD
     private boolean validateForm() {
         if (txtMaPC.getText().trim().isEmpty()
             || cboLop.getSelectedItem() == null
@@ -277,14 +246,12 @@ public class FormPhanCong extends JPanel {
             return false;
         }
 
-        // Kiểm tra mã PC không trùng trong buffer
         String maPCMoi = txtMaPC.getText().trim();
         String currentMaPC = null;
         if (tblPhanCong.getSelectedRow() >= 0) {
             currentMaPC = modelPhanCong.getValueAt(tblPhanCong.getSelectedRow(), 0).toString();
         }
         
-        // Kiểm tra trong buffer (các ADD)
         for (Change change : bufferChanges) {
             if (change.action.equals("ADD") && change.pc.getMaPC().equals(maPCMoi)) {
                 JOptionPane.showMessageDialog(this,
@@ -295,11 +262,10 @@ public class FormPhanCong extends JPanel {
             }
         }
         
-        // Kiểm tra trong database (kể cả đã xóa mềm)
+
         List<PhanCong> dsDB = pcBLL.getAll();
         for (PhanCong pc : dsDB) {
             if (pc.getMaPC().equals(maPCMoi)) {
-                // Nếu đang sửa và là chính nó thì bỏ qua
                 if (currentMaPC != null && pc.getMaPC().equals(currentMaPC)) {
                     continue;
                 }
@@ -311,7 +277,6 @@ public class FormPhanCong extends JPanel {
             }
         }
 
-        // Kiểm tra ràng buộc: 1 GV không thể dạy cùng môn, cùng lớp, cùng năm học 2 lần
         Lop lop = (Lop) cboLop.getSelectedItem();
         Mon mon = (Mon) cboMon.getSelectedItem();
         GiaoVien gv = (GiaoVien) cboGV.getSelectedItem();
@@ -372,7 +337,6 @@ public class FormPhanCong extends JPanel {
         modelPhanCong.setValueAt(pc.getMaNam(), row, 4);
         modelPhanCong.setValueAt(pc.getGhiChu(), row, 5);
         
-        // Xóa change cũ nếu có
         bufferChanges.removeIf(c -> c.pc.getMaPC().equals(maPCCu) && c.action.equals("UPDATE"));
         
         bufferChanges.add(new Change(pc, "UPDATE"));
@@ -406,9 +370,7 @@ public class FormPhanCong extends JPanel {
         
         PhanCong pc = new PhanCong();
         pc.setMaPC(maPC);
-        
-        // KHÔNG xóa các change cũ, vì soft delete cần giữ mã
-        // bufferChanges.removeIf(c -> c.pc.getMaPC().equals(maPC));
+
         
         bufferChanges.add(new Change(pc, "DELETE"));
         resetInputForm();
@@ -432,7 +394,7 @@ public class FormPhanCong extends JPanel {
                         pcBLL.suaPhanCong(change.pc); 
                         break;
                     case "DELETE": 
-                        pcBLL.xoaPhanCong(change.pc.getMaPC()); // Soft delete
+                        pcBLL.xoaPhanCong(change.pc.getMaPC()); 
                         break;
                 }
             }
@@ -440,7 +402,7 @@ public class FormPhanCong extends JPanel {
             JOptionPane.showMessageDialog(this, "Đã lưu thay đổi thành công!");
             dataChanged = false;
             updateSaveButtonState();
-            loadTablePhanCong(); // Load lại chỉ các active
+            loadTablePhanCong();
             resetInputForm();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
@@ -450,7 +412,6 @@ public class FormPhanCong extends JPanel {
         }
     }
 
-    // UI Flow
     private void fillFormFromTable(int row) {
         txtMaPC.setText(modelPhanCong.getValueAt(row, 0).toString());
         txtMaPC.setEnabled(true);
@@ -548,7 +509,6 @@ public class FormPhanCong extends JPanel {
         }
     }
 
-    // Load dữ liệu - CHỈ các active
     private void loadTablePhanCong() {
         modelPhanCong.setRowCount(0);
         for (PhanCong pc : pcBLL.getAllActive()) {
@@ -568,7 +528,6 @@ public class FormPhanCong extends JPanel {
         }
     }
     
-    // Các hàm phụ lấy tên hiển thị
     private String getTenLopFromMa(String maLop) {
         for (int i = 0; i < cboLop.getItemCount(); i++) {
             Lop l = cboLop.getItemAt(i);
@@ -637,7 +596,6 @@ public class FormPhanCong extends JPanel {
         }
     }
 
-    // Utils
     private JButton createButton(String text, Color bg) {
         JButton btn = new JButton(text);
         btn.setBackground(bg);
@@ -670,7 +628,6 @@ public class FormPhanCong extends JPanel {
         });
     }
 
-    // Buffer Change class
     private static class Change {
         PhanCong pc;
         String action;

@@ -32,7 +32,6 @@ public class PanelExportDiemTheoMon extends JPanel {
 
         setLayout(new MigLayout("fill","[grow]","[][grow]"));
 
-        // ===== TOP PANEL =====
         JPanel top = new JPanel(new MigLayout("fillx","[][120][][120][120][grow][100][120][120]"));
 
         cboLop = new JComboBox<>();
@@ -62,7 +61,6 @@ public class PanelExportDiemTheoMon extends JPanel {
 
         add(top,"growx,wrap");
 
-        // ===== TABLE =====
         model = new DefaultTableModel();
 
         model.setColumnIdentifiers(new String[]{
@@ -73,7 +71,6 @@ public class PanelExportDiemTheoMon extends JPanel {
 
         add(new JScrollPane(table),"grow");
 
-        // ===== EVENTS =====
         btnLoad.addActionListener(e -> loadData());
         btnChoose.addActionListener(e -> choosePath());
         btnExport.addActionListener(e -> exportExcel());

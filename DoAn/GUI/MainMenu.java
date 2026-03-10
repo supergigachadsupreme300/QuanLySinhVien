@@ -25,8 +25,6 @@ public class MainMenu extends JFrame {
     public static final String VIPHAM = "VIPHAM";
     public static final String XEPLOAI = "XEPLOAI";
     public static final String EXCEL = "EXCEL";
-   // public static final String TestTKB = "TestTKB";
-   // public static final String TestLOP = "TestLOP";
     private CardLayout cardLayout;
     private JPanel mainPanel;
     
@@ -77,8 +75,6 @@ public class MainMenu extends JFrame {
         mainPanel.add(new FormViPham(), VIPHAM);
         mainPanel.add(new FormXepLoai(), XEPLOAI);
         mainPanel.add(new FormExcel(), EXCEL);
-    //    mainPanel.add(new TestFormTKB(this), TestTKB);
-    //    mainPanel.add(new TestFormLop(this), TestLOP);
         add(sidebar, "growy, width 200!");
         add(mainPanel, "grow");
 
@@ -87,7 +83,6 @@ public class MainMenu extends JFrame {
 
     
     public void showForm(String name) {
-        // Reset filter trước khi show form tương ứng
         if (name.equals(PHUHUYNH)) {
             for (Component comp : mainPanel.getComponents()) {
                 if (comp instanceof FormPhuHuynh) {
@@ -106,15 +101,12 @@ public class MainMenu extends JFrame {
         cardLayout.show(mainPanel, name);
     }
 
-    /**
-     * Called by other forms to notify the ChiTietTiet form to refresh its TKB list.
-     */
     public void refreshChiTietTietTKB() {
         for (Component comp : mainPanel.getComponents()) {
             if (comp instanceof FormChiTietTiet) {
                 FormChiTietTiet f = (FormChiTietTiet) comp;
                 try {
-                    // f.refreshTKBList();
+                    f.refreshTKBList(null);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -150,9 +142,6 @@ public class MainMenu extends JFrame {
     }
 
 
-    /**
-     * Open HocSinh form and filter by a specific parent (maPH).
-     */
     public void openHocSinhForParent(String maPH) {
         for (Component comp : mainPanel.getComponents()) {
             if (comp instanceof FormHocSinh) {
@@ -162,7 +151,6 @@ public class MainMenu extends JFrame {
                 return;
             }
         }
-        // fallback
         cardLayout.show(mainPanel, HOCSINH);
     }
 

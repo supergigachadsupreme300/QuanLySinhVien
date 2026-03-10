@@ -26,33 +26,28 @@ public class parent_GUI extends JPanel {
         this.parent = p != null ? p : new Parent();
         setLayout(new MigLayout("wrap 2", "[right][grow,fill]", "[]10[]"));
         setBackground(Color.CYAN);
-        setPreferredSize(new Dimension(360, 180)); // Giảm chiều cao
+        setPreferredSize(new Dimension(360, 180)); 
 
-        // Mã phụ huynh
         add(new JLabel("Mã phụ huynh:"));
         txtMaPhH = new JTextField(20);
         txtMaPhH.setEditable(false);
         add(txtMaPhH, "growx");
 
-        // Tên
         add(new JLabel("Tên phụ huynh:"));
         txtTenPhH = new JTextField(20);
         txtTenPhH.setEditable(false);
         add(txtTenPhH, "growx");
 
-        // SĐT
         add(new JLabel("Số điện thoại:"));
         txtSdt = new JTextField(20);
         txtSdt.setEditable(false);
         add(txtSdt, "growx");
 
-        // Nghề nghiệp
         add(new JLabel("Nghề nghiệp:"));
         txtNgheNghiep = new JTextField(20);
         txtNgheNghiep.setEditable(false);
         add(txtNgheNghiep, "growx");
 
-        // Các nút
         btnHocSinh = new JButton("Học sinh");
         btnEdit = new JButton("Sửa");
         btnXoa = new JButton("Xóa");
@@ -65,7 +60,6 @@ public class parent_GUI extends JPanel {
         btnRow.add(btnQuanLyHS);
         add(btnRow, "span, center");
 
-        // Sự kiện Học sinh
         btnHocSinh.addActionListener(e -> {
             if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -86,7 +80,6 @@ public class parent_GUI extends JPanel {
             }
         });
 
-        // Sự kiện Quản lý HS
         btnQuanLyHS.addActionListener(e -> {
             if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -95,7 +88,6 @@ public class parent_GUI extends JPanel {
             openQuanLyHocSinhDialog(parent.getMaPhH());
         });
 
-        // Sự kiện Sửa
         btnEdit.addActionListener(e -> {
             if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -106,14 +98,12 @@ public class parent_GUI extends JPanel {
                 return;
             }
             if (!isEditing) {
-                // Bật chế độ sửa
                 txtTenPhH.setEditable(true);
                 txtSdt.setEditable(true);
                 txtNgheNghiep.setEditable(true);
                 btnEdit.setText("Lưu");
                 isEditing = true;
             } else {
-                // Lưu thay đổi
                 parent.setTenPhH(txtTenPhH.getText());
                 parent.setSdt(txtSdt.getText());
                 parent.setNgheNghiep(txtNgheNghiep.getText());
@@ -124,7 +114,6 @@ public class parent_GUI extends JPanel {
                 } else {
                     JOptionPane.showMessageDialog(this, "Cập nhật thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
-                // Thoát chế độ sửa
                 txtTenPhH.setEditable(false);
                 txtSdt.setEditable(false);
                 txtNgheNghiep.setEditable(false);
@@ -133,7 +122,6 @@ public class parent_GUI extends JPanel {
             }
         });
 
-        // Sự kiện Xóa
         btnXoa.addActionListener(e -> {
             if (parent == null || parent.getMaPhH() == null || parent.getMaPhH().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Chưa chọn phụ huynh để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);

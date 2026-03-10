@@ -26,21 +26,17 @@ public class student_GUI extends JPanel {
         this(new HocSinh(), null);
     }
 
-    // Constructor nhận đối tượng HocSinh và Connection
     public student_GUI(HocSinh hs, Connection conn) {
         this.hocSinh = hs != null ? hs : new HocSinh();
         this.connection = conn;
         setLayout(new MigLayout("fill"));
 
-        // Panel chính gồm: info + (không còn điểm/hạnh kiểm nhúng)
         JPanel mainPanel = new JPanel(new MigLayout("fill, insets 10", "[grow]", "[fill]"));
         
-        // Panel thông tin học sinh
         JPanel infoPanel = new JPanel(new MigLayout("wrap 2", "[90!][grow]", "[]10[]10[]10[]"));
         infoPanel.setBackground(Color.CYAN);
         infoPanel.setBorder(BorderFactory.createTitledBorder("THÔNG TIN HỌC SINH"));
 
-        // Các trường thông tin
         infoPanel.add(new JLabel("Mã học sinh:"));
         txtMaHS = new JTextField(20);
         txtMaHS.setEditable(false);
@@ -71,7 +67,6 @@ public class student_GUI extends JPanel {
         txtDiaChi.setEditable(false);
         infoPanel.add(txtDiaChi, "cell 1 6, growx, wrap");
 
-        // Các nút chức năng chính
         JButton btnPhuHuynh = new JButton("Phụ huynh");
         JButton btnEdit = new JButton("Sửa");
         JButton btnXoa = new JButton("Xóa");
@@ -79,7 +74,6 @@ public class student_GUI extends JPanel {
         infoPanel.add(btnEdit);
         infoPanel.add(btnXoa, "wrap");
 
-        // Nút Phụ huynh
         btnPhuHuynh.addActionListener(e -> {
             if (hocSinh == null || hocSinh.getMaHS() == null || hocSinh.getMaHS().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Không có học sinh để xem phụ huynh.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -89,7 +83,6 @@ public class student_GUI extends JPanel {
             if (w instanceof MainMenu) {
                 ((MainMenu) w).openPhuHuynhForStudent(hocSinh.getMaHS());
             } else {
-                // fallback: open in new frame
                 JFrame f = new JFrame("Phụ huynh của " + hocSinh.getMaHS());
                 f.setSize(900, 600);
                 f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -104,7 +97,6 @@ public class student_GUI extends JPanel {
 
         add(new JScrollPane(mainPanel), "grow");
 
-        // action listeners using HocSinhBLL reference
         btnXoa.addActionListener(ev -> {
             if (hocSinh == null || hocSinh.getMaHS() == null || hocSinh.getMaHS().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Không có học sinh để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -180,11 +172,9 @@ public class student_GUI extends JPanel {
             }
         });
 
-        // Cập nhật dữ liệu từ đối tượng
         updateDisplay();
     }
 
-    // Phương thức cập nhật hiển thị từ đối tượng HocSinh
     public void updateDisplay() {
         if (hocSinh != null) {
             txtMaHS.setText(hocSinh.getMaHS());
@@ -193,7 +183,6 @@ public class student_GUI extends JPanel {
             txtGioiTinh.setText(hocSinh.getGioiTinh());
             txtDiaChi.setText(hocSinh.getDiaChi());
 
-            // Định dạng ngày sinh
             if (hocSinh.getNgaySinh() != null) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 txtNgaySinh.setText(hocSinh.getNgaySinh().format(formatter));
@@ -203,18 +192,15 @@ public class student_GUI extends JPanel {
         }
     }
 
-    // Phương thức cập nhật đối tượng HocSinh
     public void setHocSinh(HocSinh hs) {
         this.hocSinh = hs;
         updateDisplay();
     }
 
-    // Phương thức lấy đối tượng HocSinh hiện tại
     public HocSinh getHocSinh() {
         return hocSinh;
     }
 
-    // BLL reference to operate on data directly
     private HocSinhBLL hocSinhBLLRef;
 
     public void setHocSinhBLL(HocSinhBLL bll) {

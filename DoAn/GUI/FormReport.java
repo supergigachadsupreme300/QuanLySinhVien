@@ -131,7 +131,6 @@ public class FormReport extends JPanel {
             titleFont = new com.itextpdf.text.Font(bf, 18, com.itextpdf.text.Font.BOLD);
             defaultFont = new com.itextpdf.text.Font(bf, 12, com.itextpdf.text.Font.NORMAL);
         } catch (Exception e) {
-            // Fallback to Tahoma if Arial.ttf not found
             titleFont = FontFactory.getFont("Tahoma", BaseFont.IDENTITY_H, true, 18, com.itextpdf.text.Font.BOLD);
             defaultFont = FontFactory.getFont("Tahoma", BaseFont.IDENTITY_H, true, 12, com.itextpdf.text.Font.NORMAL);
         }
@@ -156,14 +155,13 @@ public class FormReport extends JPanel {
         List<HocSinh> students = hsDao.getAll();
         List<Lop> classes = lopDao.getAll();
 
-        // TONG QUAN
         doc.add(new Paragraph("TỔNG QUAN", defaultFont));
         doc.add(new Paragraph("Tổng số giáo viên: " + teachers.size(), defaultFont));
         doc.add(new Paragraph("Tổng số học sinh: " + students.size(), defaultFont));
         doc.add(new Paragraph("Tổng số lớp: " + classes.size(), defaultFont));
         doc.add(Chunk.NEWLINE);
 
-        // CHI TIET THEO LOP
+
         doc.add(new Paragraph("CHI TIẾT THEO LỚP", defaultFont));
 
         for (Lop lop : classes) {
@@ -238,14 +236,14 @@ public class FormReport extends JPanel {
             doc.add(Chunk.NEWLINE);
         }
 
-        // DANH SACH GIAO VIEN VA BO MON
+
         doc.add(new Paragraph("DANH SÁCH GIÁO VIÊN VÀ BỘ MÔN", defaultFont));
 
         for (GiaoVien gv : teachers) {
 
             doc.add(new Paragraph("Giáo viên " + gv.getHoTen() + " (" + gv.getMaGV() + ")", defaultFont));
 
-            // filter list of assignments manually since DAL lacks convenience method
+
             List<PhanCong> allPcs = pcDao.getAll();
             List<PhanCong> pcs = allPcs.stream()
                     .filter(pc -> gv.getMaGV().equals(pc.getMaGV()))
@@ -264,7 +262,7 @@ public class FormReport extends JPanel {
             doc.add(Chunk.NEWLINE);
         }
 
-        // THEO NAM
+
         NamHocBLL namBLL = new NamHocBLL();
 
         List<DataObject.NamHoc> years = namBLL.getAllActive();

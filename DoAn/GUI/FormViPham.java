@@ -38,7 +38,6 @@ public class FormViPham extends JPanel {
         JPanel panelMain = new JPanel(new MigLayout("fillx", "[45%][55%]", "[grow]"));
         add(panelMain, "grow");
 
-        // ========== FORM ==========
         JPanel form = new JPanel(new MigLayout("fillx", "[100]", "[]10[]10[]10[]10[]10[]10[]10[]"));
 
         txtMaVP = new JTextField();
@@ -85,7 +84,6 @@ public class FormViPham extends JPanel {
 
         panelMain.add(form, "grow");
 
-        // ========== TABLE ==========
         model = new DefaultTableModel(new String[]{
                 "Mã VP", "Mã HS", "Mã HK", "Ngày VP", "Nội dung", "Mức độ", "Trạng thái"
         }, 0);
@@ -94,7 +92,6 @@ public class FormViPham extends JPanel {
         JScrollPane scroll = new JScrollPane(table);
         panelMain.add(scroll, "grow");
 
-        // ========== EVENT ==========
         btnAdd.addActionListener(e -> add());
         btnUpdate.addActionListener(e -> update());
         btnDelete.addActionListener(e -> delete());

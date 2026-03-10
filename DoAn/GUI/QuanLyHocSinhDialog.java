@@ -1,7 +1,7 @@
 package GUI;
 
 import BusinessLogicLayer.PhuHuynhHocSinhBLL;
-import BusinessLogicLayer.HocSinhBLL; // để kiểm tra tồn tại HS
+import BusinessLogicLayer.HocSinhBLL;
 import DataObject.PhuHuynhHocSinh;
 import DataObject.HocSinh;
 import javax.swing.*;
@@ -33,7 +33,6 @@ public class QuanLyHocSinhDialog extends JDialog {
         setSize(600, 400);
         setLocationRelativeTo(getParent());
 
-        // Panel nhập liệu
         JPanel pnlInput = new JPanel(new FlowLayout());
         pnlInput.add(new JLabel("Mã HS:"));
         txtMaHS = new JTextField(10);
@@ -45,7 +44,6 @@ public class QuanLyHocSinhDialog extends JDialog {
         pnlInput.add(btnThem);
         add(pnlInput, "growx, wrap");
 
-        // Bảng hiển thị danh sách học sinh (có cột quan hệ)
         model = new DefaultTableModel(new String[]{"Mã HS", "Họ tên", "Lớp", "Quan hệ"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -55,13 +53,12 @@ public class QuanLyHocSinhDialog extends JDialog {
         table = new JTable(model);
         add(new JScrollPane(table), "grow, wrap");
 
-        // Panel nút xóa
         JPanel pnlSouth = new JPanel();
         JButton btnXoa = new JButton("Xóa học sinh được chọn");
         pnlSouth.add(btnXoa);
         add(pnlSouth, "growx");
 
-        // Sự kiện
+
         btnThem.addActionListener(this::themQuanHe);
         btnXoa.addActionListener(this::xoaQuanHe);
     }
@@ -70,7 +67,6 @@ public class QuanLyHocSinhDialog extends JDialog {
         model.setRowCount(0);
         List<PhuHuynhHocSinh> list = relationBLL.layTheoPH(maPH);
         for (PhuHuynhHocSinh relation : list) {
-            // Lấy thông tin học sinh từ bảng HOCSINH
             HocSinh hs = hocSinhBLL.getByMa(relation.getMaHS());
             if (hs != null) {
                 model.addRow(new Object[]{
@@ -80,7 +76,6 @@ public class QuanLyHocSinhDialog extends JDialog {
                     relation.getQuanHe()
                 });
             } else {
-                // Trường hợp dữ liệu lỗi, vẫn hiển thị mã HS
                 model.addRow(new Object[]{
                     relation.getMaHS(),
                     "<Không tìm thấy>",
@@ -98,7 +93,6 @@ public class QuanLyHocSinhDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập mã HS và quan hệ.");
             return;
         }
-        // Kiểm tra học sinh tồn tại
         HocSinh hs = hocSinhBLL.getByMa(maHS);
         if (hs == null) {
             JOptionPane.showMessageDialog(this, "Mã học sinh không tồn tại.");

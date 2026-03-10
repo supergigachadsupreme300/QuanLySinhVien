@@ -33,41 +33,38 @@ public class FormTKB extends JPanel {
     private ThoiKhoaBieuBLL tkbBLL;
     private ChiTietTietBLL ctBLL;   
     
-    // ================= TABLE =================
+
     private JTable tblTKBList, tblTKBLuoi;
     private DefaultTableModel modelTKBList, modelTKBLuoi;
 
-    // ================= FORM ==================
+
     private JTextField txtMaTKB;
     private JComboBox<Lop> cboLop;
     private JComboBox<HocKy> cboHocKy;
     private JDateChooser dateChooserBD, dateChooserKT;
 
-    // ================= BUTTON ================
+
     private JButton btnThem, btnSua, btnXoa, btnClear, btnLuu;
     private boolean dataChanged = false;
     private List<Change> bufferChanges = new ArrayList<>();
     
-    // Map lưu thông tin giờ cho từng tiết
+
     private Map<Integer, String> tietGioMap;
-    
-    // ================= CONSTRUCTOR =================
+
     public FormTKB(MainMenu frame) {
         this.mainFrame = frame;
         this.tkbBLL = new ThoiKhoaBieuBLL();
         this.ctBLL = new ChiTietTietBLL();
         initTietGioMap();
         initUI();
-        loadTableFromList(); // Load active để hiển thị
+        loadTableFromList(); 
         loadComboLop();
         loadComboHocKy();
         setupAutoGenerateMaTKB();
         updateButtonState();
     }
 
-    /**
-     * HÀM RIÊNG: Khởi tạo map giờ cho các tiết học
-     */
+
     private void initTietGioMap() {
         tietGioMap = new HashMap<>();
         tietGioMap.put(1, "07:00-07:45");
@@ -82,25 +79,23 @@ public class FormTKB extends JPanel {
         tietGioMap.put(10, "16:20-17:05");
     }
 
-    // ================= UI =====================
     private void initUI() {
         setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[]15[grow]15[grow]"));
 
-        // ===== TIÊU ĐỀ =====
         JLabel lblTitle = new JLabel("QUẢN LÝ THỜI KHÓA BIỂU", JLabel.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
         lblTitle.setForeground(new Color(0, 102, 204));
         add(lblTitle, "growx, wrap");
 
-        // ===== PANEL THÔNG TIN =====
+
         JPanel pnlTop = new JPanel(new MigLayout("fill", "[grow][grow]", "[]"));
         pnlTop.setBorder(BorderFactory.createTitledBorder("Thông tin TKB"));
 
-        // --- Panel Input (Bên trái) ---
+
         JPanel pnlInput = new JPanel(new MigLayout("", "[]10[grow]", "[]10[]10[]"));
         
         txtMaTKB = new JTextField();
-        txtMaTKB.setEditable(false); // Không cho sửa mã tự động
+        txtMaTKB.setEditable(false);
         
         cboLop = new JComboBox<>();
         cboHocKy = new JComboBox<>();
@@ -112,7 +107,7 @@ public class FormTKB extends JPanel {
         pnlInput.add(new JLabel("Học kỳ:"));
         pnlInput.add(cboHocKy, "growx");
 
-        // --- Panel Date (Bên phải) ---
+
         JPanel pnlDate = new JPanel(new MigLayout("", "[]10[grow]", "[]10[]"));
         pnlDate.setBorder(BorderFactory.createTitledBorder("Thời gian áp dụng"));
 
@@ -133,7 +128,7 @@ public class FormTKB extends JPanel {
         pnlTop.add(pnlDate, "grow");
         add(pnlTop, "growx, wrap");
      
-        // ===== BUTTON =====
+
         JPanel pnlBtn = new JPanel();
         btnThem = createButton("Thêm", new Color(34, 139, 34));
         btnSua = createButton("Sửa", new Color(255, 140, 0));
@@ -149,7 +144,7 @@ public class FormTKB extends JPanel {
         pnlBtn.add(btnLuu);
         add(pnlBtn, "growx, wrap");
 
-        // ===== TABLE DANH SÁCH TKB =====
+
         modelTKBList = new DefaultTableModel(
             new String[]{"Mã TKB", "Lớp", "Học kỳ", "Ngày bắt đầu", "Ngày kết thúc"}, 0
         ) {
@@ -167,7 +162,6 @@ public class FormTKB extends JPanel {
         scrollList.setBorder(BorderFactory.createTitledBorder("Danh sách TKB"));
         add(scrollList, "grow, wrap");
 
-        // ===== TABLE LƯỚI TKB =====
         modelTKBLuoi = new DefaultTableModel(
             new String[]{"Tiết", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"}, 0
         ) {
@@ -181,7 +175,7 @@ public class FormTKB extends JPanel {
         tblTKBLuoi.setRowHeight(45);
         styleTable(tblTKBLuoi);
         
-        // Set renderer cho cột "Tiết"
+
         tblTKBLuoi.getColumnModel().getColumn(0).setCellRenderer(
             new DefaultTableCellRenderer() {
                 @Override
@@ -200,7 +194,7 @@ public class FormTKB extends JPanel {
             }
         );
         
-        // Set renderer cho các cột môn học
+
         for (int i = 1; i <= 6; i++) {
             tblTKBLuoi.getColumnModel().getColumn(i).setCellRenderer(
                 new DefaultTableCellRenderer() {
@@ -229,7 +223,7 @@ public class FormTKB extends JPanel {
         scrollLuoi.setBorder(BorderFactory.createTitledBorder("Lưới thời khóa biểu"));
         add(scrollLuoi, "grow, wrap");
 
-        // ===== EVENTS =====
+
         tblTKBList.getSelectionModel().addListSelectionListener(e -> {
             if (e.getValueIsAdjusting()) return;
             int row = tblTKBList.getSelectedRow();
@@ -291,40 +285,33 @@ public class FormTKB extends JPanel {
         }
     }
 
-    /**
-     * HÀM RIÊNG CẢI TIẾN: Tạo mã TKB
-     * - Lấy TẤT CẢ mã từ DB (kể cả đã xóa mềm)
-     * - KHÔNG tái sử dụng mã đã xóa
-     */
+
     public String generateMaTKB(String maLop, String maHK) {
         Set<String> used = new HashSet<>();
         
-        // 1. Lấy TẤT CẢ từ database (kể cả trangThai = 0)
-        List<ThoiKhoaBieu> dsDB = tkbBLL.getAll(); // Cần method getAll() ở BLL
+
+        List<ThoiKhoaBieu> dsDB = tkbBLL.getAll();
         for (ThoiKhoaBieu tkb : dsDB) {
             if (tkb.getMaTKB() != null) {
                 used.add(tkb.getMaTKB());
             }
         }
         
-        // 2. Xét dữ liệu từ buffer
+
         for (Change change : bufferChanges) {
             ThoiKhoaBieu tkb = change.tkb;
             if (tkb.getMaTKB() != null) {
                 if (change.action.equals("ADD") || change.action.equals("UPDATE")) {
                     used.add(tkb.getMaTKB());
-                } else if (change.action.equals("DELETE")) {
-                    // KHÔNG xóa khỏi used - giữ nguyên vì soft delete không tái sử dụng mã
-                    // used.remove(tkb.getMaTKB()); // Bỏ dòng này
                 }
             }
         }
         
-        // 3. Tạo mã cơ bản và đảm bảo độ dài không vượt quá giới hạn DB
-        String baseCode = ("TKB" + maLop + maHK).replaceAll("\\s+", "");
-        int maxLen = 9; // conservative max to avoid DB truncation
 
-        // If base too long, truncate to leave room for numeric suffix
+        String baseCode = ("TKB" + maLop + maHK).replaceAll("\\s+", "");
+        int maxLen = 9;
+
+
         String base = baseCode;
         if (base.length() > maxLen) base = base.substring(0, maxLen);
 
@@ -342,7 +329,6 @@ public class FormTKB extends JPanel {
         return newCode;
     }
 
-    // ===== TẠO BUTTON =====
     private JButton createButton(String text, Color bgColor) {
         JButton btn = new JButton(text);
         btn.setBackground(bgColor);
@@ -368,7 +354,6 @@ public class FormTKB extends JPanel {
         return btn;
     }
 
-    // ===== FOCUS EFFECT =====
     private void addFocusEffect(JComponent c) {
         c.setOpaque(true);
         c.setBackground(Color.WHITE);
@@ -384,7 +369,6 @@ public class FormTKB extends JPanel {
         });
     }
 
-    // ================= TABLE STYLE =================
     private void styleTable(JTable tbl) {
         tbl.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
         tbl.getTableHeader().setBackground(new Color(0, 102, 204));
@@ -395,14 +379,14 @@ public class FormTKB extends JPanel {
         int row = tblTKBList.getSelectedRow();
         if (row >= 0) {
             String maTKB = modelTKBList.getValueAt(row, 0).toString();
-            loadLuoiTKB(maTKB); // tải lại lưới cho TKB đang chọn
+            loadLuoiTKB(maTKB);
         }
     }
     
-    // ================= CLASS CHANGE =================
+
     private static class Change {
         ThoiKhoaBieu tkb;
-        String action; // "ADD", "UPDATE", "DELETE"
+        String action; 
         
         Change(ThoiKhoaBieu tkb, String action) {
             this.tkb = tkb;
@@ -410,7 +394,7 @@ public class FormTKB extends JPanel {
         }
     }
     
-    // ================= VALIDATE =================
+
     private boolean validateForm() {
         if (txtMaTKB.getText().trim().isEmpty()
             || cboLop.getSelectedItem() == null
@@ -442,14 +426,14 @@ public class FormTKB extends JPanel {
             return false;
         }
 
-        // Kiểm tra mã TKB không trùng trong buffer
+
         String maTKBMoi = txtMaTKB.getText().trim();
         String currentMaTKB = null;
         if (tblTKBList.getSelectedRow() >= 0) {
             currentMaTKB = modelTKBList.getValueAt(tblTKBList.getSelectedRow(), 0).toString();
         }
         
-        // Kiểm tra trong buffer (các ADD)
+
         for (Change change : bufferChanges) {
             if (change.action.equals("ADD") && change.tkb.getMaTKB().equals(maTKBMoi)) {
                 JOptionPane.showMessageDialog(this,
@@ -460,11 +444,11 @@ public class FormTKB extends JPanel {
             }
         }
         
-        // Kiểm tra trong database (kể cả đã xóa mềm)
+
         List<ThoiKhoaBieu> dsDB = tkbBLL.getAll();
         for (ThoiKhoaBieu tkb : dsDB) {
             if (tkb.getMaTKB().equals(maTKBMoi)) {
-                // Nếu đang sửa và là chính nó thì bỏ qua
+
                 if (currentMaTKB != null && tkb.getMaTKB().equals(currentMaTKB)) {
                     continue;
                 }
@@ -479,7 +463,7 @@ public class FormTKB extends JPanel {
         return true;
     }
 
-    // ================= CRUD =================
+
     private void themTKB() {
         if (!validateForm()) return;
 
@@ -560,7 +544,7 @@ public class FormTKB extends JPanel {
         modelTKBList.setValueAt(tkb.getNgayBatDau(), row, 3); 
         modelTKBList.setValueAt(tkb.getNgayKetThuc(), row, 4); 
         
-        // Xóa change cũ nếu có
+
         bufferChanges.removeIf(c -> c.tkb.getMaTKB().equals(maTKBCu) && c.action.equals("UPDATE"));
         
         bufferChanges.add(new Change(tkb, "UPDATE")); 
@@ -596,8 +580,7 @@ public class FormTKB extends JPanel {
         ThoiKhoaBieu tkb = new ThoiKhoaBieu(); 
         tkb.setMaTKB(maTKB); 
         
-        // KHÔNG xóa change cũ - giữ nguyên vì soft delete không tái sử dụng mã
-        // bufferChanges.removeIf(c -> c.tkb.getMaTKB().equals(maTKB));
+
         
         bufferChanges.add(new Change(tkb, "DELETE")); 
         
@@ -611,7 +594,6 @@ public class FormTKB extends JPanel {
             JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // ================= UI FLOW ================
     private void fillFormFromTable(int row) {
         txtMaTKB.setText(modelTKBList.getValueAt(row, 0).toString());
         
@@ -668,13 +650,13 @@ public class FormTKB extends JPanel {
         dataChanged = false;
         updateSaveButtonState();
         loadTableFromList();
-        // reload combo to reflect any class changes
+
         loadComboLop();
     }
     
     private void luuTKB() {
         try {
-            // Execute buffered changes one by one; abort if any operation fails
+
             for (Change change : bufferChanges) {
                 String res = null;
                 switch (change.action) {
@@ -685,11 +667,11 @@ public class FormTKB extends JPanel {
                         res = tkbBLL.suaThoiKhoaBieu(change.tkb);
                         break;
                     case "DELETE":
-                        res = tkbBLL.xoaThoiKhoaBieu(change.tkb.getMaTKB()); // Soft delete
+                        res = tkbBLL.xoaThoiKhoaBieu(change.tkb.getMaTKB());
                         break;
                 }
                 if (res == null || !res.toLowerCase().contains("thành công") && !res.toLowerCase().contains("thanh cong")) {
-                    // Do not clear buffer; notify user and abort remaining saves
+
                     JOptionPane.showMessageDialog(this,
                         "Lưu thất bại: " + (res == null ? "Không rõ lỗi" : res),
                         "Lỗi",
@@ -698,17 +680,17 @@ public class FormTKB extends JPanel {
                 }
             }
 
-            // All ops succeeded
+
             bufferChanges.clear();
             JOptionPane.showMessageDialog(this, "Đã lưu thay đổi thành công!");
             dataChanged = false;
             updateSaveButtonState();
-            loadTableFromList(); // Load lại chỉ các active
+            loadTableFromList(); 
             resetInputForm();
             
-            // Cập nhật combobox bên ChiTietTiet, giữ nguyên lựa chọn hiện tại (nếu có)
+
             if (mainFrame != null) {
-                mainFrame.refreshChiTietTietTKB(null); // null để giữ nguyên lựa chọn
+                mainFrame.refreshChiTietTietTKB(null); 
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
@@ -736,7 +718,7 @@ public class FormTKB extends JPanel {
 
     private void loadTableFromList() {
         modelTKBList.setRowCount(0);
-        for (ThoiKhoaBieu tkb : tkbBLL.getAllActive()) { // Chỉ lấy active để hiển thị
+        for (ThoiKhoaBieu tkb : tkbBLL.getAllActive()) { 
             modelTKBList.addRow(new Object[]{
                 tkb.getMaTKB(),
                 tkb.getMaLop(),
