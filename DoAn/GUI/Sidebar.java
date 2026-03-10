@@ -34,16 +34,16 @@ public class Sidebar extends JScrollPane {
         contentPanel.add(lblTitle, "wrap");
         
         contentPanel.add(createTabButton("Quản lý Lớp", e -> mainFrame.showForm(MainMenu.LOP)), "growx, wrap");
+        contentPanel.add(createTabButton("Quản lý Học sinh", e -> mainFrame.showForm(MainMenu.HOCSINH)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lí Thời khóa biểu", e -> mainFrame.showForm(MainMenu.TKB)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Phân công", e -> mainFrame.showForm(MainMenu.PHANCONG)), "growx, wrap");
+        contentPanel.add(createTabButton("Quản lý Giáo viên", e -> mainFrame.showForm(MainMenu.GIAOVIEN)), "growx, wrap");
+        contentPanel.add(createTabButton("Quản lý Môn học", e -> mainFrame.showForm(MainMenu.MONHOC)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Chi Tiết Tiết", e -> mainFrame.showForm(MainMenu.CHITIETTIET)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Chi Tiết Môn", e -> mainFrame.showForm(MainMenu.CHITIETHMON)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Điểm", e -> mainFrame.showForm(MainMenu.DIEM)), "growx, wrap");
-        contentPanel.add(createTabButton("Quản lý Giáo viên", e -> mainFrame.showForm(MainMenu.GIAOVIEN)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Hạnh kiểm", e -> mainFrame.showForm(MainMenu.HANHKIEM)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Học kỳ", e -> mainFrame.showForm(MainMenu.HOCKY)), "growx, wrap");
-        contentPanel.add(createTabButton("Quản lý Học sinh", e -> mainFrame.showForm(MainMenu.HOCSINH)), "growx, wrap");
-        contentPanel.add(createTabButton("Quản lý Môn học", e -> mainFrame.showForm(MainMenu.MONHOC)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Năm học", e -> mainFrame.showForm(MainMenu.NAMHOC)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Phụ huynh", e -> mainFrame.showForm(MainMenu.PHUHUYNH)), "growx, wrap");
         contentPanel.add(createTabButton("Báo cáo", e -> mainFrame.showForm(MainMenu.REPORT)), "growx, wrap");
