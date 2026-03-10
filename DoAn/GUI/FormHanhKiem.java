@@ -14,6 +14,7 @@ import DataObject.HocSinh;
 import DataObject.Lop;
 import DataObject.HocKy;
 import DataObject.NamHoc;
+import java.awt.event.ItemEvent;
 import java.sql.Connection;
 import net.miginfocom.swing.MigLayout;
 
@@ -21,7 +22,9 @@ public class FormHanhKiem extends JPanel {
 
     private JTextField txtMaHS, txtTenHS;
     private JComboBox<String> cboLop;
-    private JComboBox<String> cboHocKy, cboNamHoc, cboXepLoai;
+    private JComboBox<String> cboHocKy;
+    private JComboBox<String> cboNamHoc;
+    private JComboBox<String> cboXepLoai;
     private JTextArea txtNhanXet;
     private JTable table;
     private DefaultTableModel model;
@@ -63,12 +66,31 @@ public class FormHanhKiem extends JPanel {
         loadLopCombo();
         loadHocKyCombo();
         loadNamHocCombo();
-        
-        cboLop.addActionListener(e -> loadHocSinhTheoLop());
-        cboHocKy.addActionListener(e -> loadHocSinhTheoLop());
-        cboNamHoc.addActionListener(e -> loadHocSinhTheoLop());
 
-        loadAllActiveHanhKiem();
+        // Chọn phần tử đầu tiên
+        if (cboLop.getItemCount() > 0) cboLop.setSelectedIndex(0);
+        if (cboHocKy.getItemCount() > 0) cboHocKy.setSelectedIndex(0);
+        if (cboNamHoc.getItemCount() > 0) cboNamHoc.setSelectedIndex(0);
+
+        // Sử dụng ItemListener thay ActionListener
+        cboLop.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                loadHocSinhTheoLop();
+            }
+        });
+        cboHocKy.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                loadHocSinhTheoLop();
+            }
+        });
+        cboNamHoc.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                loadHocSinhTheoLop();
+            }
+        });
+
+        // Load lần đầu
+        loadHocSinhTheoLop();
     }
 
     private JPanel createInputPanel() {
@@ -85,13 +107,11 @@ public class FormHanhKiem extends JPanel {
         panel.add(cboLop, "growx");
 
         panel.add(new JLabel("Học kỳ:"));
-        cboHocKy = new JComboBox<>(new String[]{"HK1", "HK2"});
+        cboHocKy = new JComboBox<>();
         panel.add(cboHocKy, "growx, wrap");
 
         panel.add(new JLabel("Năm học:"));
-        cboNamHoc = new JComboBox<>(new String[]{
-                "2023-2024","2024-2025","2025-2026"
-        });
+        cboNamHoc = new JComboBox<>();
         panel.add(cboNamHoc, "growx");
 
         panel.add(new JLabel("Xếp loại:"));
@@ -120,28 +140,21 @@ public class FormHanhKiem extends JPanel {
         };
 
         model = new DefaultTableModel(cols,0){
-
             @Override
             public boolean isCellEditable(int row,int col){
-
-                if(!choPhepNhap) return false;
-
-                return col == 5 || col == 6;
+                return choPhepNhap && (col == 5 || col == 6);
             }
         };
 
         table = new JTable(model);
         String[] xepLoai = {"Tốt", "Khá", "Trung bình", "Yếu"};
-
         JComboBox<String> comboXepLoai = new JComboBox<>(xepLoai);
-
-        table.getColumnModel().getColumn(5)
-                .setCellEditor(new DefaultCellEditor(comboXepLoai));
+        table.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(comboXepLoai));
 
         table.setRowHeight(25);
-
         table.getTableHeader().setBackground(new Color(0,102,204));
         table.getTableHeader().setForeground(Color.WHITE);
+        
         table.getSelectionModel().addListSelectionListener(e -> {
             int row = table.getSelectedRow();
             if (row >= 0) {
@@ -184,12 +197,12 @@ public class FormHanhKiem extends JPanel {
 
         btnCapNhat.addActionListener(e -> {
             choPhepNhap = true;
-            table.setEnabled(true);     // mở bảng
             cboXepLoai.setEnabled(true); 
             txtNhanXet.setEnabled(true);
             JOptionPane.showMessageDialog(this,
                 "Bạn có thể nhập hoặc sửa hạnh kiểm trực tiếp trên bảng");
         });
+        
         btnLuu.addActionListener(e -> {
             if(!choPhepNhap){
                 JOptionPane.showMessageDialog(this,"Hãy bấm Cập nhật trước");
@@ -226,22 +239,19 @@ public class FormHanhKiem extends JPanel {
     }
     
     private void loadNamHocCombo(){
-
         cboNamHoc.removeAllItems();
-
         java.util.List<NamHoc> list = namHocBLL.getAllActive();
-
         if(list == null) return;
-
         for(NamHoc nh : list){
             cboNamHoc.addItem(nh.getMaNH());
         }
     }
     
-    
     private void loadHocSinhTheoLop(){
-
         model.setRowCount(0);
+
+        if (cboLop.getSelectedItem() == null || cboHocKy.getSelectedItem() == null || cboNamHoc.getSelectedItem() == null)
+            return;
 
         String lop = cboLop.getSelectedItem().toString();
         String hk = cboHocKy.getSelectedItem().toString();
@@ -250,11 +260,8 @@ public class FormHanhKiem extends JPanel {
         java.util.List<HocSinh> list = hocSinhBLL.getByMaLop(lop);
 
         for(HocSinh hs : list){
-
-            HanhKiem hkcu = hanhKiemBLL.getHanhKiem(hs.getMaHS(),hk);
-
+            HanhKiem hkcu = hanhKiemBLL.getHanhKiem(hs.getMaHS(), hk);
             if(hkcu != null){
-
                 model.addRow(new Object[]{
                     hs.getMaHS(),
                     hs.getHoTen(),
@@ -264,9 +271,7 @@ public class FormHanhKiem extends JPanel {
                     hkcu.getXepLoai(),
                     hkcu.getNhanXet()
                 });
-
             }else{
-
                 model.addRow(new Object[]{
                     hs.getMaHS(),
                     hs.getHoTen(),
@@ -276,26 +281,21 @@ public class FormHanhKiem extends JPanel {
                     "",
                     ""
                 });
-
             }
         }
     }
+    
     private void loadLopCombo(){
-
         cboLop.removeAllItems();
-
         java.util.List<Lop> list = lopBLL.getAllActive();
-
         for(Lop lop : list){
             cboLop.addItem(lop.getMaLop());
         }
     }
+    
     private void loadHocKyCombo(){
-
         cboHocKy.removeAllItems();
-
         java.util.List<HocKy> list = hocKyBLL.getAllActive();
-
         for(HocKy hk : list){
             cboHocKy.addItem(hk.getMaHK());
         }
@@ -303,73 +303,42 @@ public class FormHanhKiem extends JPanel {
 
     public void setFilterMaHS(String maHS) { this.filterMaHS = maHS; }
 
-    private void loadAllActiveHanhKiem() {
-        model.setRowCount(0);
-        java.util.List<HocSinh> students = hocSinhBLL.getAllActive();
-        if (students == null) return;
-        for (HocSinh hs : students) {
-            java.util.List<HanhKiem> list = hanhKiemBLL.getByMaHS(hs.getMaHS());
-            if (list == null) continue;
-            for (HanhKiem hk : list) {
-                model.addRow(new Object[]{hk.getMaHS(), hs.getHoTen(), hs.getMaLop(), hk.getMaHocKy(), "", hk.getXepLoai(), hk.getNhanXet()});
-            }
-        }
-    }
-    
-    private void luuTatCaHanhKiem(){
+    // Không dùng hàm này nữa vì nó load tất cả, không theo lớp
+    // private void loadAllActiveHanhKiem() { ... }
 
+    private void luuTatCaHanhKiem(){
         if(table.isEditing()){
             table.getCellEditor().stopCellEditing();
         }
 
+        String hk = cboHocKy.getSelectedItem().toString(); // học kỳ đang chọn
+
         for(int i=0;i<model.getRowCount();i++){
-
             String maHS = model.getValueAt(i,0).toString();
-            String hk = model.getValueAt(i,3).toString();
+            String xep = model.getValueAt(i,5) != null ? model.getValueAt(i,5).toString() : "";
+            String nhan = model.getValueAt(i,6) != null ? model.getValueAt(i,6).toString() : "";
 
-            String xep = "";
-            String nhan = "";
-
-            if(model.getValueAt(i,5) != null)
-                xep = model.getValueAt(i,5).toString();
-
-            if(model.getValueAt(i,6) != null)
-                nhan = model.getValueAt(i,6).toString();
-
-            HanhKiem h = hanhKiemBLL.getHanhKiem(maHS,hk);
-
+            HanhKiem h = hanhKiemBLL.getHanhKiem(maHS, hk);
             if(h == null){
-
                 h = new HanhKiem();
-
                 h.setMaHanhKiem("HK"+maHS+hk);
                 h.setMaHS(maHS);
                 h.setMaHocKy(hk);
                 h.setXepLoai(xep);
                 h.setNhanXet(nhan);
                 h.setSoLanViPham(0);
-
                 hanhKiemBLL.add(h);
-
             }else{
-
                 h.setXepLoai(xep);
                 h.setNhanXet(nhan);
-
                 hanhKiemBLL.update(h);
             }
         }
 
         JOptionPane.showMessageDialog(this,"Lưu hạnh kiểm thành công");
-
         choPhepNhap = false;
-        
-        table.setEnabled(false);
         cboXepLoai.setEnabled(false);
         txtNhanXet.setEnabled(false);
-
         loadHocSinhTheoLop();
     }
-    
-
 }
