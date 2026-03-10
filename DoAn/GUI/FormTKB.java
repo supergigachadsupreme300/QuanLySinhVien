@@ -698,6 +698,7 @@ public class FormTKB extends JPanel {
         boolean dangChon = tblTKBList.getSelectedRow() >= 0;
         btnSua.setEnabled(dangChon);
         btnXoa.setEnabled(dangChon);
+        btnThem.setEnabled(!dangChon);
     }
     
     private void updateSaveButtonState() {
@@ -765,4 +766,5 @@ public class FormTKB extends JPanel {
             }
         }
     }
+
 }
