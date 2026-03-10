@@ -54,7 +54,7 @@ public class MainMenu extends JFrame {
         setLayout(new BorderLayout());
 
         sidebar = new Sidebar(this);
-        sidebar.setVisible(false); // Ẩn sidebar lúc đầu
+        sidebar.setVisible(false); 
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -83,12 +83,11 @@ public class MainMenu extends JFrame {
         add(sidebar, BorderLayout.WEST);
         add(mainPanel, BorderLayout.CENTER);
 
-        // Hiển thị form đăng nhập đầu tiên
+        
         showForm(LOGIN);
     }
 
     public void showForm(String name) {
-        // Reset filter trước khi show form tương ứng (giữ nguyên code cũ)
         if (name.equals(PHUHUYNH)) {
             for (Component comp : mainPanel.getComponents()) {
                 if (comp instanceof FormPhuHuynh) {
@@ -107,19 +106,16 @@ public class MainMenu extends JFrame {
         cardLayout.show(mainPanel, name);
     }
 
-    // Được gọi từ LoginForm khi đăng nhập thành công
     public void loginSuccess() {
         sidebar.setVisible(true);
         showForm(LOP);
     }
 
-    // Được gọi từ nút Đăng xuất trên Sidebar
     public void logout() {
         sidebar.setVisible(false);
         showForm(LOGIN);
     }
 
-    // Các phương thức refresh giữ nguyên...
     public void refreshChiTietTietTKB(String maTKBToSelect) {
         for (Component comp : mainPanel.getComponents()) {
             if (comp instanceof FormChiTietTiet) {
@@ -176,3 +172,4 @@ public class MainMenu extends JFrame {
         SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
     }
 }
+
