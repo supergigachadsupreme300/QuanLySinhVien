@@ -18,7 +18,7 @@ public class DiemDAL {
         this.con = con;
     }
 
-    // ===== GET BY ID =====
+
     public Diem getById(String maDiem) {
         String sql = "SELECT * FROM DIEM WHERE maDiem = ?";
         Diem d = null;
@@ -76,7 +76,7 @@ public class DiemDAL {
         return null;
     }
 
-    // ===== GET ALL =====
+
     public List<Diem> getAll() {
         List<Diem> list = new ArrayList<>();
         String sql = "SELECT * FROM DIEM ORDER BY maDiem";
@@ -103,7 +103,7 @@ public class DiemDAL {
         return list;
     }
 
-    // ===== GET BY HOC SINH =====
+
     public List<Diem> getByMaHS(String maHS) {
         List<Diem> list = new ArrayList<>();
         String sql = "SELECT * FROM DIEM WHERE maHS = ?";
@@ -131,9 +131,7 @@ public class DiemDAL {
         return list;
     }
 
-    // compatibility alias removed; use `getByMaHS` directly
 
-    // ===== ADD =====
     public boolean add(Diem d) {
         String sql = "INSERT INTO DIEM VALUES (?,?,?,?,?,?,?,?)";
 
@@ -155,7 +153,7 @@ public class DiemDAL {
         }
     }
 
-    // ===== UPDATE =====
+
     public boolean update(Diem d) {
         String sql = "UPDATE DIEM SET maHS=?, maMon=?, maHocKy=?, "
                    + "diemThuongXuyen=?, diemGiuaKy=?, diemCuoiKy=?, diemTBMonHocKy=? "
@@ -179,7 +177,7 @@ public class DiemDAL {
         }
     }
 
-    // ===== DELETE =====
+
     public boolean delete(String maDiem) {
         String sql = "DELETE FROM DIEM WHERE maDiem = ?";
 

@@ -4,15 +4,14 @@ import java.time.LocalDate;
 
 
 public class HocKy {
-    // ===== Thuộc tính =====
     private String maHK;
     private String tenHK;
-    private String maNH;          // mã năm học
-    private LocalDate ngayBatDau; // ngày bắt đầu học kỳ
-    private LocalDate ngayKetThuc;// ngày kết thúc học kỳ
-    private int trangThai;        // trạng thái (active/inactive)
+    private String maNH;        
+    private LocalDate ngayBatDau; 
+    private LocalDate ngayKetThuc;
+    private int trangThai;        
 
-    // ===== Constructor rỗng =====
+
     public HocKy() {
         maHK = "";
         tenHK = "";
@@ -22,7 +21,7 @@ public class HocKy {
         trangThai = 0;
     }
 
-    // ===== Constructor không có mã HK (dùng khi insert) =====
+
     public HocKy(String tenHK, String maNH, LocalDate ngayBatDau, LocalDate ngayKetThuc, int trangThai) {
         this.tenHK = tenHK;
         this.maNH = maNH;
@@ -31,7 +30,7 @@ public class HocKy {
         this.trangThai = trangThai;
     }
 
-    // ===== Constructor đầy đủ =====
+
     public HocKy(String maHK, String tenHK, String maNH, LocalDate ngayBatDau, LocalDate ngayKetThuc, int trangThai) {
         this.maHK = maHK;
         this.tenHK = tenHK;
@@ -41,7 +40,7 @@ public class HocKy {
         this.trangThai = trangThai;
     }
 
-    // ===== Constructor copy =====
+
     public HocKy(HocKy hk) {
         this.maHK = hk.maHK;
         this.tenHK = hk.tenHK;
@@ -51,7 +50,7 @@ public class HocKy {
         this.trangThai = hk.trangThai;
     }
 
-    // ===== Getter / Setter =====
+
     public String getMaHK() { return maHK; }
     public void setMaHK(String maHK) { this.maHK = maHK; }
 
@@ -70,7 +69,7 @@ public class HocKy {
     public int getTrangThai() { return trangThai; }
     public void setTrangThai(int trangThai) { this.trangThai = trangThai; }
 
-    // ===== Hiển thị JComboBox =====
+
     @Override
     public String toString() {
         return tenHK;

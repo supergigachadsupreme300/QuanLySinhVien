@@ -17,7 +17,7 @@ public class LopDAL {
         this.con = con;
     }
 
-    // Lấy tất cả lớp (không lọc trạng thái)
+
     public List<Lop> getAll() {
         List<Lop> list = new ArrayList<>();
         String sql = "SELECT maLop, tenLop, siSo, maNam, maGVCN, trangThai FROM LOP";
@@ -40,7 +40,7 @@ public class LopDAL {
         return list;
     }
 
-    // Lấy tất cả lớp đang hoạt động (trangThai = 1)
+
     public List<Lop> getAllActive() {
         List<Lop> list = new ArrayList<>();
         String sql = "SELECT maLop, tenLop, siSo, maNam, maGVCN, trangThai FROM LOP WHERE trangThai = 1";
@@ -63,14 +63,14 @@ public class LopDAL {
         return list;
     }
 
-    // ===== GET ALL ACTIVE (Procedure) =====
+
     public List<Lop> getAllActiveByProc() {
-        // Stored procedure not present on DB; reuse SELECT
+
         return getAllActive();
     }
 
     
-    // Thêm lớp
+
     public boolean insert(Lop lop) {
         String sql = "INSERT INTO LOP(maLop, tenLop, siSo, maNam, maGVCN, trangThai) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -87,7 +87,7 @@ public class LopDAL {
         }
     }
 
-    // Cập nhật lớp
+
     public boolean update(Lop lop) {
         String sql = "UPDATE LOP SET tenLop=?, siSo=?, maNam=?, maGVCN=?, trangThai=? WHERE maLop=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -115,7 +115,7 @@ public class LopDAL {
         }
     }
 
-    // Soft delete: chỉ đổi trạng thái = 0
+
     public boolean delete(String maLop) {
         String sql = "UPDATE LOP SET trangThai = 0 WHERE maLop=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -127,7 +127,7 @@ public class LopDAL {
         }
     }
 
-    // Tìm lớp theo mã (không lọc trạng thái)
+
     public Lop findByMaLop(String maLop) {
         String sql = "SELECT maLop, tenLop, siSo, maNam, maGVCN, trangThai FROM LOP WHERE maLop=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {

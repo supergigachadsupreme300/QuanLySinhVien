@@ -59,7 +59,6 @@ public class MainMenu extends JFrame {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        // Thêm các form quản lý
         mainPanel.add(new FormLop(this), LOP);
         mainPanel.add(new FormTKB(this), TKB);
         mainPanel.add(new FormPhanCong(this), PHANCONG);
@@ -77,7 +76,7 @@ public class MainMenu extends JFrame {
         mainPanel.add(new FormViPham(), VIPHAM);
         mainPanel.add(new FormXepLoai(), XEPLOAI);
         mainPanel.add(new FormExcel(), EXCEL);
-        // Thêm form đăng nhập
+
         mainPanel.add(new LoginForm(this), LOGIN);
 
         add(sidebar, BorderLayout.WEST);

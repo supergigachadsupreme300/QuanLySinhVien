@@ -78,7 +78,7 @@ public class ChiTietMonDAO {
     }
 
     public boolean them(ChiTietMon ct) {
-        // If a record exists but is soft-deleted, reactivate it instead of failing on PK
+
         String checkSql = "SELECT trangThai FROM CHITIETMON WHERE maChiTiet = ?";
         try (PreparedStatement checkPs = con.prepareStatement(checkSql)) {
             checkPs.setString(1, ct.getMaChiTiet());
@@ -86,10 +86,10 @@ public class ChiTietMonDAO {
                 if (rs.next()) {
                     int trangThai = rs.getInt("trangThai");
                     if (trangThai == 1) {
-                        // already exists active
+
                         return false;
                     } else {
-                        // reactivate existing record
+
                         String upd = "UPDATE CHITIETMON SET maMon = ?, tenChiTiet = ?, heSo = ?, trangThai = 1 WHERE maChiTiet = ?";
                         try (PreparedStatement ups = con.prepareStatement(upd)) {
                             ups.setString(1, ct.getMaMon());

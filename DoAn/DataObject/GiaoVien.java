@@ -1,13 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package DataObject;
 
 import java.time.LocalDate;
 
 public class GiaoVien {
-    // ===== Thuộc tính =====
+
     private String maGV;
     private String hoTen;
     private LocalDate ngaySinh;
@@ -17,7 +14,7 @@ public class GiaoVien {
     private String diaChi;
     private int trangThai;
 
-    // ===== Constructor rỗng =====
+
     public GiaoVien() {
         maGV = "";
         hoTen = "";
@@ -29,7 +26,7 @@ public class GiaoVien {
         trangThai = 0;
     }
 
-    // ===== Constructor đầy đủ =====
+
     public GiaoVien(String maGV, String hoTen, LocalDate ngaySinh, String gioiTinh,
                     String dienThoai, String email, String diaChi, int trangThai) {
         this.maGV = maGV;
@@ -42,7 +39,7 @@ public class GiaoVien {
         this.trangThai = trangThai;
     }
 
-    // ===== Constructor copy =====
+
     public GiaoVien(GiaoVien gv) {
         this.maGV = gv.maGV;
         this.hoTen = gv.hoTen;
@@ -54,7 +51,7 @@ public class GiaoVien {
         this.trangThai = gv.trangThai;
     }
 
-    // ===== Getter / Setter =====
+
     public String getMaGV() { return maGV; }
     public void setMaGV(String maGV) { this.maGV = maGV; }
 
@@ -79,7 +76,7 @@ public class GiaoVien {
     public int getTrangThai() { return trangThai; }
     public void setTrangThai(int trangThai) { this.trangThai = trangThai; }
 
-    // ===== Hiển thị JComboBox =====
+
     @Override
     public String toString() {
         return hoTen;

@@ -1,18 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package DataObject;
 
-/**
- *
- * @author admin
- */
 import java.time.LocalDate;
 
 public class HocSinh {
  
-// ===== Thuộc tính =====
+
     private String maHS;
     private String hoTen;
     private LocalDate ngaySinh;
@@ -20,7 +13,7 @@ public class HocSinh {
     private String diaChi;
     private String maLop;
     private int trangThai;
-    // ===== Constructor rỗng =====
+
     public HocSinh() {
         maHS = "";
         hoTen = "";
@@ -31,7 +24,7 @@ public class HocSinh {
         trangThai =0;
     }
 
-    // ===== Constructor đầy đủ =====
+
     public HocSinh(String maHS, String hoTen, LocalDate ngaySinh,
                    String gioiTinh, String diaChi, String maLop,
                    int trangThai) {
@@ -43,7 +36,7 @@ public class HocSinh {
         this.maLop = maLop;
        this.trangThai = trangThai;
     }
-    // ===== Constructor copy =====
+
     public HocSinh(HocSinh hs) {
             this.maHS = hs.maHS;
             this.hoTen = hs.hoTen;
@@ -55,7 +48,7 @@ public class HocSinh {
     }
     
 
-    // ===== Getter / Setter =====
+
     public String getMaHS() { return maHS; }
     public void setMaHS(String maHS) { this.maHS = maHS; }
 
@@ -77,7 +70,7 @@ public class HocSinh {
     public int getTrangThai() { return trangThai;}
     public void setTrangThai(int trangThai ){ this.trangThai = trangThai;}
 
-    // ===== Hỗ trợ hiển thị JTable =====
+
     @Override
     public String toString() {
         return maHS + " - " + hoTen;

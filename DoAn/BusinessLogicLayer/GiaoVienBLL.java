@@ -83,17 +83,17 @@ public class GiaoVienBLL {
             return "Email không được để trống";
         }
 
-        // Validate định dạng email cơ bản
+
         if (!gv.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return "Email không đúng định dạng";
         }
 
-        // Validate số điện thoại (10-11 số)
+
         if (!gv.getDienThoai().matches("\\d{10,11}")) {
             return "Số điện thoại phải là 10 hoặc 11 chữ số";
         }
 
-        return null; // hợp lệ
+        return null; 
     }
 
     public GiaoVien getByMaFull(String maGV) {

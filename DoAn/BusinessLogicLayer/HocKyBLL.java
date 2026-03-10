@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.util.List;
 
 public class HocKyBLL {
-    // Tạo sẵn DAL bên trong BUS
+
     HocKyDAL hkDAL = new HocKyDAL();
     
     public HocKyBLL() {
@@ -17,12 +17,12 @@ public class HocKyBLL {
         this.hkDAL = new HocKyDAL(con);
     }
 
-    // ===== GET ALL =====
+
     public List<HocKy> getAll() {
         return hkDAL.getAll();
     }
 
-    // ===== GET ALL ACTIVE =====
+
     public List<HocKy> getAllActive() {
         return hkDAL.getAllActive();
     }
@@ -32,7 +32,7 @@ public class HocKyBLL {
     }
 
     
-    // ===== THÊM =====
+
     public boolean themHocKy(HocKy hk) {
         if (hk == null) return false;
         if (hkDAL.findByMaHK(hk.getMaHK()) != null) {
@@ -42,18 +42,18 @@ public class HocKyBLL {
         return hkDAL.insert(hk);
     }
 
-    // ===== SỬA =====
+
     public boolean suaHocKy(HocKy hk) {
         if (hk == null) return false;
         return hkDAL.update(hk);
     }
 
-    // ===== XÓA =====
+
     public boolean xoaHocKy(String maHK) {
         return hkDAL.delete(maHK);
     }
 
-    // ===== TÌM THEO MÃ =====
+
     public HocKy getByMaHK(String maHK) {
         return hkDAL.findByMaHK(maHK);
     }

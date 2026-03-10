@@ -67,12 +67,12 @@ public class FormHanhKiem extends JPanel {
         loadHocKyCombo();
         loadNamHocCombo();
 
-        // Chọn phần tử đầu tiên
+
         if (cboLop.getItemCount() > 0) cboLop.setSelectedIndex(0);
         if (cboHocKy.getItemCount() > 0) cboHocKy.setSelectedIndex(0);
         if (cboNamHoc.getItemCount() > 0) cboNamHoc.setSelectedIndex(0);
 
-        // Sử dụng ItemListener thay ActionListener
+
         cboLop.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 loadHocSinhTheoLop();
@@ -89,7 +89,7 @@ public class FormHanhKiem extends JPanel {
             }
         });
 
-        // Load lần đầu
+
         loadHocSinhTheoLop();
     }
 
@@ -303,15 +303,14 @@ public class FormHanhKiem extends JPanel {
 
     public void setFilterMaHS(String maHS) { this.filterMaHS = maHS; }
 
-    // Không dùng hàm này nữa vì nó load tất cả, không theo lớp
-    // private void loadAllActiveHanhKiem() { ... }
+
 
     private void luuTatCaHanhKiem(){
         if(table.isEditing()){
             table.getCellEditor().stopCellEditing();
         }
 
-        String hk = cboHocKy.getSelectedItem().toString(); // học kỳ đang chọn
+        String hk = cboHocKy.getSelectedItem().toString(); 
 
         for(int i=0;i<model.getRowCount();i++){
             String maHS = model.getValueAt(i,0).toString();

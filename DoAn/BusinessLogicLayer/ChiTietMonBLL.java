@@ -81,6 +81,6 @@ public class ChiTietMonBLL {
             return "Hệ số phải là số nguyên dương (> 0)";
         }
 
-        return null; // hợp lệ
+        return null; 
     }
 }

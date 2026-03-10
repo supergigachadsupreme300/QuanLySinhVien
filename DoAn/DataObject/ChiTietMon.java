@@ -1,11 +1,7 @@
-/*
- * Data transfer object for ChiTietMon (detailed subject information).
- */
+
 package DataObject;
 
-/**
- * Represents a detail row in CHITIETMON table.
- */
+
 public class ChiTietMon {
     private String maChiTiet;
     private String maMon;

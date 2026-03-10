@@ -1,11 +1,9 @@
 package DataObject;
 
-/**
- * DataObject cho bảng HANHKIEM
- */
+
 public class HanhKiem {
 
-    // ===== Thuộc tính =====
+
     private String maHanhKiem;
     private String maHS;
     private String maHocKy;
@@ -13,7 +11,7 @@ public class HanhKiem {
     private int soLanViPham;
     private String nhanXet;
 
-    // ===== Constructor rỗng =====
+
     public HanhKiem() {
         maHanhKiem = "";
         maHS = "";
@@ -23,7 +21,7 @@ public class HanhKiem {
         nhanXet = "";
     }
 
-    // ===== Constructor đầy đủ =====
+
     public HanhKiem(String maHanhKiem, String maHS, String maHocKy,
                     String xepLoai, int soLanViPham, String nhanXet) {
         this.maHanhKiem = maHanhKiem;
@@ -34,7 +32,7 @@ public class HanhKiem {
         this.nhanXet = nhanXet;
     }
 
-    // ===== Constructor copy =====
+
     public HanhKiem(HanhKiem hk) {
         this.maHanhKiem = hk.maHanhKiem;
         this.maHS = hk.maHS;
@@ -44,7 +42,7 @@ public class HanhKiem {
         this.nhanXet = hk.nhanXet;
     }
 
-    // ===== Getter / Setter =====
+
     public String getMaHanhKiem() {
         return maHanhKiem;
     }
@@ -93,7 +91,7 @@ public class HanhKiem {
         this.nhanXet = nhanXet;
     }
 
-    // ===== Hỗ trợ hiển thị JTable =====
+
     @Override
     public String toString() {
         return maHS + " - " + xepLoai;

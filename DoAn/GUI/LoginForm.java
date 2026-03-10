@@ -39,18 +39,18 @@ public class LoginForm extends JPanel {
                 BorderFactory.createEmptyBorder(30,30,30,30)
         ));
 
-        // ICON
+
         JLabel lblIcon = new JLabel("🎓");
         lblIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 72));
         lblIcon.setForeground(new Color(41,128,185));
         card.add(lblIcon, "align center");
 
-        // TITLE
+
         JLabel lblTitle = new JLabel("CHƯƠNG TRÌNH QUẢN LÝ HỌC SINH");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 16));
         card.add(lblTitle, "align center");
 
-        // USERNAME PANEL
+
         JPanel userPanel = new JPanel(new MigLayout(
                 "insets 0, gapx 8, align center",
                 "[][180!]",
@@ -73,7 +73,7 @@ public class LoginForm extends JPanel {
 
         card.add(userPanel);
 
-        // PASSWORD PANEL
+
         JPanel passPanel = new JPanel(new MigLayout(
                 "insets 0, gapx 8, align center",
                 "[][180!]",
@@ -96,7 +96,7 @@ public class LoginForm extends JPanel {
 
         card.add(passPanel);
 
-        // LOGIN BUTTON
+
         btnLogin = new JButton("ĐĂNG NHẬP");
         btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnLogin.setBackground(new Color(41,128,185));

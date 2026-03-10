@@ -17,7 +17,7 @@ public class PhanCongDAL {
         this.con = con;
     }
 
-    // Lấy tất cả phân công
+
     public List<PhanCong> getAll() {
         List<PhanCong> list = new ArrayList<>();
         String sql = "SELECT maPC, maGV, maMon, maLop, maNam, ghiChu, trangThai FROM PHANCONG";
@@ -41,7 +41,7 @@ public class PhanCongDAL {
         return list;
     }
 
-    // Lấy tất cả phân công đang hoạt động
+
     public List<PhanCong> getAllActive() {
         List<PhanCong> list = new ArrayList<>();
         String sql = "SELECT maPC, maGV, maMon, maLop, maNam, ghiChu, trangThai FROM PHANCONG WHERE trangThai = 1";
@@ -65,7 +65,7 @@ public class PhanCongDAL {
         return list;
     }
 
-    // Thêm phân công
+
     public boolean insert(PhanCong pc) {
         String sql = "INSERT INTO PHANCONG(maPC, maGV, maMon, maLop, maNam, ghiChu, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -83,7 +83,7 @@ public class PhanCongDAL {
         }
     }
 
-    // Cập nhật phân công
+
     public boolean update(PhanCong pc) {
         String sql = "UPDATE PHANCONG SET maGV=?, maMon=?, maLop=?, maNam=?, ghiChu=?, trangThai=? WHERE maPC=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -101,7 +101,7 @@ public class PhanCongDAL {
         }
     }
 
-    // Soft delete: đổi trạng thái = 0
+
     public boolean delete(String maPC) {
         String sql = "UPDATE PHANCONG SET trangThai = 0 WHERE maPC=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -113,7 +113,6 @@ public class PhanCongDAL {
         }
     }
 
-    // Tìm phân công theo mã
     public PhanCong findByMaPC(String maPC) {
         String sql = "SELECT maPC, maGV, maMon, maLop, maNam, ghiChu, trangThai FROM PHANCONG WHERE maPC=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {

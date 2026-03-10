@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class ViPham {
 
-    // ===== Thuộc tính =====
+
     private String maViPham;
     private String maHS;
     private String maHocKy;
@@ -13,7 +13,7 @@ public class ViPham {
     private String mucDo;
     private boolean trangThai;
 
-    // ===== Constructor rỗng =====
+
     public ViPham() {
         maViPham = "";
         maHS = "";
@@ -24,7 +24,7 @@ public class ViPham {
         trangThai = true;
     }
 
-    // ===== Constructor đầy đủ =====
+
     public ViPham(String maViPham, String maHS, String maHocKy,
                   LocalDate ngayViPham, String noiDung,
                   String mucDo, boolean trangThai) {
@@ -37,7 +37,7 @@ public class ViPham {
         this.trangThai = trangThai;
     }
 
-    // ===== Constructor copy =====
+
     public ViPham(ViPham vp) {
         this.maViPham = vp.maViPham;
         this.maHS = vp.maHS;
@@ -48,7 +48,7 @@ public class ViPham {
         this.trangThai = vp.trangThai;
     }
 
-    // ===== Getter / Setter =====
+
     public String getMaViPham() { return maViPham; }
     public void setMaViPham(String maViPham) { this.maViPham = maViPham; }
 
@@ -70,7 +70,7 @@ public class ViPham {
     public boolean isTrangThai() { return trangThai; }
     public void setTrangThai(boolean trangThai) { this.trangThai = trangThai; }
 
-    // ===== Hỗ trợ hiển thị JTable =====
+
     @Override
     public String toString() {
         return maHS + " - " + mucDo + " - " + ngayViPham;

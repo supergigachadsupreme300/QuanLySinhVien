@@ -1,27 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package DataObject;
 
-/**
- *
- * @author admin
- */
+
 public class ChiTietTiet {
 
-    // ===== Thuộc tính =====
+
     private String maChiTiet;
     private String maTKB;
     private String maMon;
-    private String thu;          // VD: "Thứ 2"
-    private int tiet;            // Tiết số mấy
+    private String thu;      
+    private int tiet;         
     private String phongHoc;
     private String gioBatDau;
     private String gioKetThuc;
     private int trangThai;
 
-    // ===== 1. Constructor rỗng =====
+
     public ChiTietTiet() {
         maChiTiet = "";
         maTKB = "";
@@ -34,7 +28,7 @@ public class ChiTietTiet {
         trangThai=0;
     }
 
-    // ===== 2. Constructor đầy đủ =====
+
     public ChiTietTiet(String maChiTiet, String maTKB, String maMon,
                        String thu, int tiet,
                        String phongHoc, String gioBatDau, String gioKetThuc, int trangThai) {
@@ -49,7 +43,7 @@ public class ChiTietTiet {
         this.trangThai = trangThai;
     }
 
-    // ===== 3. Constructor copy =====
+
     public ChiTietTiet(ChiTietTiet ct) {
         this.maChiTiet = ct.maChiTiet;
         this.maTKB = ct.maTKB;
@@ -62,7 +56,7 @@ public class ChiTietTiet {
         this.trangThai = ct.trangThai;
     }
 
-    // ===== Getter / Setter =====
+
     public String getMaChiTiet() { return maChiTiet; }
     public void setMaChiTiet(String maChiTiet) { this.maChiTiet = maChiTiet; }
     public String getMaTKB() { return maTKB; }

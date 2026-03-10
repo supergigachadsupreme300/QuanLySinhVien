@@ -8,18 +8,18 @@ import java.util.List;
 public class HocKyDAL {
     private Connection con;
 
-    // Constructor mặc định: tự mở kết nối
+
     public HocKyDAL() {
         DatabaseConnect db = new DatabaseConnect();
         this.con = db.openConnection();
     }
 
-    // Constructor đầy đủ: nếu muốn truyền connection từ ngoài
+
     public HocKyDAL(Connection con) {
         this.con = con;
     }
 
-    // ===== GET ALL =====
+
     public List<HocKy> getAll() {
         List<HocKy> list = new ArrayList<>();
         String sql = "SELECT maHK, tenHK, maNam, ngayBatDau, ngayKetThuc, trangThai FROM HOCKY";
@@ -42,7 +42,7 @@ public class HocKyDAL {
         return list;
     }
 
-    // ===== GET ALL ACTIVE =====
+
     public List<HocKy> getAllActive() {
         List<HocKy> list = new ArrayList<>();
         String sql = "SELECT maHK, tenHK, maNam, ngayBatDau, ngayKetThuc, trangThai FROM HOCKY WHERE trangThai = 1";
@@ -65,14 +65,14 @@ public class HocKyDAL {
         return list;
     }
 
-    // ===== GET ALL ACTIVE (Procedure) =====
+
     public List<HocKy> getAllActiveByProc() {
-        // Stored procedure may not exist; reuse SELECT implementation
+
         return getAllActive();
     }
 
     
-    // ===== INSERT =====
+
     public boolean insert(HocKy hk) {
         String sql = "INSERT INTO HOCKY(maHK, tenHK, maNam, ngayBatDau, ngayKetThuc, trangThai) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -89,7 +89,7 @@ public class HocKyDAL {
         }
     }
 
-    // ===== UPDATE =====
+
     public boolean update(HocKy hk) {
         String sql = "UPDATE HOCKY SET tenHK=?, maNam=?, ngayBatDau=?, ngayKetThuc=?, trangThai=? WHERE maHK=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -106,7 +106,7 @@ public class HocKyDAL {
         }
     }
 
-    // ===== DELETE (soft) =====
+
     public boolean delete(String maHK) {
         String sql = "UPDATE HOCKY SET trangThai = 0 WHERE maHK=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -118,7 +118,7 @@ public class HocKyDAL {
         }
     }
 
-    // ===== FIND BY ID =====
+
     public HocKy findByMaHK(String maHK) {
         String sql = "SELECT maHK, tenHK, maNam, ngayBatDau, ngayKetThuc, trangThai FROM HOCKY WHERE maHK=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {

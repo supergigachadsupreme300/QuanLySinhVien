@@ -48,13 +48,13 @@ public class HocSinhDAO {
                 if (rs.next()) {
                     hs = new HocSinh();
                     hs.setMaHS(rs.getString("maHS"));
-                    hs.setHoTen(rs.getNString("hoTen"));  // dùng getNString cho NVARCHAR
+                    hs.setHoTen(rs.getNString("hoTen"));  
                     Date ns = rs.getDate("ngaySinh");
                     hs.setNgaySinh(ns != null ? ns.toLocalDate() : null);
                     hs.setGioiTinh(rs.getNString("gioiTinh"));
                     hs.setDiaChi(rs.getNString("diaChi"));
                     hs.setMaLop(rs.getString("maLop"));
-                    hs.setTrangThai(rs.getInt("trangThai")); // dùng cho object bên gui để xét các điều kiện nghiệp vụ them/xoa (formtkb,lop,chitiettiet,phancong)
+                    hs.setTrangThai(rs.getInt("trangThai")); 
                 }
             }
         } catch (SQLException e) {
@@ -87,7 +87,7 @@ public class HocSinhDAO {
         return list;
     }
 
-    // ===== GET ALL ACTIVE =====
+
     public List<HocSinh> getAllActive() {
         List<HocSinh> list = new ArrayList<>();
         String sql = "SELECT * FROM HOCSINH WHERE trangThai = 1 ORDER BY maHS";

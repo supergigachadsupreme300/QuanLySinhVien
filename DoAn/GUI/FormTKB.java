@@ -250,16 +250,12 @@ public class FormTKB extends JPanel {
         addFocusEffect(dateChooserKT.getDateEditor().getUiComponent());
     }
 
-    /**
-     * HÀM RIÊNG: Lấy giờ cho tiết học
-     */
+
     private String getGioTiet(int tiet) {
         return tietGioMap.getOrDefault(tiet, "??:??-??:??");
     }
 
-    /**
-     * HÀM RIÊNG: Thiết lập tự động tạo mã TKB
-     */
+
     private void setupAutoGenerateMaTKB() {
         SwingUtilities.invokeLater(() -> {
             if (cboLop.getItemCount() > 0 && cboHocKy.getItemCount() > 0) {
@@ -272,9 +268,7 @@ public class FormTKB extends JPanel {
         });
     }
 
-    /**
-     * HÀM RIÊNG: Tạo và gán mã TKB
-     */
+
     private void generateAndSetMaTKB() {
         Lop lop = (Lop) cboLop.getSelectedItem();
         HocKy hk = (HocKy) cboHocKy.getSelectedItem();

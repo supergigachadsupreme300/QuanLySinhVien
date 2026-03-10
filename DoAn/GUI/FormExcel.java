@@ -28,7 +28,7 @@ public class FormExcel extends JPanel {
         lblTitle.setForeground(new Color(0,102,204));
         add(lblTitle, "grow, wrap");
 
-        // ===== TAB BAR =====
+
         JPanel tabBar = new JPanel(new MigLayout("insets 0","[]0[]",""));
         tabBar.setOpaque(false);
 
@@ -40,7 +40,7 @@ public class FormExcel extends JPanel {
 
         add(tabBar,"center,wrap");
 
-        // ===== CONTENT =====
+
         card = new CardLayout();
         panelContent = new JPanel(card);
         panelContent.setBorder(
@@ -73,7 +73,7 @@ public class FormExcel extends JPanel {
 
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
+
         btn.addMouseListener(new MouseAdapter(){
 
             public void mouseEntered(MouseEvent e){

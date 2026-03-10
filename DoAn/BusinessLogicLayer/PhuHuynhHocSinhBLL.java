@@ -17,16 +17,16 @@ public class PhuHuynhHocSinhBLL {
             p.getMaPH() == null || p.getMaPH().trim().isEmpty()) {
             return false;
         }
-        // Kiểm tra tồn tại? Có thể cho phép thêm nếu chưa có, hoặc cập nhật nếu đã có (soft delete)
+
         PhuHuynhHocSinh existing = dao.getById(p.getMaHS(), p.getMaPH());
         if (existing != null) {
-            // Nếu đã tồn tại nhưng đang inactive, có thể reactivate
+
             if (existing.getTrangThai() == 0) {
                 existing.setTrangThai(1);
                 existing.setQuanHe(p.getQuanHe());
                 return dao.update(existing);
             }
-            return false; // Đã tồn tại active
+            return false;
         }
         p.setTrangThai(1);
         return dao.add(p);

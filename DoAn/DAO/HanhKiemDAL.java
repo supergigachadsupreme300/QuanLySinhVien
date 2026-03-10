@@ -1,6 +1,6 @@
 package DAO;
 
-import DAO.DatabaseConnect;
+
 import DataObject.HanhKiem;
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class HanhKiemDAL {
         this.con = con;
     }
 
-    // ===== GET BY ID =====
+
     public HanhKiem getById(String maHanhKiem) {
         String sql = "SELECT * FROM HANHKIEM WHERE maHanhKiem = ?";
         HanhKiem hk = null;
@@ -43,7 +43,7 @@ public class HanhKiemDAL {
         return hk;
     }
 
-    // ===== GET ALL =====
+
     public List<HanhKiem> getAll() {
         List<HanhKiem> list = new ArrayList<>();
         String sql = "SELECT * FROM HANHKIEM ORDER BY maHanhKiem";
@@ -68,7 +68,7 @@ public class HanhKiemDAL {
         return list;
     }
 
-    // ===== GET BY MA HOC SINH =====
+
     public List<HanhKiem> getByMaHS(String maHS) {
         List<HanhKiem> list = new ArrayList<>();
         String sql = "SELECT * FROM HANHKIEM WHERE maHS = ?";
@@ -127,7 +127,7 @@ public class HanhKiemDAL {
         return null;
     }
 
-    // ===== ADD =====
+
     public boolean add(HanhKiem hk) {
         String sql = "INSERT INTO HANHKIEM VALUES (?,?,?,?,?,?)";
 
@@ -148,7 +148,7 @@ public class HanhKiemDAL {
         }
     }
 
-    // ===== UPDATE =====
+
     public boolean update(HanhKiem hk) {
         String sql = "UPDATE HANHKIEM SET maHS=?, maHocKy=?, xepLoai=?, soLanViPham=?, nhanXet=? "
                    + "WHERE maHanhKiem=?";
@@ -170,7 +170,7 @@ public class HanhKiemDAL {
         }
     }
 
-    // ===== DELETE =====
+
     public boolean delete(String maHanhKiem) {
         String sql = "DELETE FROM HANHKIEM WHERE maHanhKiem = ?";
 

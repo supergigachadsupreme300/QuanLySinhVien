@@ -1,19 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DataObject;
 
-/**
- *
- * @author admin
- */
+
 import java.time.LocalDate;
 
-/**
- *
- * @author admin
- */
+
 public class ThoiKhoaBieu {
 private String maTKB;
     private String maLop;
@@ -22,7 +12,7 @@ private String maTKB;
     private LocalDate ngayBatDau;
     private LocalDate ngayKetThuc;
 
-    // Constructor rỗng
+
     public ThoiKhoaBieu() {
         maTKB = "";
         maLop = "";
@@ -32,7 +22,7 @@ private String maTKB;
         ngayKetThuc = null;
     }
 
-    // Constructor đầy đủ
+
     public ThoiKhoaBieu(String maTKB, String maLop, String maHK, int trangThai, LocalDate ngayBatDau, LocalDate ngayKetThuc) {
         this.maTKB = maTKB;
         this.maLop = maLop;
@@ -51,7 +41,7 @@ private String maTKB;
         this.ngayKetThuc = tkb.ngayKetThuc;
     }
 
-    // Getter / Setter
+
     public String getMaTKB() { return maTKB; }
     public void setMaTKB(String maTKB) { this.maTKB = maTKB; }
 
@@ -61,7 +51,7 @@ private String maTKB;
     public String getMaHK() { return maHK; }
     public void setMaHK(String maHK) { this.maHK = maHK; }
 
-    // compatibility: allow code to call getMaHocKy()/setMaHocKy()
+
     public String getMaHocKy() { return maHK; }
     public void setMaHocKy(String maHocKy) { this.maHK = maHocKy; }
     

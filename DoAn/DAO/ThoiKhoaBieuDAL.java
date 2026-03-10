@@ -18,7 +18,7 @@ public class ThoiKhoaBieuDAL {
         this.con = con;
     }
 
-    // Lấy tất cả TKB
+
     public List<ThoiKhoaBieu> getAll() {
         List<ThoiKhoaBieu> list = new ArrayList<>();
         String sql = "SELECT maTKB, maLop, maHocKy, trangThai, ngayBatDau, ngayKetThuc FROM THOIKHOABIEU";
@@ -41,7 +41,7 @@ public class ThoiKhoaBieuDAL {
         return list;
     }
 
-    // Lấy tất cả TKB đang hoạt động
+
     public List<ThoiKhoaBieu> getAllActive() {
         List<ThoiKhoaBieu> list = new ArrayList<>();
         String sql = "SELECT maTKB, maLop, maHocKy, trangThai, ngayBatDau, ngayKetThuc FROM THOIKHOABIEU WHERE trangThai = 1";
@@ -64,7 +64,7 @@ public class ThoiKhoaBieuDAL {
         return list;
     }
 
-    // Thêm TKB
+
     public boolean insert(ThoiKhoaBieu tkb) {
         String sql = "INSERT INTO THOIKHOABIEU(maTKB, maLop, maHocKy, trangThai, ngayBatDau, ngayKetThuc) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -81,7 +81,7 @@ public class ThoiKhoaBieuDAL {
         }
     }
 
-    // Cập nhật TKB
+
     public boolean update(ThoiKhoaBieu tkb) {
         String sql = "UPDATE THOIKHOABIEU SET maLop=?, maHocKy=?, trangThai=?, ngayBatDau=?, ngayKetThuc=? WHERE maTKB=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -98,7 +98,7 @@ public class ThoiKhoaBieuDAL {
         }
     }
 
-    // Soft delete: đổi trạng thái = 0
+
     public boolean delete(String maTKB) {
         String sql = "UPDATE THOIKHOABIEU SET trangThai = 0 WHERE maTKB=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -110,7 +110,7 @@ public class ThoiKhoaBieuDAL {
         }
     }
 
-    // Tìm TKB theo mã
+
     public ThoiKhoaBieu findByMaTKB(String maTKB) {
         String sql = "SELECT maTKB, maLop, maHocKy, trangThai, ngayBatDau, ngayKetThuc FROM THOIKHOABIEU WHERE maTKB=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -132,7 +132,6 @@ public class ThoiKhoaBieuDAL {
         return null;
     }
 
-    // Lấy danh sách TKB theo mã lớp
     public List<ThoiKhoaBieu> getByLop(String maLop) {
         List<ThoiKhoaBieu> list = new ArrayList<>();
         String sql = "SELECT maTKB, maLop, maHocKy, trangThai, ngayBatDau, ngayKetThuc FROM THOIKHOABIEU WHERE maLop = ?";

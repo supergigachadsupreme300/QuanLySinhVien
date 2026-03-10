@@ -17,7 +17,7 @@ public class PhuHuynhHocSinhDAO {
         this.con = con;
     }
 
-    // Lấy một quan hệ theo mã HS và mã PH
+
     public PhuHuynhHocSinh getById(String maHS, String maPH) {
         String sql = "SELECT * FROM HOCSINH_PHUHUYNH WHERE maHS = ? AND maPH = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -39,7 +39,7 @@ public class PhuHuynhHocSinhDAO {
         return null;
     }
 
-    // Lấy tất cả quan hệ theo mã PH
+
     public List<PhuHuynhHocSinh> getByMaPH(String maPH) {
         List<PhuHuynhHocSinh> list = new ArrayList<>();
         String sql = "SELECT * FROM HOCSINH_PHUHUYNH WHERE maPH = ? AND trangThai = 1";
@@ -61,7 +61,7 @@ public class PhuHuynhHocSinhDAO {
         return list;
     }
 
-    // Lấy tất cả quan hệ theo mã HS
+
     public List<PhuHuynhHocSinh> getByMaHS(String maHS) {
         List<PhuHuynhHocSinh> list = new ArrayList<>();
         String sql = "SELECT * FROM HOCSINH_PHUHUYNH WHERE maHS = ? AND trangThai = 1";
@@ -83,7 +83,7 @@ public class PhuHuynhHocSinhDAO {
         return list;
     }
 
-    // Thêm quan hệ mới
+
     public boolean add(PhuHuynhHocSinh p) {
         String sql = "INSERT INTO HOCSINH_PHUHUYNH (maHS, maPH, quanHe, trangThai) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -98,7 +98,7 @@ public class PhuHuynhHocSinhDAO {
         }
     }
 
-    // Cập nhật quan hệ (thường chỉ sửa quanHe, trangThai)
+
     public boolean update(PhuHuynhHocSinh p) {
         String sql = "UPDATE HOCSINH_PHUHUYNH SET quanHe = ?, trangThai = ? WHERE maHS = ? AND maPH = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -113,7 +113,6 @@ public class PhuHuynhHocSinhDAO {
         }
     }
 
-    // Xóa mềm (set trangThai = 0)
     public boolean delete(String maHS, String maPH) {
         String sql = "UPDATE HOCSINH_PHUHUYNH SET trangThai = 0 WHERE maHS = ? AND maPH = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {

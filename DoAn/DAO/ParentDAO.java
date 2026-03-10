@@ -18,7 +18,7 @@ public class ParentDAO {
         this.con = con;
     }
 
-    // Lấy phụ huynh theo mã
+
     public Parent getById(String maPH) {
         String sql = "SELECT * FROM PHUHUYNH WHERE maPH = ? AND trangThai = 1";
         Parent p = null;
@@ -33,7 +33,7 @@ public class ParentDAO {
                     p.setTenPhH(rs.getString("hoTen"));
                     p.setSdt(rs.getString("soDienThoai"));
                     p.setNgheNghiep(rs.getString("ngheNghiep"));
-                    // quanHe nằm ở bảng HOCSINH_PHUHUYNH → xử lý riêng nếu cần
+
                 }
             }
         } catch (SQLException e) {
@@ -42,7 +42,7 @@ public class ParentDAO {
         return p;
     }
 
-    // Lấy tất cả phụ huynh đang hoạt động
+
     public List<Parent> getAll() {
         List<Parent> list = new ArrayList<>();
         String sql = "SELECT * FROM PHUHUYNH WHERE trangThai = 1";
@@ -64,7 +64,7 @@ public class ParentDAO {
         return list;
     }
 
-    // Thêm mới
+
     public boolean add(Parent p) {
         String sql = "INSERT INTO PHUHUYNH (maPH, hoTen, soDienThoai, ngheNghiep, trangThai) "
                    + "VALUES (?, ?, ?, ?, 1)";
@@ -83,7 +83,7 @@ public class ParentDAO {
         }
     }
 
-    // Cập nhật
+
     public boolean update(Parent p) {
         String sql = "UPDATE PHUHUYNH SET hoTen = ?, soDienThoai = ?, ngheNghiep = ? "
                    + "WHERE maPH = ? AND trangThai = 1";
@@ -102,7 +102,7 @@ public class ParentDAO {
         }
     }
 
-    // Xóa mềm
+
     public boolean delete(String maPH) {
         String sql = "UPDATE PHUHUYNH SET trangThai = 0 WHERE maPH = ?";
 
@@ -116,7 +116,7 @@ public class ParentDAO {
         }
     }
 
-    // Tìm theo tên (tìm gần đúng)
+
     public List<Parent> searchByName(String keyword) {
         List<Parent> list = new ArrayList<>();
         String sql = "SELECT * FROM PHUHUYNH WHERE hoTen LIKE ? AND trangThai = 1";
@@ -140,7 +140,6 @@ public class ParentDAO {
         return list;
     }
 
-    // Lấy phụ huynh theo mã học sinh (bảng quan hệ HOCSINH_PHUHUYNH)
     public List<Parent> getParentsByHocSinh(String maHS) {
         List<Parent> list = new ArrayList<>();
         String sql = "SELECT p.maPH, p.hoTen, p.soDienThoai, p.ngheNghiep, h.quanHe "
@@ -165,7 +164,7 @@ public class ParentDAO {
         return list;
     }
 
-    // Thêm quan hệ HOCSINH_PHUHUYNH
+
     public boolean addRelation(String maHS, String maPH, String quanHe) {
         String sql = "INSERT INTO HOCSINH_PHUHUYNH (maHS, maPH, quanHe, trangThai) VALUES (?, ?, ?, 1)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -179,7 +178,7 @@ public class ParentDAO {
         }
     }
 
-    // Xóa mềm quan hệ
+
     public boolean deleteRelation(String maHS, String maPH) {
         String sql = "UPDATE HOCSINH_PHUHUYNH SET trangThai = 0 WHERE maHS = ? AND maPH = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -192,7 +191,7 @@ public class ParentDAO {
         }
     }
 
-    // Lấy danh sách học sinh của 1 phụ huynh
+
     public List<HocSinh> getStudentsByParent(String maPH) {
         List<HocSinh> list = new ArrayList<>();
         String sql = "SELECT hs.maHS, hs.hoTen, hs.ngaySinh, hs.gioiTinh, hs.diaChi, hs.maLop "

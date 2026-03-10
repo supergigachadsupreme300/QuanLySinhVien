@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DataObject;
 
-/**
- *
- * @author admin
- */
 public class PhanCong {
     private String maPC;
     private String maGV;
@@ -17,7 +9,6 @@ public class PhanCong {
     private String ghiChu;
     private int trangThai;
 
-    // Constructor mặc định
     public PhanCong() {
         maPC ="";
         maGV ="";
@@ -28,7 +19,7 @@ public class PhanCong {
         trangThai=0;
     }
 
-    // Constructor đầy đủ
+
     public PhanCong(String maPC, String maGV, String maMon, String maLop, String maNam, String ghiChu, int trangThai) {
         this.maPC = maPC;
         this.maGV = maGV;
@@ -39,14 +30,13 @@ public class PhanCong {
         this.trangThai = trangThai;
     }
 
-    // Constructor rút gọn (ví dụ chỉ cần mã phân công và giáo viên)
     public PhanCong(String maPC, String maGV, String maMon) {
         this.maPC = maPC;
         this.maGV = maGV;
         this.maMon = maMon;
     }
 
-    // Getter & Setter
+
     public String getMaPC() { return maPC; }
     public void setMaPC(String maPC) { this.maPC = maPC; }
 
@@ -68,7 +58,7 @@ public class PhanCong {
     public int getTrangThai() { return trangThai; }
     public void setTrangThai(int trangThai) { this.trangThai = trangThai; }
 
-    // toString để hiển thị thông tin
+
     @Override
     public String toString() {
         return "PhanCong{" +

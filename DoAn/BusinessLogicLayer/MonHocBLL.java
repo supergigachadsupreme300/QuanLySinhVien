@@ -27,7 +27,7 @@ public class MonHocBLL {
             return false;
         }
 
-        // Kiểm tra trùng mã môn
+
         if (getByMa(mh.getMaMon()) != null) {
             System.err.println("Mã môn học đã tồn tại: " + mh.getMaMon());
             return false;
@@ -51,11 +51,7 @@ public class MonHocBLL {
         return dao.update(mh);
     }
 
-    /**
-     * Xóa môn học theo mã (soft-delete)
-     * @param maMon mã môn cần xóa
-     * @return true nếu xóa thành công
-     */
+
     public boolean xoaMonHoc(String maMon) {
         if (maMon == null || maMon.trim().isEmpty()) {
             return false;
@@ -66,11 +62,7 @@ public class MonHocBLL {
         return dao.delete(maMon);
     }
 
-    /**
-     * Lấy môn học theo mã
-     * @param maMon mã môn cần tìm
-     * @return đối tượng hoặc null nếu không tìm thấy
-     */
+
     public Mon getByMa(String maMon) {
         if (maMon == null || maMon.trim().isEmpty()) {
             return null;
@@ -86,9 +78,7 @@ public class MonHocBLL {
         return dao.getAllActiveByProc();
     }
 
-    // ────────────────────────────────────────────────
-    //               HÀM VALIDATE NGHIỆP VỤ
-    // ────────────────────────────────────────────────
+
 
     private String validate(Mon mh) {
         if (mh.getMaMon() == null || mh.getMaMon().trim().isEmpty()) {
@@ -102,6 +92,6 @@ public class MonHocBLL {
         }
 
        
-        return null; // hợp lệ
+        return null; 
     }
 }

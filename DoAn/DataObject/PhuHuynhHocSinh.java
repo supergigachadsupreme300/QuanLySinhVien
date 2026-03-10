@@ -4,7 +4,7 @@ public class PhuHuynhHocSinh {
     private String maHS;
     private String maPH;
     private String quanHe;
-    private int trangThai; // 1: active, 0: inactive
+    private int trangThai; 
 
     public PhuHuynhHocSinh() {
         maHS = "";
@@ -20,7 +20,7 @@ public class PhuHuynhHocSinh {
         this.trangThai = trangThai;
     }
 
-    // Getters and setters
+
     public String getMaHS() { return maHS; }
     public void setMaHS(String maHS) { this.maHS = maHS; }
 

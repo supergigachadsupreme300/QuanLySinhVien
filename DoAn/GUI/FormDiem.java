@@ -66,12 +66,12 @@ public class FormDiem extends JPanel {
         loadMonCombo();
         loadHocKyCombo();
 
-        // Chọn phần tử đầu tiên nếu có
+
         if (cboLop.getItemCount() > 0) cboLop.setSelectedIndex(0);
         if (cboMon.getItemCount() > 0) cboMon.setSelectedIndex(0);
         if (cboHocKy.getItemCount() > 0) cboHocKy.setSelectedIndex(0);
 
-        // Sử dụng ItemListener thay ActionListener
+
         cboLop.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 loadHocSinhTheoLop();
@@ -88,7 +88,7 @@ public class FormDiem extends JPanel {
             }
         });
 
-        // Load học sinh lần đầu
+
         loadHocSinhTheoLop();
     }
 

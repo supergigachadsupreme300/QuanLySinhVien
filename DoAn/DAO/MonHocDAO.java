@@ -17,7 +17,7 @@ public class MonHocDAO {
         this.con = con;
     }
 
-    // Lấy tất cả môn học
+
     public List<Mon> getAll() {
         List<Mon> list = new ArrayList<>();
         String sql = "SELECT maMon, tenMon, trangThai FROM MON";
@@ -37,7 +37,7 @@ public class MonHocDAO {
         return list;
     }
 
-    // Lấy tất cả môn học đang hoạt động
+
     public List<Mon> getAllActive() {
         List<Mon> list = new ArrayList<>();
         String sql = "SELECT maMon, tenMon, trangThai FROM MON WHERE trangThai = 1";
@@ -57,14 +57,14 @@ public class MonHocDAO {
         return list;
     }
 
-    // ===== GET ALL ACTIVE (Procedure) =====
+
     public List<Mon> getAllActiveByProc() {
-        // Stored procedure not required; reuse SELECT implementation
+
         return getAllActive();
     }
 
     
-    // Thêm môn học
+
     public boolean insert(Mon mon) {
         String sql = "INSERT INTO MON(maMon, tenMon, trangThai) VALUES (?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -78,7 +78,7 @@ public class MonHocDAO {
         }
     }
 
-    // Cập nhật môn học
+
     public boolean update(Mon mon) {
         String sql = "UPDATE MON SET tenMon=?, trangThai=? WHERE maMon=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -92,7 +92,7 @@ public class MonHocDAO {
         }
     }
 
-    // Soft delete: đổi trạng thái = 0
+
     public boolean delete(String maMon) {
         String sql = "UPDATE MON SET trangThai = 0 WHERE maMon=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -104,7 +104,7 @@ public class MonHocDAO {
         }
     }
 
-    // Tìm môn học theo mã
+
     public Mon findByMaMon(String maMon) {
         String sql = "SELECT maMon, tenMon, trangThai FROM MON WHERE maMon=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -122,9 +122,9 @@ public class MonHocDAO {
         }
         return null;
     }
-    // compatibility wrapper removed; use `findByMaMon` directly
+
     
-    //=== lấy mã môn ===
+
     public List<String> getAllMaMon(){
         List<String> list = new ArrayList<>();
         try{

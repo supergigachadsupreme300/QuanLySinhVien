@@ -10,21 +10,19 @@ import java.awt.event.FocusEvent;
 import java.util.List;
 import net.miginfocom.swing.MigLayout;
 
-/**
- * FORM QUẢN LÝ MÔN HỌC
- */
+
 public class FormMonHoc extends JPanel {
 
     private final MonHocBLL monHocBLL = new MonHocBLL();
 
-    /* ================= TABLE ================= */
+
     private JTable tblMonHoc;
     private DefaultTableModel modelMonHoc;
 
-    /* ================= FORM ================= */
+
     private JTextField txtMaMon, txtTenMon, txtSoTinChi, txtKhoa;
 
-    /* ================= BUTTON ================= */
+
     private JButton btnThem, btnSua, btnXoa, btnClear;
 
     public FormMonHoc() {
@@ -34,13 +32,13 @@ public class FormMonHoc extends JPanel {
     private void initUI() {
         setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[grow]"));
 
-        // Tiêu đề
+
         JLabel lblTitle = new JLabel("QUẢN LÝ MÔN HỌC", JLabel.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
         lblTitle.setForeground(new Color(0, 102, 204));
         add(lblTitle, "growx, wrap");
 
-        // Panel form nhập liệu
+
         JPanel pnlForm = new JPanel(new MigLayout(
                 "insets 15",
                 "[]15[grow]30[]15[grow]",
@@ -64,12 +62,12 @@ public class FormMonHoc extends JPanel {
 
         add(pnlForm, "growx, wrap");
 
-        // Panel nút chức năng
+
         JPanel pnlBtn = new JPanel();
-        btnThem = createButton("Thêm", new Color(34, 139, 34)); // xanh lá
-        btnSua = createButton("Sửa", new Color(0, 150, 136)); // xanh ngọc
-        btnXoa = createButton("Xóa", new Color(220, 20, 60)); // đỏ
-        btnClear = createButton("Làm mới", new Color(70, 130, 180)); // xanh dương
+        btnThem = createButton("Thêm", new Color(34, 139, 34)); 
+        btnSua = createButton("Sửa", new Color(0, 150, 136)); 
+        btnXoa = createButton("Xóa", new Color(220, 20, 60));
+        btnClear = createButton("Làm mới", new Color(70, 130, 180));
 
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
@@ -77,7 +75,7 @@ public class FormMonHoc extends JPanel {
         pnlBtn.add(btnClear);
         add(pnlBtn, "growx, wrap");
 
-        // Table hiển thị danh sách
+
         modelMonHoc = new DefaultTableModel(
                 new String[] { "Mã môn", "Tên môn", "Số tín chỉ", "Khoa" }, 0) {
             @Override
@@ -88,7 +86,7 @@ public class FormMonHoc extends JPanel {
 
         tblMonHoc = new JTable(modelMonHoc);
         styleTable(tblMonHoc);
-        // Allow columns to resize to fill available width when frame changes size
+
         tblMonHoc.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tblMonHoc.setPreferredScrollableViewportSize(new Dimension(600, 300));
         tblMonHoc.setFillsViewportHeight(true);
@@ -103,7 +101,7 @@ public class FormMonHoc extends JPanel {
         spMonHoc.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(spMonHoc, "grow");
 
-        // Sự kiện
+
         btnThem.addActionListener(e -> themMonHoc());
         btnSua.addActionListener(e -> suaMonHoc());
         btnXoa.addActionListener(e -> xoaMonHoc());
@@ -119,7 +117,6 @@ public class FormMonHoc extends JPanel {
             }
         });
 
-        // Hiệu ứng focus
         addFocusEffect(txtMaMon);
         addFocusEffect(txtTenMon);
         addFocusEffect(txtSoTinChi);
@@ -129,7 +126,7 @@ public class FormMonHoc extends JPanel {
         loadTableMonHoc();
     }
 
-    // Validate form nhập liệu
+
     private boolean validateForm() {
         String maMon = txtMaMon.getText().trim();
         String tenMon = txtTenMon.getText().trim();
@@ -163,7 +160,6 @@ public class FormMonHoc extends JPanel {
         return true;
     }
 
-    // ================= CRUD =================
 
     private void themMonHoc() {
         if (!validateForm())
@@ -240,7 +236,7 @@ public class FormMonHoc extends JPanel {
         }
     }
 
-    // ================= Helper =================
+
 
     private Mon getEntityFromForm() {
         Mon mh = new Mon();
@@ -250,7 +246,7 @@ public class FormMonHoc extends JPanel {
         try {
             mh.setSoTinChi(Integer.parseInt(txtSoTinChi.getText().trim()));
         } catch (NumberFormatException e) {
-            mh.setSoTinChi(1); // mặc định nếu lỗi (không nên xảy ra)
+            mh.setSoTinChi(1); 
         }
 
         mh.setKhoa(txtKhoa.getText().trim());
@@ -263,7 +259,7 @@ public class FormMonHoc extends JPanel {
         txtSoTinChi.setText(modelMonHoc.getValueAt(row, 2).toString());
         txtKhoa.setText(modelMonHoc.getValueAt(row, 3).toString());
 
-        txtMaMon.setEnabled(false); // Không cho sửa mã khi chỉnh sửa
+        txtMaMon.setEnabled(false); 
     }
 
     private void clearForm() {
@@ -297,7 +293,7 @@ public class FormMonHoc extends JPanel {
         }
     }
 
-    // ================= UI Utils =================
+
 
     private JButton createButton(String text, Color bg) {
         JButton btn = new JButton(text);
@@ -308,7 +304,6 @@ public class FormMonHoc extends JPanel {
         btn.setPreferredSize(new Dimension(100, 35));
         btn.setOpaque(true);
 
-        // Hover effect
         Color hoverColor = bg.brighter();
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -347,7 +342,7 @@ public class FormMonHoc extends JPanel {
         });
     }
 
-    // Test nhanh
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Quản lý Môn học");

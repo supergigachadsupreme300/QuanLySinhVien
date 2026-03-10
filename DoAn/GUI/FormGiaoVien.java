@@ -1,7 +1,7 @@
 package GUI;
 
-import BusinessLogicLayer.GiaoVienBLL; // Giả định bạn sẽ tạo BLL tương tự
-import DataObject.GiaoVien; // Giả định entity GiaoVien
+import BusinessLogicLayer.GiaoVienBLL; 
+import DataObject.GiaoVien; 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -10,21 +10,19 @@ import java.awt.event.FocusEvent;
 import java.util.List;
 import net.miginfocom.swing.MigLayout;
 
-/**
- * FORM QUẢN LÝ GIÁO VIÊN
- */
+
 public class FormGiaoVien extends JPanel {
 
-    private final GiaoVienBLL giaoVienBLL = new GiaoVienBLL(); // Tạo BLL tương tự ChiTietMonBLL
+    private final GiaoVienBLL giaoVienBLL = new GiaoVienBLL();
 
-    /* ================= TABLE ================= */
+
     private JTable tblGiaoVien;
     private DefaultTableModel modelGiaoVien;
 
-    /* ================= FORM ================= */
+
     private JTextField txtMaGV, txtHoTen, txtSDT, txtEmail;
 
-    /* ================= BUTTON ================= */
+
     private JButton btnThem, btnSua, btnXoa, btnClear;
 
     public FormGiaoVien() {
@@ -34,13 +32,13 @@ public class FormGiaoVien extends JPanel {
     private void initUI() {
         setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[grow]"));
 
-        // Tiêu đề
+
         JLabel lblTitle = new JLabel("QUẢN LÝ GIÁO VIÊN", JLabel.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
         lblTitle.setForeground(new Color(0, 102, 204));
         add(lblTitle, "growx, wrap");
 
-        // Panel form nhập liệu
+
         JPanel pnlForm = new JPanel(new MigLayout(
                 "insets 15",
                 "[]15[grow]30[]15[grow]",
@@ -64,12 +62,12 @@ public class FormGiaoVien extends JPanel {
 
         add(pnlForm, "growx, wrap");
 
-        // Panel nút chức năng
+
         JPanel pnlBtn = new JPanel();
-        btnThem = createButton("Thêm", new Color(34, 139, 34)); // xanh lá
-        btnSua = createButton("Sửa", new Color(0, 150, 136)); // xanh ngọc
-        btnXoa = createButton("Xóa", new Color(220, 20, 60)); // đỏ
-        btnClear = createButton("Làm mới", new Color(70, 130, 180)); // xanh dương
+        btnThem = createButton("Thêm", new Color(34, 139, 34)); 
+        btnSua = createButton("Sửa", new Color(0, 150, 136)); 
+        btnXoa = createButton("Xóa", new Color(220, 20, 60)); 
+        btnClear = createButton("Làm mới", new Color(70, 130, 180)); 
 
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
@@ -77,7 +75,7 @@ public class FormGiaoVien extends JPanel {
         pnlBtn.add(btnClear);
         add(pnlBtn, "growx, wrap");
 
-        // Table hiển thị danh sách
+
         modelGiaoVien = new DefaultTableModel(
                 new String[] { "Mã GV", "Họ tên", "SĐT", "Email" }, 0) {
             @Override
@@ -88,7 +86,7 @@ public class FormGiaoVien extends JPanel {
 
         tblGiaoVien = new JTable(modelGiaoVien);
         styleTable(tblGiaoVien);
-        // Allow columns to resize when parent is resized
+
         tblGiaoVien.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tblGiaoVien.setPreferredScrollableViewportSize(new Dimension(600, 300));
         tblGiaoVien.setFillsViewportHeight(true);
@@ -103,7 +101,7 @@ public class FormGiaoVien extends JPanel {
         spGiaoVien.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(spGiaoVien, "grow");
 
-        // Sự kiện
+
         btnThem.addActionListener(e -> themGiaoVien());
         btnSua.addActionListener(e -> suaGiaoVien());
         btnXoa.addActionListener(e -> xoaGiaoVien());
@@ -119,7 +117,7 @@ public class FormGiaoVien extends JPanel {
             }
         });
 
-        // Hiệu ứng focus
+
         addFocusEffect(txtMaGV);
         addFocusEffect(txtHoTen);
         addFocusEffect(txtSDT);
@@ -129,7 +127,7 @@ public class FormGiaoVien extends JPanel {
         loadTableGiaoVien();
     }
 
-    // Validate form nhập liệu (có thể mở rộng thêm)
+
     private boolean validateForm() {
         String maGV = txtMaGV.getText().trim();
         String hoTen = txtHoTen.getText().trim();
@@ -142,14 +140,14 @@ public class FormGiaoVien extends JPanel {
             return false;
         }
 
-        // Validate email cơ bản
+
         if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             JOptionPane.showMessageDialog(this, "Email không hợp lệ!", "Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
             txtEmail.requestFocus();
             return false;
         }
 
-        // Validate số điện thoại (10-11 số)
+
         if (!sdt.matches("^\\d{10,11}$")) {
             JOptionPane.showMessageDialog(this, "Số điện thoại phải là 10-11 chữ số!", "Lỗi định dạng",
                     JOptionPane.ERROR_MESSAGE);
@@ -160,7 +158,7 @@ public class FormGiaoVien extends JPanel {
         return true;
     }
 
-    // ================= CRUD =================
+
 
     private void themGiaoVien() {
         if (!validateForm())
@@ -231,7 +229,6 @@ public class FormGiaoVien extends JPanel {
         }
     }
 
-    // ================= Helper =================
 
     private GiaoVien getEntityFromForm() {
         GiaoVien gv = new GiaoVien();
@@ -248,7 +245,7 @@ public class FormGiaoVien extends JPanel {
         txtSDT.setText(modelGiaoVien.getValueAt(row, 2).toString());
         txtEmail.setText(modelGiaoVien.getValueAt(row, 3).toString());
 
-        txtMaGV.setEnabled(false); // Không cho sửa mã
+        txtMaGV.setEnabled(false); 
     }
 
     private void clearForm() {
@@ -282,7 +279,7 @@ public class FormGiaoVien extends JPanel {
         }
     }
 
-    // ================= UI Utils =================
+
 
     private JButton createButton(String text, Color bg) {
         JButton btn = new JButton(text);
@@ -293,7 +290,7 @@ public class FormGiaoVien extends JPanel {
         btn.setPreferredSize(new Dimension(100, 35));
         btn.setOpaque(true);
 
-        // Hover effect
+
         Color hoverColor = bg.brighter();
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent e) {
@@ -330,7 +327,7 @@ public class FormGiaoVien extends JPanel {
         });
     }
 
-    // Test nhanh
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Quản lý Giáo viên");

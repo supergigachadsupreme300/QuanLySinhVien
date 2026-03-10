@@ -1,6 +1,5 @@
 package DAO;
 
-import DAO.DatabaseConnect;
 import DataObject.XepLoai;
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class XepLoaiDAO {
         this.con = con;
     }
 
-    // ===== GET BY ID =====
+
     public XepLoai getById(String maXepLoai) {
         String sql = "SELECT * FROM XEPLOAI WHERE maXepLoai = ?";
         XepLoai xl = null;
@@ -45,7 +44,7 @@ public class XepLoaiDAO {
         return xl;
     }
 
-    // ===== GET ALL =====
+
     public List<XepLoai> getAll() {
         List<XepLoai> list = new ArrayList<>();
         String sql = "SELECT * FROM XEPLOAI ORDER BY maXepLoai";
@@ -72,7 +71,7 @@ public class XepLoaiDAO {
         return list;
     }
 
-    // ===== GET BY MA HOC SINH =====
+
     public List<XepLoai> getByMaHS(String maHS) {
         List<XepLoai> list = new ArrayList<>();
         String sql = "SELECT * FROM XEPLOAI WHERE maHS = ?";
@@ -100,7 +99,7 @@ public class XepLoaiDAO {
         return list;
     }
 
-    // ===== ADD =====
+
     public boolean add(XepLoai xl) {
         String sql = "INSERT INTO XEPLOAI VALUES (?,?,?,?,?,?,?,?)";
 
@@ -123,7 +122,7 @@ public class XepLoaiDAO {
         }
     }
 
-    // ===== UPDATE =====
+
     public boolean update(XepLoai xl) {
         String sql = "UPDATE XEPLOAI SET maHS=?, maHocKy=?, xepLoaiHocLuc=?, "
                    + "xepLoaiHanhKiem=?, diemTBChung=?, nhanXet=?, duocLenLop=? "
@@ -148,7 +147,7 @@ public class XepLoaiDAO {
         }
     }
 
-    // ===== DELETE =====
+
     public boolean delete(String maXepLoai) {
         String sql = "DELETE FROM XEPLOAI WHERE maXepLoai = ?";
 

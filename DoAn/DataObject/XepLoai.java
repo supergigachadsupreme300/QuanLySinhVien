@@ -2,7 +2,7 @@ package DataObject;
 
 public class XepLoai {
 
-    // ===== Thuộc tính =====
+
     private String maXepLoai;
     private String maHS;
     private String maHocKy;
@@ -12,7 +12,7 @@ public class XepLoai {
     private String nhanXet;
     private boolean duocLenLop;
 
-    // ===== Constructor rỗng =====
+
     public XepLoai() {
         maXepLoai = "";
         maHS = "";
@@ -24,7 +24,7 @@ public class XepLoai {
         duocLenLop = true;
     }
 
-    // ===== Constructor đầy đủ =====
+
     public XepLoai(String maXepLoai, String maHS, String maHocKy,
                    String xepLoaiHocLuc, String xepLoaiHanhKiem,
                    double diemTBChung, String nhanXet, boolean duocLenLop) {
@@ -38,7 +38,6 @@ public class XepLoai {
         this.duocLenLop = duocLenLop;
     }
 
-    // ===== Constructor copy =====
     public XepLoai(XepLoai xl) {
         this.maXepLoai = xl.maXepLoai;
         this.maHS = xl.maHS;
@@ -50,7 +49,7 @@ public class XepLoai {
         this.duocLenLop = xl.duocLenLop;
     }
 
-    // ===== Getter / Setter =====
+
     public String getMaXepLoai() { return maXepLoai; }
     public void setMaXepLoai(String maXepLoai) { this.maXepLoai = maXepLoai; }
 
@@ -83,7 +82,7 @@ public class XepLoai {
         this.duocLenLop = duocLenLop;
     }
 
-    // ===== Hỗ trợ hiển thị JTable =====
+
     @Override
     public String toString() {
         return maHS + " - " + xepLoaiHocLuc + " - " + xepLoaiHanhKiem;

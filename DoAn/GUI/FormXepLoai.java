@@ -134,7 +134,7 @@ public class FormXepLoai extends JPanel {
                 if(!choPhepNhap) return false;
 
                 return column == 8; 
-                // Hạnh kiểm + Nhận xét
+
             }
         };
         table = new JTable(model);

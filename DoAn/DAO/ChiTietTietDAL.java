@@ -17,7 +17,7 @@ public class ChiTietTietDAL {
         this.con = con;
     }
 
-    // Lấy tất cả chi tiết tiết
+
     public List<ChiTietTiet> getAll() {
         List<ChiTietTiet> list = new ArrayList<>();
         String sql = "SELECT maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai FROM CHITIETTIET";
@@ -43,7 +43,7 @@ public class ChiTietTietDAL {
         return list;
     }
 
-    // Lấy tất cả chi tiết tiết đang hoạt động
+
     public List<ChiTietTiet> getAllActive() {
         List<ChiTietTiet> list = new ArrayList<>();
         String sql = "SELECT maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai FROM CHITIETTIET WHERE trangThai = 1";
@@ -69,11 +69,11 @@ public class ChiTietTietDAL {
         return list;
     }
 
-    // Thêm chi tiết tiết
+
     public boolean insert(ChiTietTiet ct) {
         String sql = "INSERT INTO CHITIETTIET(maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            // Ensure maChiTiet length fits DB (VARCHAR(20) in schema). Truncate if necessary to avoid SQL exception.
+
             String ma = ct.getMaChiTiet() != null ? ct.getMaChiTiet() : "";
             if (ma.length() > 20) {
                 System.err.println("[Warning] maChiTiet too long, truncating to 20 chars: " + ma);
@@ -95,7 +95,7 @@ public class ChiTietTietDAL {
         }
     }
 
-    // Cập nhật chi tiết tiết
+
     public boolean update(ChiTietTiet ct) {
         String sql = "UPDATE CHITIETTIET SET maTKB=?, maMon=?, thu=?, tiet=?, phongHoc=?, gioBatDau=?, gioKetThuc=?, trangThai=? WHERE maChiTiet=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -115,7 +115,7 @@ public class ChiTietTietDAL {
         }
     }
 
-    // Soft delete: đổi trạng thái = 0
+
     public boolean delete(String maChiTiet) {
         String sql = "UPDATE CHITIETTIET SET trangThai = 0 WHERE maChiTiet=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -127,7 +127,7 @@ public class ChiTietTietDAL {
         }
     }
 
-    // Tìm chi tiết tiết theo mã
+
     public ChiTietTiet findByMaChiTiet(String maChiTiet) {
         String sql = "SELECT maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai FROM CHITIETTIET WHERE maChiTiet=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -152,22 +152,20 @@ public class ChiTietTietDAL {
         return null;
     }
     
-    // Lấy tất cả chi tiết tiết đang hoạt động bằng proc
+
 public List<ChiTietTiet> getAllActiveProc() {
-    // Delegate to SELECT based implementation when stored procedure is not available
     return getAllActive();
 }
 
-    // Lấy chi tiết tiết theo mã TKB bằng proc
+
     public List<ChiTietTiet> getByMaTKBByProc(String maTKB) {
-        // Use SELECT query implementation instead of missing stored procedure
+
         return getByTKB(maTKB);
     }
 
-    // Lấy chi tiết tiết theo mã TKB (bằng query chuẩn)
     public List<ChiTietTiet> getByTKB(String maTKB) {
         List<ChiTietTiet> list = new ArrayList<>();
-        String sql = "SELECT maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai FROM CHITIETTIET WHERE maTKB = ? AND trangThai = 1"; // chỉnh cho cái này
+        String sql = "SELECT maChiTiet, maTKB, maMon, thu, tiet, phongHoc, gioBatDau, gioKetThuc, trangThai FROM CHITIETTIET WHERE maTKB = ? AND trangThai = 1";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maTKB);
             try (ResultSet rs = ps.executeQuery()) {

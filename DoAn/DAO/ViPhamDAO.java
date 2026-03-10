@@ -18,7 +18,7 @@ public class ViPhamDAO {
         this.con = con;
     }
 
-    // ===== GET BY ID =====
+
     public ViPham getById(String maViPham) {
         String sql = "SELECT * FROM VIPHAM WHERE maViPham = ?";
         ViPham vp = null;
@@ -43,7 +43,7 @@ public class ViPhamDAO {
         return vp;
     }
 
-    // ===== GET ALL =====
+
     public List<ViPham> getAll() {
         List<ViPham> list = new ArrayList<>();
         String sql = "SELECT * FROM VIPHAM ORDER BY maViPham";
@@ -69,7 +69,7 @@ public class ViPhamDAO {
         return list;
     }
 
-    // ===== GET BY MA HOC SINH =====
+
     public List<ViPham> getByMaHS(String maHS) {
         List<ViPham> list = new ArrayList<>();
         String sql = "SELECT * FROM VIPHAM WHERE maHS = ?";
@@ -96,7 +96,7 @@ public class ViPhamDAO {
         return list;
     }
 
-    // ===== ADD =====
+
     public boolean add(ViPham vp) {
         String sql = "INSERT INTO VIPHAM VALUES (?,?,?,?,?,?,?)";
 
@@ -118,7 +118,7 @@ public class ViPhamDAO {
         }
     }
 
-    // ===== UPDATE =====
+
     public boolean update(ViPham vp) {
         String sql = "UPDATE VIPHAM SET maHS=?, maHocKy=?, ngayViPham=?, noiDung=?, mucDo=?, trangThai=? "
                    + "WHERE maViPham=?";
@@ -141,7 +141,7 @@ public class ViPhamDAO {
         }
     }
 
-    // ===== DELETE =====
+
     public boolean delete(String maViPham) {
         String sql = "DELETE FROM VIPHAM WHERE maViPham = ?";
 

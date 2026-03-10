@@ -32,7 +32,7 @@ public class ExcelDAL {
         DatabaseConnect db = new DatabaseConnect();
         this.conn = db.openConnection();      
     }
-    // ================= PREVIEW HỌC SINH =================
+
     public void previewHocSinh(String path, DefaultTableModel model) {
         try {
             FileInputStream fis = new FileInputStream(path);
@@ -69,7 +69,7 @@ public class ExcelDAL {
         }
     }
 
-    // ================= IMPORT HỌC SINH =================
+
     public boolean importHocSinh(File file) {
 
         try {
@@ -112,7 +112,7 @@ public class ExcelDAL {
         }
         return false;
     }
-    // ================= PREVIEW ĐIỂM =================
+
     public void previewDiem(String path, DefaultTableModel model) {
         try {
             FileInputStream fis = new FileInputStream(path);
@@ -141,7 +141,7 @@ public class ExcelDAL {
             e.printStackTrace();
         }
     }
-    // ================= IMPORT ĐIỂM =================
+
     public boolean importDiem(File file) {
         try {
             FileInputStream fis = new FileInputStream(file);
@@ -182,7 +182,7 @@ public class ExcelDAL {
         }
         return false;
     }
-    // ================= EXPORT EXCEL =================
+
     public void previewExport(String maLop, DefaultTableModel model) {
         try {
             String sql = """
@@ -256,7 +256,7 @@ public class ExcelDAL {
             Workbook wb = new XSSFWorkbook();
             Sheet sheet = wb.createSheet("BangDiem");
 
-            // Header
+
             Row header = sheet.createRow(0);
 
             header.createCell(0).setCellValue("STT");
@@ -300,7 +300,7 @@ public class ExcelDAL {
                 row.createCell(6).setCellValue(rs.getDouble("DiemTBMonHocKy"));
 
             }
-            // Auto resize
+
             for (int i = 0; i <= 5; i++) {
                 sheet.autoSizeColumn(i);
             }
@@ -315,23 +315,23 @@ public class ExcelDAL {
         return false;
     }
 
-    //==== BẢNG ĐIỂM TẤT CẢ MÔN ====
+
     public void previewBangDiemTatCaMon(String maLop, String maHK, DefaultTableModel model){
         try{
             MonHocDAO monDAO = new MonHocDAO();
             DiemDAL diemDAL = new DiemDAL();
             List<String> listMon = monDAO.getAllMaMon();
-            // XÓA CỘT CŨ
+
             model.setColumnCount(0);
             model.setRowCount(0);
-            // HEADER
+
             model.addColumn("MaHS");
             model.addColumn("HoTen");
 
             for(String mon : listMon){
                 model.addColumn(mon);
             }
-            // QUERY HỌC SINH
+
             String sql = """
             SELECT MaHS, HoTen
             FROM HocSinh
@@ -382,7 +382,7 @@ public class ExcelDAL {
             MonHocDAO monDAO = new MonHocDAO();
             DiemDAL diemDAL = new DiemDAL();
             List<String> listMon = monDAO.getAllMaMon();
-            // HEADER
+
             Row header = sheet.createRow(0);
 
             header.createCell(0).setCellValue("MaHS");
@@ -391,7 +391,7 @@ public class ExcelDAL {
             for(int i=0;i<listMon.size();i++){
                 header.createCell(i+2).setCellValue(listMon.get(i));
             }
-            // QUERY HỌC SINH
+
             String sql = """
             SELECT MaHS, HoTen
             FROM HocSinh

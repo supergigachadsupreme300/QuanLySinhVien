@@ -17,7 +17,7 @@ public class NamHocDAL {
         this.con = con;
     }
 
-    // Lấy tất cả năm học (chỉ lấy đang hoạt động)
+
     public List<NamHoc> getAll() {
         List<NamHoc> list = new ArrayList<>();
         String sql = "SELECT maNam, tenNam, trangThai FROM NAM WHERE trangThai = 1";
@@ -37,7 +37,7 @@ public class NamHocDAL {
         return list;
     }
     
-    // ===== GET ALL ACTIVE =====
+
     public List<NamHoc> getAllActive() {
         List<NamHoc> list = new ArrayList<>();
         String sql = "SELECT maNam, tenNam, trangThai FROM NAM WHERE trangThai = 1";
@@ -58,19 +58,19 @@ public class NamHocDAL {
     }
 
     public List<NamHoc> getAllActiveByProc() {
-        // Stored procedure may not exist; reuse SELECT-based method
+
         return getAllActive();
     }
 
     
     
-    // Thêm năm học
+
     public boolean insert(NamHoc nh) {
         String sql = "INSERT INTO NAM(maNam, tenNam, trangThai) VALUES (?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, nh.getMaNH());
             ps.setString(2, nh.getTenNH());
-            ps.setInt(3, nh.getTrangThai()); // phải set trạng thái khi thêm mới
+            ps.setInt(3, nh.getTrangThai());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,7 +78,7 @@ public class NamHocDAL {
         }
     }
 
-    // Cập nhật năm học
+
     public boolean update(NamHoc nh) {
         String sql = "UPDATE NAM SET tenNam=?, trangThai=? WHERE maNam=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -92,7 +92,7 @@ public class NamHocDAL {
         }
     }
 
-    // Soft delete: chỉ đổi trạng thái = 0
+
     public boolean delete(String maNH) {
         String sql = "UPDATE NAM SET trangThai = 0 WHERE maNam=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -104,7 +104,7 @@ public class NamHocDAL {
         }
     }
 
-    // Tìm năm học theo mã (chỉ lấy đang hoạt động)
+
     public NamHoc findByMaNH(String maNH) {
         String sql = "SELECT maNam, tenNam, trangThai FROM NAM WHERE maNam=? AND trangThai = 1";
         try (PreparedStatement ps = con.prepareStatement(sql)) {

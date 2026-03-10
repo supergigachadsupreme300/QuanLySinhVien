@@ -6,11 +6,11 @@ import java.sql.Connection;
 import java.util.List;
 
 public class HocSinhBLL {
-    // Tạo sẵn đối tượng DAL bên trong BUS
+
     HocSinhDAO hsDAL = new HocSinhDAO();
 
     public HocSinhBLL() {
-        // sử dụng constructor mặc định của HocSinhDAO (tự mở connection)
+
         this.hsDAL = new HocSinhDAO();
     }
 
@@ -26,12 +26,12 @@ public class HocSinhBLL {
         return hsDAL.getAllActive();
     }
     
-    // ===== GET BY MA LOP =====
+
     public List<HocSinh> getByMaLop(String maLop) {
         return hsDAL.getByMaLop(maLop);
     }
 
-    // ===== THÊM =====
+
     public boolean themHocSinh(HocSinh hs) {
         if (hs == null) return false;
         if (hsDAL.getById(hs.getMaHS()) != null) {
@@ -39,25 +39,25 @@ public class HocSinhBLL {
         }
         boolean ok = hsDAL.add(hs);
         if (ok) {
-            // Sau khi thêm học sinh thành công, cập nhật lại sĩ số lớp
+
             try {
                 DAO.LopDAL lopDAL = new DAO.LopDAL();
                 lopDAL.updateSiSo(hs.getMaLop());
             } catch (Exception ex) {
-                // Không ném lỗi lên GUI; in stack để debug
+
                 ex.printStackTrace();
             }
         }
         return ok;
     }
 
-    // ===== SỬA =====
+
     public boolean suaHocSinh(HocSinh hs) {
         if (hs == null) return false;
         return hsDAL.update(hs);
     }
 
-    // ===== XÓA =====
+
     public boolean xoaHocSinh(String maHS) {
         HocSinh hs = hsDAL.getById(maHS);
         boolean ok = hsDAL.delete(maHS);

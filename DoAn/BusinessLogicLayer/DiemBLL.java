@@ -1,9 +1,9 @@
 package BusinessLogicLayer;
 
-import DAO.MonHocDAO;
 import DAO.DiemDAL;
 import DAO.HocKyDAL;
 import DAO.HocSinhDAO;
+import DAO.MonHocDAO;
 import DataObject.Diem;
 import java.sql.Connection;
 import java.util.List;
@@ -31,7 +31,7 @@ public class DiemBLL {
     public String them(Diem d) {
         if (d == null) return "Dữ liệu điểm không hợp lệ.";
 
-        // Validate related entities to avoid FK errors
+
         HocSinhDAO hsDao = new HocSinhDAO(con);
         if (hsDao.getById(d.getMaHS()) == null) {
             return "Không tìm thấy Học sinh với mã: " + d.getMaHS();
@@ -46,7 +46,7 @@ public class DiemBLL {
             return "Không tìm thấy Học kỳ với mã: " + d.getMaHocKy();
         }
 
-        // Basic length checks to avoid truncation errors (adjust if schema allows longer)
+
         if (d.getMaDiem() != null && d.getMaDiem().length() > 50) {
             return "Mã điểm quá dài (>50 ký tự). Vui lòng kiểm tra quy tắc sinh mã.";
         }
@@ -58,7 +58,7 @@ public class DiemBLL {
     public String sua(Diem d) {
         if (d == null) return "Dữ liệu điểm không hợp lệ.";
 
-        // Validate related entities
+
         HocSinhDAO hsDao = new HocSinhDAO(con);
         if (hsDao.getById(d.getMaHS()) == null) {
             return "Không tìm thấy Học sinh với mã: " + d.getMaHS();

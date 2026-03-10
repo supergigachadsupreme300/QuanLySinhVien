@@ -79,7 +79,7 @@ public class GiaoVienDAO {
     
     
     public List<GiaoVien> getAllActiveByProc() {
-        // Stored procedure not present in DB; delegate to SELECT-based method
+
         return getAll();
     }
 

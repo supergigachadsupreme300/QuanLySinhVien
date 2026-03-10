@@ -1,20 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package DAO;
 
-/**
- *
- * @author admin
- */
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnect {
     
-    // ========== CẤU HÌNH KẾT NỐI ==========
+
     private static final String URL = 
         "jdbc:sqlserver://localhost:1433;" +
         "databaseName=QuanLyHocSinh;" +
@@ -26,27 +20,22 @@ public class DatabaseConnect {
     private static final String USER = "sa";
     private static final String PASS = "123456";
     
-    // Connection instance (không static để tránh conflict đa luồng)
+
     private Connection con;
     
     
-    /**
-     * Constructor
-     */    
+
     public DatabaseConnect() {
         this.con = null;
     }
     
-    /**
-     * MỞ KẾT NỐI
-     * @return Connection object
-     */
+
     public Connection openConnection() {
         try {
-            // Load JDBC Driver
+
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             
-            // Tạo connection
+
             con = DriverManager.getConnection(URL, USER, PASS);
             
             System.out.println("✅ Kết nối database thành công!");
@@ -64,9 +53,7 @@ public class DatabaseConnect {
         }
     }
     
-    /**
-     * ĐÓNG KẾT NỐI
-     */
+
     public void closeConnection() {
         try {
             if (con != null && !con.isClosed()) {
@@ -79,18 +66,12 @@ public class DatabaseConnect {
         }
     }
     
-    /**
-     * LẤY CONNECTION HIỆN TẠI
-     * @return Connection object
-     */
+
     public Connection getConnection() {
         return this.con;
     }
     
-    /**
-     * KIỂM TRA KẾT NỐI
-     * @return true nếu kết nối OK
-     */
+
     public boolean testConnection() {
         try {
             Connection testConn = openConnection();

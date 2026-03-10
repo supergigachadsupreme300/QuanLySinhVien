@@ -12,12 +12,11 @@ public class ViPhamBLL {
         viPhamDAO = new ViPhamDAO();
     }
 
-    // ===== GET ALL =====
+
     public List<ViPham> getAll() {
         return viPhamDAO.getAll();
     }
 
-    // ===== GET BY ID =====
     public ViPham getById(String maViPham) {
         if (maViPham == null || maViPham.trim().isEmpty()) {
             return null;
@@ -25,7 +24,7 @@ public class ViPhamBLL {
         return viPhamDAO.getById(maViPham);
     }
 
-    // ===== GET BY MA HOC SINH =====
+
     public List<ViPham> getByMaHS(String maHS) {
         if (maHS == null || maHS.trim().isEmpty()) {
             return null;
@@ -33,32 +32,32 @@ public class ViPhamBLL {
         return viPhamDAO.getByMaHS(maHS);
     }
 
-    // ===== ADD =====
+
     public boolean add(ViPham vp) {
         if (!validate(vp)) return false;
 
         if (viPhamDAO.getById(vp.getMaViPham()) != null) {
-            return false; // Trùng mã
+            return false; 
         }
 
         return viPhamDAO.add(vp);
     }
 
-    // ===== UPDATE =====
+
     public boolean update(ViPham vp) {
         if (!validate(vp)) return false;
 
         return viPhamDAO.update(vp);
     }
 
-    // ===== DELETE =====
+
     public boolean delete(String maViPham) {
         if (maViPham == null || maViPham.trim().isEmpty()) return false;
 
         return viPhamDAO.delete(maViPham);
     }
 
-    // ===== VALIDATE DATA =====
+
     private boolean validate(ViPham vp) {
         if (vp == null) return false;
 

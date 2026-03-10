@@ -35,21 +35,21 @@ public class FormChiTietTiet extends JPanel {
     private boolean dataChanged = false;
     private List<Change> bufferChanges = new ArrayList<>();
 
-    // FORM
+
     private JTextField txtMaCT, txtPhongHoc, txtGioBD, txtGioKT;
     private JComboBox<ThoiKhoaBieu> cboTKB;
     private JComboBox<Mon> cboMon;
     private JComboBox<String> cboThu;
     private JComboBox<Integer> cboTiet;
 
-    // BUTTON
+
     private JButton btnThem, btnSua, btnXoa, btnClear, btnLuu;
 
-    // TABLE GRID
+
     private JTable tblLuoi;
     private DefaultTableModel modelLuoi;
 
-    // Map lưu giờ cho từng tiết
+
     private Map<Integer, String> tietGioMap;
 
     public FormChiTietTiet(MainMenu frame) {
@@ -63,7 +63,7 @@ public class FormChiTietTiet extends JPanel {
         loadComboMon();
         loadDefaultLuoi();
         setupAutoGenerateMaCT();
-        resetFormState(); // Đặt trạng thái ban đầu
+        resetFormState(); 
     }
 
     private void initTietGioMap() {
@@ -84,29 +84,27 @@ public class FormChiTietTiet extends JPanel {
         return tietGioMap.getOrDefault(tiet, "??:??-??:??");
     }
 
-    /**
-     * Public helper to refresh/load TKB combo and grid from outside (used by MainMenu).
-     */
+
     public void refreshTKBList(String maTKBToSelect) {
     try {
-        // Lưu lại mã TKB đang chọn (nếu có)
+
         String currentMaTKB = null;
         ThoiKhoaBieu selected = (ThoiKhoaBieu) cboTKB.getSelectedItem();
         if (selected != null) {
             currentMaTKB = selected.getMaTKB();
         }
 
-        // Load lại combobox
+
         loadComboTKB();
 
-        // Nếu có maTKBToSelect (từ form TKB), ưu tiên chọn nó
+
         if (maTKBToSelect != null) {
             selectTKBByMa(maTKBToSelect);
         } else if (currentMaTKB != null) {
-            // Nếu không, chọn lại TKB cũ (nếu còn)
+
             selectTKBByMa(currentMaTKB);
         } else {
-            // Mặc định chọn TKB đầu tiên
+
             if (cboTKB.getItemCount() > 0) {
                 cboTKB.setSelectedIndex(0);
                 loadLuoi(((ThoiKhoaBieu) cboTKB.getSelectedItem()).getMaTKB());
@@ -126,12 +124,12 @@ public class FormChiTietTiet extends JPanel {
                 return;
             }
         }
-        // Nếu không tìm thấy (có thể bị xóa), chọn TKB đầu tiên
+
         if (cboTKB.getItemCount() > 0) {
             cboTKB.setSelectedIndex(0);
             loadLuoi(((ThoiKhoaBieu) cboTKB.getSelectedItem()).getMaTKB());
         } else {
-            // Không còn TKB nào
+
             modelLuoi.setRowCount(0);
         }
     }
@@ -182,7 +180,7 @@ public class FormChiTietTiet extends JPanel {
         pnlBtn.add(btnClear); pnlBtn.add(btnLuu);
         add(pnlBtn, "growx, wrap");
 
-        // ===== TABLE LƯỚI =====
+
         modelLuoi = new DefaultTableModel(
             new String[]{"Tiết", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"}, 0
         ) {
@@ -228,7 +226,7 @@ public class FormChiTietTiet extends JPanel {
         sp.setBorder(BorderFactory.createTitledBorder("Lưới thời khóa biểu"));
         add(sp, "grow");
 
-        // EVENTS
+
         cboTKB.addActionListener(e -> {
             if (cboTKB.getSelectedItem() != null) {
                 reloadGrid();
@@ -305,7 +303,7 @@ public class FormChiTietTiet extends JPanel {
         }
         String thuCode = thu.replace(" ", "").replace("ứ", "");
         String baseCode = maTKB + "_" + thuCode + "_T" + tiet;
-        // Ensure result fits DB VARCHAR(20)
+
         String newCode = applySuffixLimited(baseCode, "", 20);
         int counter = 1;
         while (used.contains(newCode)) {
@@ -332,21 +330,21 @@ public class FormChiTietTiet extends JPanel {
     }
 
     private void resetFormState() {
-        // Khi không chọn ô hoặc chọn ô trống: chỉ bật Thêm, tắt Sửa/Xóa
+
         btnThem.setEnabled(true);
         btnSua.setEnabled(false);
         btnXoa.setEnabled(false);
-        txtMaCT.setEnabled(true); // Cho phép thay đổi? Nhưng là auto gen nên không cần edit
+        txtMaCT.setEnabled(true); 
     }
 
     private void enableEditButtons() {
         btnThem.setEnabled(false);
         btnSua.setEnabled(true);
         btnXoa.setEnabled(true);
-        txtMaCT.setEnabled(false); // Không cho sửa mã khi đang ở chế độ sửa/xóa
+        txtMaCT.setEnabled(false); 
     }
 
-    // CRUD
+
     private boolean validateForm() {
         if (txtMaCT.getText().trim().isEmpty()
             || txtPhongHoc.getText().trim().isEmpty()
@@ -374,7 +372,7 @@ public class FormChiTietTiet extends JPanel {
         }
 
         String maCTMoi = txtMaCT.getText().trim();
-        // Validate length against DB schema (VARCHAR(20))
+
         if (maCTMoi.length() > 20) {
             JOptionPane.showMessageDialog(this,
                 "Mã chi tiết quá dài (tối đa 20 ký tự). Vui lòng chỉnh lại.",
@@ -383,9 +381,9 @@ public class FormChiTietTiet extends JPanel {
             return false;
         }
 
-        // Chỉ kiểm tra trùng mã khi đang ở chế độ thêm mới (txtMaCT được enable)
+
         if (txtMaCT.isEnabled()) {
-            // Kiểm tra trùng trong buffer (ADD)
+
             for (Change change : bufferChanges) {
                 if (change.action.equals("ADD") && change.ct.getMaChiTiet().equals(maCTMoi)) {
                     JOptionPane.showMessageDialog(this,
@@ -396,7 +394,7 @@ public class FormChiTietTiet extends JPanel {
                 }
             }
 
-            // Kiểm tra trong database (kể cả đã xóa mềm)
+
             List<ChiTietTiet> dsDB = ctBLL.getAll();
             for (ChiTietTiet ct : dsDB) {
                 if (ct.getMaChiTiet().equals(maCTMoi)) {
@@ -408,7 +406,7 @@ public class FormChiTietTiet extends JPanel {
                 }
             }
         }
-        // Nếu txtMaCT bị disable (đang sửa) thì bỏ qua kiểm tra trùng, cho phép sửa
+
 
         return true;
     }
@@ -505,14 +503,13 @@ public class FormChiTietTiet extends JPanel {
 
         String maCT = txtMaCT.getText().trim();
 
-        // 1. Nếu là bản ghi mới thêm chưa lưu → chỉ remove khỏi buffer
         boolean isNew = bufferChanges.removeIf(c ->
             c.ct.getMaChiTiet().equals(maCT) && c.action.equals("ADD")
         );
 
-        // 2. Nếu không phải bản ghi mới → kiểm tra tồn tại trong DB
+
         if (!isNew) {
-            ChiTietTiet ctDB = ctBLL.findByMaChiTiet(maCT); // dùng BLL gọi DAL
+            ChiTietTiet ctDB = ctBLL.findByMaChiTiet(maCT); 
             if (ctDB != null) {
                 ChiTietTiet ct = new ChiTietTiet();
                 ct.setMaChiTiet(maCT);
@@ -525,7 +522,7 @@ public class FormChiTietTiet extends JPanel {
             }
         }
 
-        // 3. Xóa khỏi lưới hiển thị
+
         modelLuoi.setValueAt("", row, col);
 
         dataChanged = true;
@@ -561,7 +558,7 @@ public class FormChiTietTiet extends JPanel {
                 JOptionPane.showMessageDialog(this,
                     "Lỗi khi " + change.action + " cho mã " + change.ct.getMaChiTiet(),
                     "Lỗi", JOptionPane.ERROR_MESSAGE);
-                break; // hoặc continue để báo hết lỗi?
+                break; 
             }
         }
         if (allSuccess) {
@@ -572,7 +569,7 @@ public class FormChiTietTiet extends JPanel {
             reloadGrid();
             resetInputForm();
             
-            // 🔁 Gọi MainMenu để cập nhật lưới bên FormTKB
+
             if (mainFrame != null) {
                 mainFrame.refreshTKBLuoi();
             }
@@ -605,9 +602,9 @@ public class FormChiTietTiet extends JPanel {
         cboThu.setSelectedIndex(0);
         cboTiet.setSelectedIndex(0);
 
-        generateAndSetMaCT(); // Tạo mã mới cho form trống
+        generateAndSetMaCT(); 
         tblLuoi.clearSelection();
-        resetFormState(); // Bật Thêm, tắt Sửa/Xóa
+        resetFormState(); 
     }
 
     private void clearForm() {
@@ -615,14 +612,13 @@ public class FormChiTietTiet extends JPanel {
         bufferChanges.clear();
         dataChanged = false;
         updateSaveButtonState();
-        // Refresh combo boxes to load latest data from DB
+
         loadComboTKB();
         loadComboMon();
         reloadGrid();
     }
 
     private void updateButtonState() {
-        // Không cần, vì đã có resetFormState và enableEditButtons
     }
 
     private void updateSaveButtonState() {
@@ -672,14 +668,14 @@ public class FormChiTietTiet extends JPanel {
             }
 
             if (found) {
-                enableEditButtons(); // Bật Sửa/Xóa, tắt Thêm
+                enableEditButtons(); 
             } else {
-                // Ô trống
+
                 clearFormFields();
-                resetFormState(); // Bật Thêm, tắt Sửa/Xóa
+                resetFormState(); 
             }
         } else {
-            // Không chọn ô
+
             clearFormFields();
             resetFormState();
         }
@@ -690,7 +686,7 @@ public class FormChiTietTiet extends JPanel {
         txtPhongHoc.setText("");
         txtGioBD.setText("");
         txtGioKT.setText("");
-        generateAndSetMaCT(); // Tạo mã mới
+        generateAndSetMaCT(); 
         txtMaCT.setEnabled(true);
     }
 

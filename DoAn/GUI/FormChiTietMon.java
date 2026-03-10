@@ -14,14 +14,14 @@ public class FormChiTietMon extends JPanel {
 
     private final ChiTietMonBLL chiTietMonBLL = new ChiTietMonBLL();
 
-    /* ================= TABLE ================= */
+
     private JTable tblChiTietMon;
     private DefaultTableModel modelChiTietMon;
 
-    /* ================= FORM ================= */
+
     private JTextField txtMaChiTiet, txtMaMon, txtTenChiTiet, txtHeSo;
 
-    /* ================= BUTTON ================= */
+
     private JButton btnThem, btnSua, btnXoa, btnClear;
 
     public FormChiTietMon() {
@@ -31,13 +31,13 @@ public class FormChiTietMon extends JPanel {
     private void initUI() {
         setLayout(new MigLayout("fill, insets 15", "[grow]", "[]15[]15[grow]"));
 
-        // Tiêu đề
+
         JLabel lblTitle = new JLabel("QUẢN LÝ CHI TIẾT MÔN HỌC", JLabel.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
         lblTitle.setForeground(new Color(0, 102, 204));
         add(lblTitle, "growx, wrap");
 
-        // Panel form nhập liệu
+
         JPanel pnlForm = new JPanel(new MigLayout(
                 "insets 15",
                 "[]15[grow]30[]15[grow]",
@@ -62,12 +62,12 @@ public class FormChiTietMon extends JPanel {
 
         add(pnlForm, "growx, wrap");
 
-        // Panel nút chức năng ← THÊM LẠI ĐOẠN NÀY
+
         JPanel pnlBtn = new JPanel();
-        btnThem = createButton("Thêm", new Color(34, 139, 34)); // xanh lá
-        btnSua = createButton("Sửa", new Color(0, 150, 136)); // xanh ngọc
-        btnXoa = createButton("Xóa", new Color(220, 20, 60)); // đỏ
-        btnClear = createButton("Làm mới", new Color(70, 130, 180)); // xanh dương
+        btnThem = createButton("Thêm", new Color(34, 139, 34));
+        btnSua = createButton("Sửa", new Color(0, 150, 136)); 
+        btnXoa = createButton("Xóa", new Color(220, 20, 60)); 
+        btnClear = createButton("Làm mới", new Color(70, 130, 180)); 
 
         pnlBtn.add(btnThem);
         pnlBtn.add(btnSua);
@@ -75,7 +75,7 @@ public class FormChiTietMon extends JPanel {
         pnlBtn.add(btnClear);
         add(pnlBtn, "growx, wrap");
 
-        // Table hiển thị danh sách
+
         modelChiTietMon = new DefaultTableModel(
                 new String[] { "Mã chi tiết", "Mã môn", "Tên chi tiết", "Hệ số" }, 0) {
             @Override
@@ -86,7 +86,7 @@ public class FormChiTietMon extends JPanel {
 
         tblChiTietMon = new JTable(modelChiTietMon);
         styleTable(tblChiTietMon);
-        // Cho phép các cột co giãn theo kích thước viewport khi thay đổi kích thước frame
+
         tblChiTietMon.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tblChiTietMon.setPreferredScrollableViewportSize(new Dimension(600, 300));
         tblChiTietMon.setFillsViewportHeight(true);
@@ -101,7 +101,7 @@ public class FormChiTietMon extends JPanel {
         spChiTiet.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(spChiTiet, "grow");
 
-        // Sự kiện
+
         btnThem.addActionListener(e -> themChiTietMon());
         btnSua.addActionListener(e -> suaChiTietMon());
         btnXoa.addActionListener(e -> xoaChiTietMon());
@@ -117,7 +117,7 @@ public class FormChiTietMon extends JPanel {
             }
         });
 
-        // Hiệu ứng focus cho các ô nhập
+
         addFocusEffect(txtMaChiTiet);
         addFocusEffect(txtMaMon);
         addFocusEffect(txtTenChiTiet);
@@ -127,7 +127,7 @@ public class FormChiTietMon extends JPanel {
         loadTableChiTietMon();
     }
 
-    // Validate form nhập liệu
+
     private boolean validateForm() {
         String maCT = txtMaChiTiet.getText().trim();
         String maMon = txtMaMon.getText().trim();
@@ -297,7 +297,7 @@ public class FormChiTietMon extends JPanel {
         btn.setPreferredSize(new Dimension(100, 35));
         btn.setOpaque(true);
 
-        // Hover effect
+
         Color hoverColor = bg.brighter();
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent e) {

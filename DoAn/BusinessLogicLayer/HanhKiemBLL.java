@@ -12,18 +12,18 @@ public class HanhKiemBLL {
         hanhKiemDAL = new HanhKiemDAL();
     }
 
-    // ===== LẤY THEO MÃ =====
+
     public HanhKiem getById(String maHanhKiem) {
         if (maHanhKiem == null || maHanhKiem.trim().isEmpty()) return null;
         return hanhKiemDAL.getById(maHanhKiem);
     }
 
-    // ===== LẤY TẤT CẢ =====
+
     public List<HanhKiem> getAll() {
         return hanhKiemDAL.getAll();
     }
 
-    // ===== LẤY THEO MÃ HỌC SINH =====
+
     public List<HanhKiem> getByMaHS(String maHS) {
         if (maHS == null || maHS.trim().isEmpty()) return null;
         return hanhKiemDAL.getByMaHS(maHS);
@@ -33,11 +33,11 @@ public class HanhKiemBLL {
         return hanhKiemDAL.getHanhKiem(maHS, maHK);
     }
 
-    // ===== THÊM =====
+
     public boolean add(HanhKiem hk) {
         if (!kiemTraHopLe(hk)) return false;
 
-        // Kiểm tra tồn tại học sinh và học kỳ để tránh lỗi FK
+
         DAO.HocSinhDAO hsDao = new DAO.HocSinhDAO();
         if (hsDao.getById(hk.getMaHS()) == null) {
             System.err.println("Học sinh không tồn tại: " + hk.getMaHS());
@@ -50,7 +50,7 @@ public class HanhKiemBLL {
             return false;
         }
 
-        // Không cho trùng mã
+
         if (hanhKiemDAL.getById(hk.getMaHanhKiem()) != null) {
             return false;
         }
@@ -58,21 +58,21 @@ public class HanhKiemBLL {
         return hanhKiemDAL.add(hk);
     }
 
-    // ===== SỬA =====
+
     public boolean update(HanhKiem hk) {
         if (!kiemTraHopLe(hk)) return false;
 
         return hanhKiemDAL.update(hk);
     }
 
-    // ===== XÓA =====
+
     public boolean delete(String maHanhKiem) {
         if (maHanhKiem == null || maHanhKiem.trim().isEmpty()) return false;
 
         return hanhKiemDAL.delete(maHanhKiem);
     }
 
-    // ===== KIỂM TRA DỮ LIỆU =====
+
     private boolean kiemTraHopLe(HanhKiem hk) {
 
         if (hk == null) return false;

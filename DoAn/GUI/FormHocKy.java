@@ -133,7 +133,7 @@ public class FormHocKy extends JPanel {
 
         String ma = txtMaHK.getText().trim();
 
-        // check trùng trong buffer
+
         for(Change c : bufferChanges){
             if(c.hk.getMaHK().equals(ma) && !c.action.equals("DELETE")){
                 JOptionPane.showMessageDialog(this,"Mã học kỳ đã tồn tại!");
@@ -141,7 +141,7 @@ public class FormHocKy extends JPanel {
             }
         }
 
-        // check trùng DB
+
         if(hkBLL.getByMaHK(ma) != null){
             JOptionPane.showMessageDialog(this,"Mã học kỳ đã tồn tại!");
             return;
