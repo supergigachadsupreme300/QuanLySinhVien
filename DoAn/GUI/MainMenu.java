@@ -4,10 +4,10 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
-import net.miginfocom.swing.MigLayout;
 
 public class MainMenu extends JFrame {
 
+    public static final String LOGIN = "LOGIN";
     public static final String LOP  = "LOP";
     public static final String TKB = "TKB";
     public static final String PHANCONG = "PHANCONG";
@@ -25,9 +25,10 @@ public class MainMenu extends JFrame {
     public static final String VIPHAM = "VIPHAM";
     public static final String XEPLOAI = "XEPLOAI";
     public static final String EXCEL = "EXCEL";
+
     private CardLayout cardLayout;
     private JPanel mainPanel;
-    
+    private Sidebar sidebar;
 
     public MainMenu() {
         setTitle("Hệ thống Quản lý Học sinh");
@@ -44,20 +45,21 @@ public class MainMenu extends JFrame {
                         "Xác nhận thoát",
                         JOptionPane.YES_NO_OPTION
                 );
-
                 if (c == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }
             }
         });
 
+        setLayout(new BorderLayout());
 
-        setLayout(new MigLayout("fill"));
-        Sidebar sidebar = new Sidebar(this);
+        sidebar = new Sidebar(this);
+        sidebar.setVisible(false); // Ẩn sidebar lúc đầu
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
+        // Thêm các form quản lý
         mainPanel.add(new FormLop(this), LOP);
         mainPanel.add(new FormTKB(this), TKB);
         mainPanel.add(new FormPhanCong(this), PHANCONG);
@@ -75,14 +77,18 @@ public class MainMenu extends JFrame {
         mainPanel.add(new FormViPham(), VIPHAM);
         mainPanel.add(new FormXepLoai(), XEPLOAI);
         mainPanel.add(new FormExcel(), EXCEL);
-        add(sidebar, "growy, width 200!");
-        add(mainPanel, "grow");
+        // Thêm form đăng nhập
+        mainPanel.add(new LoginForm(this), LOGIN);
 
-        showForm(LOP);
+        add(sidebar, BorderLayout.WEST);
+        add(mainPanel, BorderLayout.CENTER);
+
+        // Hiển thị form đăng nhập đầu tiên
+        showForm(LOGIN);
     }
 
-    
     public void showForm(String name) {
+        // Reset filter trước khi show form tương ứng (giữ nguyên code cũ)
         if (name.equals(PHUHUYNH)) {
             for (Component comp : mainPanel.getComponents()) {
                 if (comp instanceof FormPhuHuynh) {
@@ -101,19 +107,19 @@ public class MainMenu extends JFrame {
         cardLayout.show(mainPanel, name);
     }
 
-    public void refreshChiTietTietTKB() {
-        for (Component comp : mainPanel.getComponents()) {
-            if (comp instanceof FormChiTietTiet) {
-                FormChiTietTiet f = (FormChiTietTiet) comp;
-                try {
-                    f.refreshTKBList(null);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                return;
-            }
-        }
+    // Được gọi từ LoginForm khi đăng nhập thành công
+    public void loginSuccess() {
+        sidebar.setVisible(true);
+        showForm(LOP);
     }
+
+    // Được gọi từ nút Đăng xuất trên Sidebar
+    public void logout() {
+        sidebar.setVisible(false);
+        showForm(LOGIN);
+    }
+
+    // Các phương thức refresh giữ nguyên...
     public void refreshChiTietTietTKB(String maTKBToSelect) {
         for (Component comp : mainPanel.getComponents()) {
             if (comp instanceof FormChiTietTiet) {
@@ -122,7 +128,7 @@ public class MainMenu extends JFrame {
             }
         }
     }
-     
+
     public void refreshTKBLuoi() {
         for (Component comp : mainPanel.getComponents()) {
             if (comp instanceof FormTKB) {
@@ -131,7 +137,7 @@ public class MainMenu extends JFrame {
             }
         }
     }
-    
+
     public void refreshLop() {
         for (Component comp : mainPanel.getComponents()) {
             if (comp instanceof FormLop) {
@@ -140,7 +146,6 @@ public class MainMenu extends JFrame {
             }
         }
     }
-
 
     public void openHocSinhForParent(String maPH) {
         for (Component comp : mainPanel.getComponents()) {
@@ -164,7 +169,6 @@ public class MainMenu extends JFrame {
                 return;
             }
         }
-        // fallback
         cardLayout.show(mainPanel, PHUHUYNH);
     }
 
@@ -172,5 +176,3 @@ public class MainMenu extends JFrame {
         SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
     }
 }
-
-
