@@ -192,4 +192,27 @@ public class DiemDAL {
             return false;
         }
     }
+    public double getDiemTBHocKy(String maHS,String maHK){
+        double tb = 0;
+        try{
+            String sql = """
+            SELECT AVG(DiemTBMonHocKy) as TB
+            FROM Diem
+            WHERE MaHS = ? AND MaHocKy = ?
+            """;
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1,maHS);
+            ps.setString(2,maHK);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+                tb = rs.getDouble("TB");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return tb;
+    }
 }
