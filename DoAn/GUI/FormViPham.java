@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.util.List;
+import BusinessLogicLayer.HocSinhBLL;
 
 public class FormViPham extends JPanel {
 
@@ -21,6 +22,10 @@ public class FormViPham extends JPanel {
     private JCheckBox chkTrangThai;
 
     private ViPhamBLL bll = new ViPhamBLL();
+    private HocSinhBLL hocSinhBLL = new HocSinhBLL();
+
+    private JTextField txtSearchTenHS;
+    private JButton btnTim;
 
     public FormViPham() {
         initUI();
@@ -28,7 +33,16 @@ public class FormViPham extends JPanel {
     }
 
     private void initUI() {
-        setLayout(new MigLayout("fillx", "[grow]", "[]10[grow]"));
+        setLayout(new MigLayout("fillx", "[grow]", "[]10[]10[grow]"));
+
+        JPanel pnlSearch = new JPanel(new MigLayout("insets 0", "[][grow]10[]", "[]"));
+        pnlSearch.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
+        txtSearchTenHS = new JTextField();
+        btnTim = new JButton("Tìm");
+        pnlSearch.add(new JLabel("Tên HS:"));
+        pnlSearch.add(txtSearchTenHS, "growx");
+        pnlSearch.add(btnTim);
+        add(pnlSearch, "growx, wrap");
 
         JLabel lblTitle = new JLabel("QUẢN LÝ VI PHẠM");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 22));
@@ -85,7 +99,7 @@ public class FormViPham extends JPanel {
         panelMain.add(form, "grow");
 
         model = new DefaultTableModel(new String[]{
-                "Mã VP", "Mã HS", "Mã HK", "Ngày VP", "Nội dung", "Mức độ", "Trạng thái"
+                "Mã VP", "Mã HS", "Tên HS", "Mã HK", "Ngày VP", "Nội dung", "Mức độ", "Trạng thái"
         }, 0);
 
         table = new JTable(model);
@@ -96,8 +110,34 @@ public class FormViPham extends JPanel {
         btnUpdate.addActionListener(e -> update());
         btnDelete.addActionListener(e -> delete());
         btnClear.addActionListener(e -> clear());
+        btnTim.addActionListener(e -> searchByTenHS());
 
         table.getSelectionModel().addListSelectionListener(e -> fillForm());
+    }
+
+    private void searchByTenHS() {
+        String key = txtSearchTenHS.getText().trim().toLowerCase();
+        if (key.isEmpty()) {
+            loadTable();
+            return;
+        }
+        model.setRowCount(0);
+        List<ViPham> list = bll.getAll();
+        for (ViPham vp : list) {
+            String tenHS = hocSinhBLL.getByMa(vp.getMaHS()) != null ? hocSinhBLL.getByMa(vp.getMaHS()).getHoTen() : "";
+            if (tenHS.toLowerCase().contains(key)) {
+                model.addRow(new Object[]{
+                        vp.getMaViPham(),
+                        vp.getMaHS(),
+                        tenHS,
+                        vp.getMaHocKy(),
+                        vp.getNgayViPham(),
+                        vp.getNoiDung(),
+                        vp.getMucDo(),
+                        vp.isTrangThai() ? "Đã xử lý" : "Chưa xử lý"
+                });
+            }
+        }
     }
 
     private void loadTable() {
@@ -105,9 +145,11 @@ public class FormViPham extends JPanel {
         List<ViPham> list = bll.getAll();
 
         for (ViPham vp : list) {
+            String tenHS = hocSinhBLL.getByMa(vp.getMaHS()) != null ? hocSinhBLL.getByMa(vp.getMaHS()).getHoTen() : "Không tìm thấy";
             model.addRow(new Object[]{
                     vp.getMaViPham(),
                     vp.getMaHS(),
+                    tenHS,
                     vp.getMaHocKy(),
                     vp.getNgayViPham(),
                     vp.getNoiDung(),

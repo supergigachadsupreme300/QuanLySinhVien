@@ -88,7 +88,7 @@ public class PanelExportDiemTheoMon extends JPanel {
 
         String maLop = cboLop.getSelectedItem().toString();
         String maMon = cboMon.getSelectedItem().toString();
-        String maHK = cboMon.getSelectedItem().toString();
+        String maHK = cboHocKy.getSelectedItem().toString();
 
 
         excelBLL.previewDiemTheoLopMon(maLop, maMon, maHK, model);
