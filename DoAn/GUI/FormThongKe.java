@@ -3,6 +3,7 @@ package GUI;
 import BusinessLogicLayer.DiemBLL;
 import BusinessLogicLayer.HanhKiemBLL;
 import BusinessLogicLayer.HocSinhBLL;
+import DAO.DatabaseConnect;
 import DataObject.Diem;
 import DataObject.HanhKiem;
 import DataObject.HocSinh;
@@ -17,6 +18,8 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -30,16 +33,25 @@ public class FormThongKe extends JFrame {
     private HanhKiemBLL hanhKiemBLL;
     private HocSinhBLL hocSinhBLL;
 
-    public FormThongKe(Connection con) {
+    public FormThongKe() {
+        this(null);
+    }
 
-        diemBLL = new DiemBLL(con);
+    public FormThongKe(Connection con) {
+        Connection connection = con;
+        if (connection == null) {
+            DatabaseConnect dbConnect = new DatabaseConnect();
+            connection = dbConnect.openConnection();
+        }
+
+        diemBLL = new DiemBLL(connection);
         hanhKiemBLL = new HanhKiemBLL();
         hocSinhBLL = new HocSinhBLL();
 
         setTitle("Dashboard Thống Kê");
         setSize(1000,700);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("fill"));
 
         JPanel dashboard = new JPanel(new GridLayout(2,2));
 
@@ -47,7 +59,7 @@ public class FormThongKe extends JFrame {
         dashboard.add(new ChartPanel(createHanhKiemChart()));
         dashboard.add(new ChartPanel(createHocSinhTheoLopChart()));
 
-        add(dashboard,BorderLayout.CENTER);
+        add(dashboard,"grow");
     }
 
     private JFreeChart createHocLucChart(){

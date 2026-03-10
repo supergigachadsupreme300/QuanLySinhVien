@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import net.miginfocom.swing.MigLayout;
 
 public class QuanLyHocSinhDialog extends JDialog {
     private String maPH;
@@ -28,7 +29,7 @@ public class QuanLyHocSinhDialog extends JDialog {
     }
 
     private void initUI() {
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("fill", "[grow]", "[]10[grow]10[]"));
         setSize(600, 400);
         setLocationRelativeTo(getParent());
 
@@ -42,7 +43,7 @@ public class QuanLyHocSinhDialog extends JDialog {
         pnlInput.add(txtQuanHe);
         JButton btnThem = new JButton("Thêm");
         pnlInput.add(btnThem);
-        add(pnlInput, BorderLayout.NORTH);
+        add(pnlInput, "growx, wrap");
 
         // Bảng hiển thị danh sách học sinh (có cột quan hệ)
         model = new DefaultTableModel(new String[]{"Mã HS", "Họ tên", "Lớp", "Quan hệ"}, 0) {
@@ -52,13 +53,13 @@ public class QuanLyHocSinhDialog extends JDialog {
             }
         };
         table = new JTable(model);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        add(new JScrollPane(table), "grow, wrap");
 
         // Panel nút xóa
         JPanel pnlSouth = new JPanel();
         JButton btnXoa = new JButton("Xóa học sinh được chọn");
         pnlSouth.add(btnXoa);
-        add(pnlSouth, BorderLayout.SOUTH);
+        add(pnlSouth, "growx");
 
         // Sự kiện
         btnThem.addActionListener(this::themQuanHe);

@@ -136,8 +136,7 @@ public class FormReport extends JPanel {
             defaultFont = FontFactory.getFont("Tahoma", BaseFont.IDENTITY_H, true, 12, com.itextpdf.text.Font.NORMAL);
         }
 
-        doc.add(new Paragraph("BAO CAO CHI TIET HE THONG QUAN LY HOC SINH", titleFont));
-        doc.add(new Paragraph("Loai bao cao: Chi tiet", defaultFont));
+        doc.add(new Paragraph("BÁO CÁO CHI TIẾT HỆ THỐNG QUẢN LÝ HỌC SINH", titleFont));
         doc.add(Chunk.NEWLINE);
 
         GiaoVienDAO gvDao = new GiaoVienDAO();
@@ -158,18 +157,18 @@ public class FormReport extends JPanel {
         List<Lop> classes = lopDao.getAll();
 
         // TONG QUAN
-        doc.add(new Paragraph("TONG QUAN", defaultFont));
-        doc.add(new Paragraph("Tong so giao vien " + teachers.size(), defaultFont));
-        doc.add(new Paragraph("Tong so hoc sinh " + students.size(), defaultFont));
-        doc.add(new Paragraph("Tong so lop " + classes.size(), defaultFont));
+        doc.add(new Paragraph("TỔNG QUAN", defaultFont));
+        doc.add(new Paragraph("Tổng số giáo viên: " + teachers.size(), defaultFont));
+        doc.add(new Paragraph("Tổng số học sinh: " + students.size(), defaultFont));
+        doc.add(new Paragraph("Tổng số lớp: " + classes.size(), defaultFont));
         doc.add(Chunk.NEWLINE);
 
         // CHI TIET THEO LOP
-        doc.add(new Paragraph("CHI TIET THEO LOP", defaultFont));
+        doc.add(new Paragraph("CHI TIẾT THEO LỚP", defaultFont));
 
         for (Lop lop : classes) {
 
-            doc.add(new Paragraph("Lop " + lop.getTenLop() + " (" + lop.getMaLop() + ")", defaultFont));
+            doc.add(new Paragraph("Lớp " + lop.getTenLop() + " (" + lop.getMaLop() + ")", defaultFont));
 
             GiaoVien gv = gvDao.getByMa(lop.getMaGVCN());
 
@@ -207,7 +206,7 @@ public class FormReport extends JPanel {
                     }
 
                     doc.add(table);
-
+                    
                 }
 
                 List<HanhKiem> hks = hkDao.getByMaHS(hs.getMaHS());
@@ -215,7 +214,7 @@ public class FormReport extends JPanel {
                 for (HanhKiem hk : hks) {
 
                     doc.add(new Paragraph(
-                            "Hanh kiem " +
+                            "Hạnh kiểm " +
                                     hk.getXepLoai() +
                                     " " +
                                     hk.getNhanXet(), defaultFont
@@ -230,21 +229,21 @@ public class FormReport extends JPanel {
 
                     if (p != null) {
 
-                        doc.add(new Paragraph("Phu huynh: " + p.getTenPhH() + " (" + p.getMaPhH() + "), Quan he: " + phhs.getQuanHe(), defaultFont));
+                        doc.add(new Paragraph("Phụ huynh: " + p.getTenPhH() + " (" + p.getMaPhH() + "), Quan hệ: " + phhs.getQuanHe(), defaultFont));
 
                     }
                 }
             }
-
+            doc.add(new Paragraph("\n",defaultFont));
             doc.add(Chunk.NEWLINE);
         }
 
         // DANH SACH GIAO VIEN VA BO MON
-        doc.add(new Paragraph("DANH SACH GIAO VIEN VA BO MON", defaultFont));
+        doc.add(new Paragraph("DANH SÁCH GIÁO VIÊN VÀ BỘ MÔN", defaultFont));
 
         for (GiaoVien gv : teachers) {
 
-            doc.add(new Paragraph("Giao vien " + gv.getHoTen() + " (" + gv.getMaGV() + ")", defaultFont));
+            doc.add(new Paragraph("Giáo viên " + gv.getHoTen() + " (" + gv.getMaGV() + ")", defaultFont));
 
             // filter list of assignments manually since DAL lacks convenience method
             List<PhanCong> allPcs = pcDao.getAll();
@@ -257,7 +256,7 @@ public class FormReport extends JPanel {
                 DataObject.Mon m = new MonHocDAO().findByMaMon(pc.getMaMon());
 
                 doc.add(new Paragraph(
-                        "Bo mon " +
+                        "Bộ môn " +
                                 (m == null ? "<khong>" : m.getTenMon()), defaultFont
                 ));
             }
@@ -272,7 +271,7 @@ public class FormReport extends JPanel {
 
         for (DataObject.NamHoc nh : years) {
 
-            doc.add(new Paragraph("Nam hoc: " + nh.getTenNH(), defaultFont));
+            doc.add(new Paragraph("Năm học: " + nh.getTenNH(), defaultFont));
 
         }
 

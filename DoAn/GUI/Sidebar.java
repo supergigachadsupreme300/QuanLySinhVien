@@ -47,6 +47,7 @@ public class Sidebar extends JScrollPane {
         contentPanel.add(createTabButton("Quản lý Năm học", e -> mainFrame.showForm(MainMenu.NAMHOC)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Phụ huynh", e -> mainFrame.showForm(MainMenu.PHUHUYNH)), "growx, wrap");
         contentPanel.add(createTabButton("Báo cáo", e -> mainFrame.showForm(MainMenu.REPORT)), "growx, wrap");
+        contentPanel.add(createTabButton("Thống kê", e -> new FormThongKe().setVisible(true)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Vi phạm", e -> mainFrame.showForm(MainMenu.VIPHAM)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Xếp loại", e -> mainFrame.showForm(MainMenu.XEPLOAI)), "growx, wrap");
         contentPanel.add(createTabButton("Import/Export Excel", e -> mainFrame.showForm(MainMenu.EXCEL)), "growx, wrap");
