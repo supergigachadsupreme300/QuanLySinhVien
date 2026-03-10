@@ -9,21 +9,23 @@ import java.sql.Connection;
 import java.util.List;
 
 public class DiemBLL {
-    private DiemDAL dao;
+    private DiemDAL diemDAL = new DiemDAL();
     private Connection con;
-    
+
+    public DiemBLL() {
+    }
 
     public DiemBLL(Connection con) {
         this.con = con;
-        dao = new DiemDAL(con);
+        diemDAL = new DiemDAL(con);
     }
 
     public List<Diem> getByMaHS(String maHS) {
-        return dao.getByMaHS(maHS);
+        return diemDAL.getByMaHS(maHS);
     }
     
     public Diem getDiem(String maHS, String maMon, String maHK){
-        return dao.getDiem(maHS, maMon, maHK);
+        return diemDAL.getDiem(maHS, maMon, maHK);
     }
 
     public String them(Diem d) {
@@ -49,7 +51,7 @@ public class DiemBLL {
             return "Mã điểm quá dài (>50 ký tự). Vui lòng kiểm tra quy tắc sinh mã.";
         }
 
-        boolean ok = dao.add(d);
+        boolean ok = diemDAL.add(d);
         return ok ? "Thêm điểm thành công!" : "Thêm điểm thất bại! (Kiểm tra ràng buộc dữ liệu)";
     }
 
@@ -72,12 +74,16 @@ public class DiemBLL {
             return "Không tìm thấy Học kỳ với mã: " + d.getMaHocKy();
         }
 
-        boolean ok = dao.update(d);
+        boolean ok = diemDAL.update(d);
         return ok ? "Cập nhật điểm thành công!" : "Cập nhật điểm thất bại! (Kiểm tra ràng buộc dữ liệu)";
     }
 
     public String xoa(String maDiem) {
-        boolean ok = dao.delete(maDiem);
+        boolean ok = diemDAL.delete(maDiem);
         return ok ? "Xóa điểm thành công!" : "Xóa điểm thất bại!";
     }
+    public double getDiemTBHocKy(String maHS,String maHK){
+        return diemDAL.getDiemTBHocKy(maHS, maHK);
+    }
+    
 }
