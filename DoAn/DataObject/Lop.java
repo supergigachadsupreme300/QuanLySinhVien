@@ -56,6 +56,7 @@ public class Lop {
     
     @Override
     public String toString() {
-        return maLop + " - " + tenLop + " - Sĩ số: " + siSo;
+        return maLop;
     }
 }
+
