@@ -21,7 +21,7 @@ public class student_GUI extends JPanel {
     private JTextField txtDiaChi;
     private Connection connection;
 
-    // Constructor mặc định (tạo đối tượng rỗng để test)
+    
     public student_GUI() {
         this(new HocSinh(), null);
     }
@@ -30,7 +30,7 @@ public class student_GUI extends JPanel {
     public student_GUI(HocSinh hs, Connection conn) {
         this.hocSinh = hs != null ? hs : new HocSinh();
         this.connection = conn;
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("fill"));
 
         // Panel chính gồm: info + (không còn điểm/hạnh kiểm nhúng)
         JPanel mainPanel = new JPanel(new MigLayout("fill, insets 10", "[grow]", "[fill]"));
@@ -39,17 +39,6 @@ public class student_GUI extends JPanel {
         JPanel infoPanel = new JPanel(new MigLayout("wrap 2", "[90!][grow]", "[]10[]10[]10[]"));
         infoPanel.setBackground(Color.CYAN);
         infoPanel.setBorder(BorderFactory.createTitledBorder("THÔNG TIN HỌC SINH"));
-
-        // Ảnh (tải nếu tồn tại, tránh NullPointerException)
-        java.net.URL imgUrl = getClass().getResource("OIP.jpg");
-        if (imgUrl != null) {
-            ImageIcon icon = new ImageIcon(imgUrl);
-            Image img = icon.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
-            JLabel label = new JLabel(new ImageIcon(img));
-            infoPanel.add(label, "cell 0 0, top");
-        } else {
-            infoPanel.add(new JLabel("[No Image]"), "cell 0 0, top,wrap");
-        }
 
         // Các trường thông tin
         infoPanel.add(new JLabel("Mã học sinh:"));
@@ -113,7 +102,7 @@ public class student_GUI extends JPanel {
 
         mainPanel.add(infoPanel, "grow");
 
-        add(new JScrollPane(mainPanel), BorderLayout.CENTER);
+        add(new JScrollPane(mainPanel), "grow");
 
         // action listeners using HocSinhBLL reference
         btnXoa.addActionListener(ev -> {

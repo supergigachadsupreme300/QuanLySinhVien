@@ -107,18 +107,18 @@ public class FormHocSinh extends JPanel {
         
         // student detail panel (ẩn) - reuse existing student_GUI
         studentPanel = new student_GUI();
-        pnlStudent = new JPanel(new BorderLayout());
-        JPanel pnlHeader = new JPanel(new BorderLayout());
+        pnlStudent = new JPanel(new MigLayout("fill", "[grow]", "[][grow]"));
+        JPanel pnlHeader = new JPanel(new MigLayout("fill", "[grow][]", "[]"));
         JLabel lblDetailTitle = new JLabel("Thông tin chi tiết");
         lblDetailTitle.setBorder(BorderFactory.createEmptyBorder(4,8,4,4));
         btnCloseStudent = new JButton("X");
         btnCloseStudent.setForeground(Color.WHITE);
         btnCloseStudent.setBackground(new Color(200,50,50));
         btnCloseStudent.setFocusPainted(false);
-        pnlHeader.add(lblDetailTitle, BorderLayout.WEST);
-        pnlHeader.add(btnCloseStudent, BorderLayout.EAST);
-        pnlStudent.add(pnlHeader, BorderLayout.NORTH);
-        pnlStudent.add(studentPanel, BorderLayout.CENTER);
+        pnlHeader.add(lblDetailTitle, "growx");
+        pnlHeader.add(btnCloseStudent);
+        pnlStudent.add(pnlHeader, "growx, wrap");
+        pnlStudent.add(studentPanel, "grow");
         studentPanel.setPreferredSize(new Dimension(380, 320));
         pnlStudent.setVisible(false);
         

@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
+import net.miginfocom.swing.MigLayout;
 
 public class MainMenu extends JFrame {
 
@@ -53,7 +54,7 @@ public class MainMenu extends JFrame {
         });
 
 
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("fill"));
         Sidebar sidebar = new Sidebar(this);
 
         cardLayout = new CardLayout();
@@ -78,8 +79,8 @@ public class MainMenu extends JFrame {
         mainPanel.add(new FormExcel(), EXCEL);
     //    mainPanel.add(new TestFormTKB(this), TestTKB);
     //    mainPanel.add(new TestFormLop(this), TestLOP);
-        add(sidebar, BorderLayout.WEST);
-        add(mainPanel, BorderLayout.CENTER);
+        add(sidebar, "growy, width 200!");
+        add(mainPanel, "grow");
 
         showForm(LOP);
     }

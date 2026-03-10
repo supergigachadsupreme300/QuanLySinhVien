@@ -86,16 +86,16 @@ public class FormPhuHuynh extends JPanel {
         // Panel chi tiết phụ huynh (parent_GUI đã sửa)
         parentPanel = new parent_GUI();
         parentPanel.setPreferredSize(new Dimension(360, 180)); // Chiều cao mới
-        pnlParent = new JPanel(new BorderLayout());
-        JPanel hdr = new JPanel(new BorderLayout());
-        hdr.add(new JLabel("Thông tin phụ huynh"), BorderLayout.WEST);
+        pnlParent = new JPanel(new MigLayout("fill", "[grow]", "[][grow]"));
+        JPanel hdr = new JPanel(new MigLayout("fill", "[grow][]", "[]"));
+        hdr.add(new JLabel("Thông tin phụ huynh"), "growx");
         btnCloseParent = new JButton("X");
         btnCloseParent.setBackground(new Color(200, 50, 50));
         btnCloseParent.setForeground(Color.WHITE);
         btnCloseParent.setFocusPainted(false);
-        hdr.add(btnCloseParent, BorderLayout.EAST);
-        pnlParent.add(hdr, BorderLayout.NORTH);
-        pnlParent.add(parentPanel, BorderLayout.CENTER);
+        hdr.add(btnCloseParent);
+        pnlParent.add(hdr, "growx, wrap");
+        pnlParent.add(parentPanel, "grow");
         pnlParent.setVisible(false);
 
         // Split
