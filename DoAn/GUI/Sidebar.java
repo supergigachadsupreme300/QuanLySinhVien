@@ -24,7 +24,7 @@ public class Sidebar extends JScrollPane {
         lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
         contentPanel.add(lblTitle, "wrap");
 
-        // Các nút chức năng (giữ nguyên)
+        
         contentPanel.add(createTabButton("Quản lý Lớp", e -> mainFrame.showForm(MainMenu.LOP)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lí Thời khóa biểu", e -> mainFrame.showForm(MainMenu.TKB)), "growx, wrap");
         contentPanel.add(createTabButton("Quản lý Phân công", e -> mainFrame.showForm(MainMenu.PHANCONG)), "growx, wrap");
@@ -43,9 +43,9 @@ public class Sidebar extends JScrollPane {
         contentPanel.add(createTabButton("Quản lý Xếp loại", e -> mainFrame.showForm(MainMenu.XEPLOAI)), "growx, wrap");
         contentPanel.add(createTabButton("Import/Export Excel", e -> mainFrame.showForm(MainMenu.EXCEL)), "growx, wrap");
 
-        // Thêm nút Đăng xuất
+        
         contentPanel.add(createTabButton("Đăng xuất", e -> mainFrame.logout()), "growx, wrap");
-        // Nút Thoát chương trình
+        
         contentPanel.add(createTabButton("Thoát", e -> System.exit(0)), "growx");
 
         setViewportView(contentPanel);
@@ -81,3 +81,4 @@ public class Sidebar extends JScrollPane {
         return btn;
     }
 }
+
