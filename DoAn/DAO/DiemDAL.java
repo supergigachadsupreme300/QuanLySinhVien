@@ -133,7 +133,7 @@ public class DiemDAL {
 
 
     public boolean add(Diem d) {
-        String sql = "INSERT INTO DIEM VALUES (?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO DIEM (maDiem, maHS, maMon, maHocKy, diemThuongXuyen, diemGiuaKy, diemCuoiKy, diemTBMonHocKy) VALUES (?,?,?,?,?,?,?,?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -155,9 +155,7 @@ public class DiemDAL {
 
 
     public boolean update(Diem d) {
-        String sql = "UPDATE DIEM SET maHS=?, maMon=?, maHocKy=?, "
-                   + "diemThuongXuyen=?, diemGiuaKy=?, diemCuoiKy=?, diemTBMonHocKy=? "
-                   + "WHERE maDiem=?";
+        String sql = "UPDATE DIEM SET maHS=?, maMon=?, maHocKy=?, diemThuongXuyen=?, diemGiuaKy=?, diemCuoiKy=?, diemTBMonHocKy=? WHERE maDiem=?";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -214,3 +212,4 @@ public class DiemDAL {
         return tb;
     }
 }
+
