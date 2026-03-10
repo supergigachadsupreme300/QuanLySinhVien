@@ -1,74 +1,98 @@
 package BusinessLogicLayer;
 
-import DAO.ViPhamDAO;
-import DataObject.ViPham;
+import DAO.XepLoaiDAO;
+import DataObject.XepLoai;
 import java.util.List;
 
-public class ViPhamBLL {
+public class XepLoaiBLL {
 
-    private ViPhamDAO viPhamDAO;
+    private XepLoaiDAO xepLoaiDAO;
 
-    public ViPhamBLL() {
-        viPhamDAO = new ViPhamDAO();
-    }
-
-    // ===== GET ALL =====
-    public List<ViPham> getAll() {
-        return viPhamDAO.getAll();
+    public XepLoaiBLL() {
+        xepLoaiDAO = new XepLoaiDAO();
     }
 
     // ===== GET BY ID =====
-    public ViPham getById(String maViPham) {
-        if (maViPham == null || maViPham.trim().isEmpty()) {
-            return null;
-        }
-        return viPhamDAO.getById(maViPham);
+    public XepLoai getById(String maXepLoai) {
+        if (maXepLoai == null || maXepLoai.trim().isEmpty()) return null;
+        return xepLoaiDAO.getById(maXepLoai);
     }
 
-    // ===== GET BY MA HOC SINH =====
-    public List<ViPham> getByMaHS(String maHS) {
-        if (maHS == null || maHS.trim().isEmpty()) {
-            return null;
-        }
-        return viPhamDAO.getByMaHS(maHS);
+    // ===== GET ALL =====
+    public List<XepLoai> getAll() {
+        return xepLoaiDAO.getAll();
+    }
+
+    // ===== GET BY MA HỌC SINH =====
+    public List<XepLoai> getByMaHS(String maHS) {
+        if (maHS == null || maHS.trim().isEmpty()) return null;
+        return xepLoaiDAO.getByMaHS(maHS);
     }
 
     // ===== ADD =====
-    public boolean add(ViPham vp) {
-        if (!validate(vp)) return false;
+    public boolean add(XepLoai xl) {
+        if (!kiemTraHopLe(xl)) return false;
 
-        if (viPhamDAO.getById(vp.getMaViPham()) != null) {
-            return false; // Trùng mã
+        // Không cho trùng mã xếp loại
+        if (xepLoaiDAO.getById(xl.getMaXepLoai()) != null) {
+            return false;
         }
 
-        return viPhamDAO.add(vp);
+        return xepLoaiDAO.add(xl);
     }
 
     // ===== UPDATE =====
-    public boolean update(ViPham vp) {
-        if (!validate(vp)) return false;
+    public boolean update(XepLoai xl) {
+        if (!kiemTraHopLe(xl)) return false;
 
-        return viPhamDAO.update(vp);
+        return xepLoaiDAO.update(xl);
     }
 
     // ===== DELETE =====
-    public boolean delete(String maViPham) {
-        if (maViPham == null || maViPham.trim().isEmpty()) return false;
+    public boolean delete(String maXepLoai) {
+        if (maXepLoai == null || maXepLoai.trim().isEmpty()) return false;
 
-        return viPhamDAO.delete(maViPham);
+        return xepLoaiDAO.delete(maXepLoai);
     }
 
-    // ===== VALIDATE DATA =====
-    private boolean validate(ViPham vp) {
-        if (vp == null) return false;
+    // ===== VALIDATE NGHIỆP VỤ =====
+    private boolean kiemTraHopLe(XepLoai xl) {
 
-        if (vp.getMaViPham() == null || vp.getMaViPham().trim().isEmpty()) return false;
-        if (vp.getMaHS() == null || vp.getMaHS().trim().isEmpty()) return false;
-        if (vp.getMaHocKy() == null || vp.getMaHocKy().trim().isEmpty()) return false;
-        if (vp.getNgayViPham() == null) return false;
-        if (vp.getNoiDung() == null || vp.getNoiDung().trim().isEmpty()) return false;
-        if (vp.getMucDo() == null || vp.getMucDo().trim().isEmpty()) return false;
+        if (xl == null) return false;
 
-        return true;
+        if (xl.getMaXepLoai() == null || xl.getMaXepLoai().trim().isEmpty())
+            return false;
+
+        if (xl.getMaHS() == null || xl.getMaHS().trim().isEmpty())
+            return false;
+
+        if (xl.getMaHocKy() == null || xl.getMaHocKy().trim().isEmpty())
+            return false;
+
+        if (xl.getXepLoaiHocLuc() == null || xl.getXepLoaiHocLuc().trim().isEmpty())
+            return false;
+
+        if (xl.getXepLoaiHanhKiem() == null || xl.getXepLoaiHanhKiem().trim().isEmpty())
+            return false;
+
+        if (xl.getDiemTBChung() < 0 || xl.getDiemTBChung() > 10)
+            return false;
+
+        // nhanXet có thể null → không bắt buộc
+
+        return true;   
     }
+    
+    public String xepHocLuc(double tb){
+
+        if(tb >= 8)
+            return "Giỏi";
+        else if(tb >= 6.5)
+            return "Khá";
+        else if(tb >= 5)
+            return "Trung bình";
+        else
+            return "Yếu";
+    }
+
 }
