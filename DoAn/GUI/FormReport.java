@@ -179,60 +179,62 @@ public class FormReport extends JPanel {
 
             doc.add(new Paragraph("Sĩ số " + hsInLop.size(), defaultFont));
 
-            for (HocSinh hs : hsInLop) {
-
-                doc.add(new Paragraph("Học sinh " + hs.getHoTen() + " (" + hs.getMaHS() + ")", defaultFont));
-
-                List<Diem> diems = diemDao.getByMaHS(hs.getMaHS());
-
-                if (!diems.isEmpty()) {
-
-                    PdfPTable table = new PdfPTable(2);
-
-                    table.addCell(new PdfPCell(new Paragraph("Môn", defaultFont)));
-
-                    table.addCell(new PdfPCell(new Paragraph("Điểm TB", defaultFont)));
-
-                    for (Diem d : diems) {
-
+            java.util.Set<String> subjectNames = hsInLop.stream()
+                    .flatMap(hs -> diemDao.getByMaHS(hs.getMaHS()).stream())
+                    .map(d -> {
                         DataObject.Mon m = new MonHocDAO().findByMaMon(d.getMaMon());
+                        return m == null ? "<khong>" : m.getTenMon();
+                    })
+                    .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
 
-                        table.addCell(new PdfPCell(new Paragraph(m == null ? "<khong>" : m.getTenMon(), defaultFont)));
+            int cols = 2 + subjectNames.size() + 2;
+            PdfPTable classTable = new PdfPTable(cols);
+            classTable.setWidthPercentage(100);
 
-                        table.addCell(new PdfPCell(new Paragraph(String.valueOf(d.getDiemTBMonHocKy()), defaultFont)));
+            classTable.addCell(new PdfPCell(new Paragraph("Mã HS", defaultFont)));
+            classTable.addCell(new PdfPCell(new Paragraph("Học sinh", defaultFont)));
+            for (String subj : subjectNames) {
+                classTable.addCell(new PdfPCell(new Paragraph(subj, defaultFont)));
+            }
+            classTable.addCell(new PdfPCell(new Paragraph("Hạnh kiểm", defaultFont)));
+            classTable.addCell(new PdfPCell(new Paragraph("Phụ huynh", defaultFont)));
 
-                    }
+            for (HocSinh hs : hsInLop) {
+                classTable.addCell(new PdfPCell(new Paragraph(hs.getMaHS(), defaultFont)));
+                classTable.addCell(new PdfPCell(new Paragraph(hs.getHoTen(), defaultFont)));
 
-                    doc.add(table);
-                    
+                Map<String, String> scoreMap = diemDao.getByMaHS(hs.getMaHS()).stream()
+                        .collect(Collectors.toMap(
+                                d -> {
+                                    DataObject.Mon m = new MonHocDAO().findByMaMon(d.getMaMon());
+                                    return m == null ? "<khong>" : m.getTenMon();
+                                },
+                                d -> String.valueOf(d.getDiemTBMonHocKy()),
+                                (a, b) -> a
+                        ));
+
+                for (String subj : subjectNames) {
+                    String val = scoreMap.getOrDefault(subj, "");
+                    classTable.addCell(new PdfPCell(new Paragraph(val, defaultFont)));
                 }
 
                 List<HanhKiem> hks = hkDao.getByMaHS(hs.getMaHS());
-
-                for (HanhKiem hk : hks) {
-
-                    doc.add(new Paragraph(
-                            "Hạnh kiểm " +
-                                    hk.getXepLoai() +
-                                    " " +
-                                    hk.getNhanXet(), defaultFont
-                    ));
-                }
+                String hkSummary = hks.stream()
+                        .map(hk -> hk.getXepLoai() + " " + hk.getNhanXet())
+                        .collect(Collectors.joining("; "));
+                classTable.addCell(new PdfPCell(new Paragraph(hkSummary, defaultFont)));
 
                 List<DataObject.PhuHuynhHocSinh> phhsList = phhsBLL.layTheoHS(hs.getMaHS());
-
-                for (DataObject.PhuHuynhHocSinh phhs : phhsList) {
-
-                    DataObject.Parent p = phDao.getById(phhs.getMaPH());
-
-                    if (p != null) {
-
-                        doc.add(new Paragraph("Phụ huynh: " + p.getTenPhH() + " (" + p.getMaPhH() + "), Quan hệ: " + phhs.getQuanHe(), defaultFont));
-
-                    }
-                }
+                String phSummary = phhsList.stream()
+                        .map(phhs -> {
+                            DataObject.Parent p = phDao.getById(phhs.getMaPH());
+                            return p == null ? "" : p.getTenPhH() + "(" + phhs.getQuanHe() + ")";
+                        })
+                        .collect(Collectors.joining("; "));
+                classTable.addCell(new PdfPCell(new Paragraph(phSummary, defaultFont)));
             }
-            doc.add(new Paragraph("\n",defaultFont));
+
+            doc.add(classTable);
             doc.add(Chunk.NEWLINE);
         }
 
